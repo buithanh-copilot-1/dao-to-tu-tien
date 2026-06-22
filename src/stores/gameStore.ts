@@ -26,10 +26,10 @@ import {
   syncQuestProgress,
 } from '@/systems/quest';
 import type { BattleMode } from '@/types/battle';
-import { TOWER_DAILY_LIMIT, TOWER_MAX_FLOOR, getTowerFloor } from '@/data/tower';
+import { TOWER_MAX_FLOOR, getTowerFloor } from '@/data/tower';
 import { simulateTowerFloor, type AutoTowerResult } from '@/systems/towerAuto';
 
-const EMPTY_COUNTERS = { dungeons: {} as Record<string, number>, arena: 0, bosses: {} as Record<string, number>, tower: 0 };
+const EMPTY_COUNTERS = { dungeons: {} as Record<string, number>, arena: 0, bosses: {} as Record<string, number> };
 
 interface GameStore extends GameSave {
   _hydrated: boolean;
@@ -58,7 +58,14 @@ interface GameStore extends GameSave {
   claimQuest: (questId: string) => void;
   claimActivityMilestone: (points: number) => void;
   canStartBattle: (mode: BattleMode, targetId: string, towerFloor?: number) => string | null;
-  resolveBattle: (mode: BattleMode, targetId: string, win: boolean, towerFloor?: number) => void;
+  resolveBattle: (
+    mode: BattleMode,
+    targetId: string,
+    win: boolean,
+    towerFloor?: number,
+    options?: { silent?: boolean },
+  ) => void;
+  autoClimbTower: (options?: { silent?: boolean }) => AutoTowerResult;
   resetGame: () => void;
 }
 
@@ -326,14 +333,14 @@ export const useGameStore = create<GameStore>()(
           const floor = towerFloor ?? towerBestFloor + 1;
           if (floor > TOWER_MAX_FLOOR) return 'Đã vượt tầng tối đa';
           if (floor > towerBestFloor + 1) return 'Phải vượt tầng trước đó';
-          if (dailyCounters.tower >= TOWER_DAILY_LIMIT) return 'Hết lượt tháp hôm nay';
           return null;
         }
 
         return 'Chế độ không hợp lệ';
       },
 
-      resolveBattle: (mode, targetId, win, towerFloor) => {
+      resolveBattle: (mode, targetId, win, towerFloor, options) => {
+        const silent = options?.silent ?? false;
         const { player, dailyCounters, towerBestFloor } = get();
         if (!player) return;
 
@@ -433,10 +440,7 @@ export const useGameStore = create<GameStore>()(
           const t = getTowerFloor(floor);
 
           if (!win) {
-            set({
-              dailyCounters: { ...dailyCounters, tower: dailyCounters.tower + 1 },
-              ...setToast(`Thua tầng ${floor}!`),
-            });
+            if (!silent) set({ ...setToast(`Thua tầng ${floor}!`) });
             return;
           }
 
@@ -447,10 +451,80 @@ export const useGameStore = create<GameStore>()(
               crystal: player.crystal + t.crystalReward,
               jade: player.jade + t.jadeReward,
             }),
-            dailyCounters: { ...dailyCounters, tower: dailyCounters.tower + 1 },
             towerBestFloor: Math.max(towerBestFloor, floor),
           });
         }
+      },
+
+      autoClimbTower: (options?: { silent?: boolean }) => {
+        const silent = options?.silent ?? false;
+        const startFloor = get().towerBestFloor + 1;
+        const startGold = get().player?.gold ?? 0;
+        const startCrystal = get().player?.crystal ?? 0;
+        const startJade = get().player?.jade ?? 0;
+        let cleared = 0;
+        let reason: AutoTowerResult['reason'] = 'blocked';
+
+        while (true) {
+          const state = get();
+          const { player, towerBestFloor } = state;
+          if (!player) {
+            reason = 'blocked';
+            break;
+          }
+
+          if (towerBestFloor >= TOWER_MAX_FLOOR) {
+            reason = 'max_floor';
+            break;
+          }
+
+          const floor = towerBestFloor + 1;
+          const err = state.canStartBattle('tower', `tower_${floor}`, floor);
+          if (err) {
+            reason = 'blocked';
+            break;
+          }
+
+          const battle = simulateTowerFloor(player, floor);
+          state.resolveBattle('tower', `tower_${floor}`, battle.win, floor, { silent: true });
+
+          if (!battle.win) {
+            reason = 'defeat';
+            break;
+          }
+
+          cleared += 1;
+        }
+
+        const endState = get();
+        const endFloor = endState.towerBestFloor;
+        const result: AutoTowerResult = {
+          cleared,
+          fromFloor: startFloor,
+          toFloor: endFloor,
+          reason,
+          goldGained: (endState.player?.gold ?? 0) - startGold,
+          crystalGained: (endState.player?.crystal ?? 0) - startCrystal,
+          jadeGained: (endState.player?.jade ?? 0) - startJade,
+        };
+
+        if (!silent) {
+          if (cleared > 0) {
+            const msg = reason === 'defeat'
+              ? `Tự động vượt ${cleared} tầng, thua tầng ${endFloor + 1}!`
+              : reason === 'max_floor'
+                ? `Tự động vượt ${cleared} tầng — đã lên đỉnh tháp!`
+                : `Tự động vượt ${cleared} tầng thành công!`;
+            set({ ...setToast(msg) });
+          } else if (reason === 'max_floor') {
+            set({ ...setToast('Đã chinh phục đỉnh tháp') });
+          } else {
+            const err = get().canStartBattle('tower', `tower_${startFloor}`, startFloor);
+            set({ ...setToast(err ?? 'Không thể tự động vượt tháp') });
+          }
+        }
+
+        return result;
       },
 
       resetGame: () =>
@@ -478,10 +552,16 @@ export const useGameStore = create<GameStore>()(
         if (state) {
           state._hydrated = true;
           if (!state.dailyCounters) state.dailyCounters = { ...EMPTY_COUNTERS };
-          if (state.dailyCounters.tower === undefined) state.dailyCounters.tower = 0;
           if (state.towerBestFloor === undefined) state.towerBestFloor = 0;
           if (!state.lastDailyResetAt) state.lastDailyResetAt = Date.now();
           if (state.player) {
             state.player = { ...state.player, stats: calcStats(state.player) };
           }
-          state.checkOfflineOnL
+          state.checkOfflineOnLoad();
+        }
+      },
+    },
+  ),
+);
+
+export { hasClaimableQuests };

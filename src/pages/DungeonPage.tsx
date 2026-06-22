@@ -10,6 +10,7 @@ import {
   TabBar,
   GamePanel,
   GameButton,
+  AncientIcon,
 } from '@/components';
 import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { BattleScreen } from '@/components/game/BattleScreen';
@@ -54,8 +55,8 @@ export function DungeonPage() {
           <PageTitle title="Bí Cảnh" showOrnament />
 
           <GamePanel title="Lực chiến">
-            <div style={{ fontSize: 14, color: 'var(--orange-power)', textAlign: 'center' }}>
-              🔥 {formatNumber(power)}
+            <div className="meta-stat" style={{ fontSize: 16, color: 'var(--orange-power)', justifyContent: 'center', width: '100%' }}>
+              <AncientIcon name="flame" size={16} className="anc-icon--power" /> {formatNumber(power)}
             </div>
           </GamePanel>
 
@@ -81,7 +82,10 @@ export function DungeonPage() {
                       <div className="content-list__title">{d.name}</div>
                       <div className="content-list__desc">{d.description}</div>
                       <div className="content-list__meta">
-                        3 đợt · 🪙{formatNumber(d.goldReward)} 💎{formatNumber(d.crystalReward)} · {runs}/{d.dailyLimit} lượt · {winChance}%
+                        <span className="meta-stat">3 đợt</span>
+                        <span className="meta-stat"><AncientIcon name="coin" size={11} className="anc-icon--gold" />{formatNumber(d.goldReward)}</span>
+                        <span className="meta-stat"><AncientIcon name="gem" size={11} className="anc-icon--crystal" />{formatNumber(d.crystalReward)}</span>
+                        <span className="meta-stat">{runs}/{d.dailyLimit} lượt · {winChance}%</span>
                       </div>
                     </div>
                     <GameButton
@@ -136,10 +140,14 @@ export function DungeonPage() {
                         </div>
                         <div className="content-list__desc">{b.description}</div>
                         <div className="content-list__meta">
-                          {getBossRealmLabel(b.minRealmId)} · HP {formatNumber(b.hp)} · 🔥 {formatNumber(b.power)} · {winChance}%
+                          {getBossRealmLabel(b.minRealmId)} · HP {formatNumber(b.hp)} ·
+                          <span className="meta-stat"><AncientIcon name="flame" size={11} className="anc-icon--power" />{formatNumber(b.power)}</span> · {winChance}%
                         </div>
                         <div className="content-list__meta">
-                          🪙{formatNumber(b.goldReward)} 💎{formatNumber(b.crystalReward)} 🟢{b.jadeReward} · {runs}/{BOSS_DAILY_LIMIT}
+                          <span className="meta-stat"><AncientIcon name="coin" size={11} className="anc-icon--gold" />{formatNumber(b.goldReward)}</span>
+                          <span className="meta-stat"><AncientIcon name="gem" size={11} className="anc-icon--crystal" />{formatNumber(b.crystalReward)}</span>
+                          <span className="meta-stat"><AncientIcon name="jade" size={11} className="anc-icon--jade" />{b.jadeReward}</span>
+                          <span className="meta-stat">{runs}/{BOSS_DAILY_LIMIT}</span>
                         </div>
                       </div>
                       <GameButton

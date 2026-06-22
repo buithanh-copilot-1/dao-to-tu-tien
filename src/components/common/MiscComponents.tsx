@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { AncientIcon } from './AncientIcon';
 
 interface PillToggleOption {
   id: string;
@@ -154,7 +155,7 @@ export function Modal({ children, onClose, footer }: ModalProps) {
       <div className="modal-panel" onClick={(e) => e.stopPropagation()}>
         {onClose && (
           <button className="modal-panel__close" onClick={onClose} type="button">
-            ✕
+            <AncientIcon name="close" size={15} />
           </button>
         )}
         <div className="modal-panel__body">{children}</div>

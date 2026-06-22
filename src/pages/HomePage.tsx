@@ -11,6 +11,7 @@ import {
   GamePanel,
   GameButton,
   ProgressBar,
+  AncientIcon,
 } from '@/components';
 import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { CultivationAvatar } from '@/components/game/CultivationAvatar';
@@ -60,19 +61,16 @@ export function HomePage() {
             <button
               type="button"
               onClick={toggleDevFastBreakthrough}
+              className="dev-rune"
               style={{
                 alignSelf: 'center',
                 marginBottom: 4,
-                padding: '4px 10px',
-                fontSize: 10,
-                borderRadius: 4,
-                border: `1px solid ${devFastBreakthrough ? 'var(--green-stat)' : 'var(--text-muted)'}`,
-                background: devFastBreakthrough ? 'rgba(74, 222, 128, 0.15)' : 'rgba(10,20,40,0.6)',
-                color: devFastBreakthrough ? 'var(--green-stat)' : 'var(--text-muted)',
-                cursor: 'pointer',
+                color: devFastBreakthrough ? 'var(--jade-glow)' : 'var(--text-muted)',
+                borderColor: devFastBreakthrough ? 'var(--jade-glow)' : 'var(--text-muted)',
               }}
             >
-              🧪 Test: {devFastBreakthrough ? 'Đột phá/giây ON' : 'Đột phá/giây OFF'}
+              <AncientIcon name="gourd" size={14} />
+              Luyện đan: {devFastBreakthrough ? 'Đột phá/giây ON' : 'OFF'}
             </button>
           )}
 
@@ -92,18 +90,13 @@ export function HomePage() {
               <div className="cultivation-panel__actions">
                 <button
                   type="button"
-                  className="cultivation-panel__side-btn"
+                  className={`rune-btn ${player.autoCultivate ? '' : 'rune-btn--muted'}`}
                   onClick={toggleAutoCultivate}
-                  style={{
-                    opacity: player.autoCultivate ? 1 : 0.5,
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: 'inherit',
-                  }}
                 >
-                  <div className="cultivation-panel__side-icon">🔄</div>
-                  <span className="cultivation-panel__side-label">
+                  <span className={`icon-medallion ${player.autoCultivate ? 'icon-medallion--active' : 'icon-medallion--muted'}`}>
+                    <AncientIcon name={player.autoCultivate ? 'cycle' : 'pause'} size={22} />
+                  </span>
+                  <span className="rune-btn__label">
                     {player.autoCultivate ? 'Tự động' : 'Tạm dừng'}
                   </span>
                 </button>
@@ -120,12 +113,13 @@ export function HomePage() {
 
                 <button
                   type="button"
-                  className="cultivation-panel__side-btn"
+                  className="rune-btn"
                   onClick={() => handleSideMenu('secret')}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit' }}
                 >
-                  <div className="cultivation-panel__side-icon">✨</div>
-                  <span className="cultivation-panel__side-label">Bí Cảnh</span>
+                  <span className="icon-medallion">
+                    <AncientIcon name="gate" size={22} />
+                  </span>
+                  <span className="rune-btn__label">Bí Cảnh</span>
                 </button>
               </div>
             </div>

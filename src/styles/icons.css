@@ -1,0 +1,222 @@
+/* Icon cổ phong (nét bút) + khung ấn triện / ngọc bội */
+
+.anc-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* ── Ngọc bội tròn — nút thao tác chính ──────────────────────────── */
+.icon-medallion {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  color: var(--text-gold);
+  background:
+    radial-gradient(circle at 50% 32%, rgba(201, 168, 108, 0.16), rgba(16, 12, 9, 0.95) 70%);
+  border: 1px solid rgba(201, 168, 108, 0.55);
+  box-shadow: inset 0 1px 0 rgba(232, 212, 168, 0.12), inset 0 0 12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.18s, box-shadow 0.25s, border-color 0.25s, color 0.25s;
+}
+
+/* Vòng khắc trong — nét mảnh */
+.icon-medallion::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 168, 108, 0.18);
+  pointer-events: none;
+}
+
+.rune-btn:hover .icon-medallion {
+  border-color: var(--gold-light);
+  box-shadow: var(--shadow-gold), inset 0 0 12px rgba(0, 0, 0, 0.5);
+}
+
+.icon-medallion--active {
+  color: var(--jade-glow);
+  border-color: rgba(110, 201, 160, 0.7);
+  background: radial-gradient(circle at 50% 32%, rgba(110, 201, 160, 0.2), rgba(16, 12, 9, 0.95) 70%);
+  box-shadow: var(--shadow-cyan), inset 0 0 12px rgba(0, 0, 0, 0.5);
+}
+
+.icon-medallion--muted {
+  color: var(--text-muted);
+  border-color: rgba(201, 168, 108, 0.28);
+}
+
+/* ── Ấn cắt góc (khánh ngọc) — nút phụ, gọn, đỡ vuông cứng ───────── */
+.icon-seal {
+  --chamfer: 8px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: var(--text-gold);
+  background: linear-gradient(150deg, var(--gold-light), var(--gold-dark));
+  clip-path: polygon(
+    var(--chamfer) 0, calc(100% - var(--chamfer)) 0,
+    100% var(--chamfer), 100% calc(100% - var(--chamfer)),
+    calc(100% - var(--chamfer)) 100%, var(--chamfer) 100%,
+    0 calc(100% - var(--chamfer)), 0 var(--chamfer)
+  );
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, filter 0.2s;
+}
+
+/* Mặt trong tối — tạo cảm giác khung viền mỏng */
+.icon-seal::before {
+  content: '';
+  position: absolute;
+  inset: 1.5px;
+  clip-path: inherit;
+  background: linear-gradient(160deg, rgba(36, 28, 21, 0.97), rgba(13, 10, 7, 0.99));
+}
+
+.icon-seal > * {
+  position: relative;
+  z-index: 1;
+}
+
+.icon-seal:hover {
+  filter: drop-shadow(0 0 6px rgba(201, 168, 108, 0.5));
+}
+
+.icon-seal:active {
+  transform: scale(0.93);
+}
+
+.icon-seal--cinnabar {
+  color: var(--paper);
+  background: linear-gradient(150deg, var(--cinnabar-light), var(--cinnabar-dark));
+}
+
+.icon-seal--cinnabar::before {
+  background: linear-gradient(160deg, rgba(120, 30, 30, 0.92), rgba(60, 14, 14, 0.97));
+}
+
+.icon-seal--cinnabar:hover {
+  filter: drop-shadow(0 0 6px rgba(201, 74, 74, 0.55));
+}
+
+/* ── Nút thao tác dạng cột (icon + nhãn) trên màn tu luyện ───────── */
+.rune-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  padding: 0;
+}
+
+.rune-btn:hover .icon-medallion {
+  transform: translateY(-2px);
+}
+
+.rune-btn__label {
+  font-family: var(--font-title);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--text-gold);
+}
+
+.rune-btn--muted .rune-btn__label {
+  color: var(--text-muted);
+}
+
+/* ── Màu icon theo loại tài nguyên ──────────────────────────────── */
+.anc-icon--gold { color: var(--gold-light); }
+.anc-icon--crystal { color: var(--jade-light); }
+.anc-icon--jade { color: var(--jade-glow); }
+.anc-icon--power { color: var(--orange-power); }
+.anc-icon--cinnabar { color: var(--cinnabar-light); }
+
+/* Chip chỉ số inline: icon + số (dùng trong meta phó bản, đấu trường…) */
+.meta-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.meta-stat + .meta-stat {
+  margin-left: 9px;
+}
+
+/* Khung icon thực thể (đối thủ, phó bản, nhiệm vụ) — ngọc bội tròn */
+.entity-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  font-size: 24px;
+  border: 1px solid rgba(201, 168, 108, 0.45);
+  background: radial-gradient(circle at 50% 32%, rgba(42, 33, 24, 0.92), rgba(12, 9, 7, 0.97));
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.5);
+}
+
+.entity-icon::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 168, 108, 0.16);
+  pointer-events: none;
+}
+
+.entity-icon--sm {
+  width: 38px;
+  height: 38px;
+  font-size: 20px;
+}
+
+/* Huy chương xếp hạng — ấn ngọc tròn */
+.rank-medal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-family: var(--font-title);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: radial-gradient(circle at 50% 35%, rgba(40, 32, 24, 0.9), rgba(12, 9, 7, 0.97));
+  border: 1px solid rgba(201, 168, 108, 0.35);
+}
+
+.rank-medal--top1 {
+  color: #2a1810;
+  background: radial-gradient(circle at 50% 32%, #ffe9a8, #d4a04a 70%);
+  border-color: #ffe9a8;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.45);
+}
+
+.rank-medal--top2 {
+  color: #2a1810;
+  background: radial-gradient(circle at 50% 32%, #f0f0f0, #b8b8b8 70%);
+  border-color: #f0f0f0;
+}
+
+.rank-medal--top3 {
+  color: #2a1810;
+  background: radial-gradient(circle at 50% 32%, #e8b888, #cd7f32 70%);
+  border-color: #e8b888;
+}

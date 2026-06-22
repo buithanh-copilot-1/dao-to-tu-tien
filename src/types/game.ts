@@ -110,7 +110,6 @@ export interface GameSave {
     dungeons: Record<string, number>;
     arena: number;
     bosses: Record<string, number>;
-    tower: number;
   };
   towerBestFloor: number;
 }

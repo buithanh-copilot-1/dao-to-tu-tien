@@ -132,12 +132,14 @@
 .currency-item__icon {
   width: 18px;
   height: 18px;
-  border-radius: var(--radius-sm);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 11px;
   flex-shrink: 0;
+  color: var(--text-ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 4px rgba(0, 0, 0, 0.3);
 }
 
 .currency-item__icon--crystal { background: linear-gradient(135deg, var(--jade-light), var(--jade-dark)); }

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { useGameStore } from '@/stores/gameStore';
 import { useGameTick } from '@/hooks/useGameTick';
-import { Modal, GameButton } from '@/components';
+import { Modal, GameButton, AncientIcon } from '@/components';
 import { formatDurationShort, formatNumber } from '@/utils/format';
 
 interface GameShellProps {
@@ -42,13 +42,13 @@ export function GameShell({ children }: GameShellProps) {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13 }}>
               {pendingOffline.cultivation > 0 && (
-                <div>🧘 Tu vi: <strong style={{ color: 'var(--cyan-glow)' }}>+{formatNumber(pendingOffline.cultivation)}</strong></div>
+                <div className="meta-stat" style={{ justifyContent: 'center' }}><AncientIcon name="swirl" size={14} className="anc-icon--crystal" /> Tu vi: <strong style={{ color: 'var(--cyan-glow)' }}>+{formatNumber(pendingOffline.cultivation)}</strong></div>
               )}
               {pendingOffline.crystal > 0 && (
-                <div>💎 Linh thạch: <strong style={{ color: 'var(--text-gold)' }}>+{formatNumber(pendingOffline.crystal)}</strong></div>
+                <div className="meta-stat" style={{ justifyContent: 'center' }}><AncientIcon name="gem" size={14} className="anc-icon--crystal" /> Linh thạch: <strong style={{ color: 'var(--text-gold)' }}>+{formatNumber(pendingOffline.crystal)}</strong></div>
               )}
               {pendingOffline.silver > 0 && (
-                <div>🪙 Bạc: <strong>+{formatNumber(pendingOffline.silver)}</strong></div>
+                <div className="meta-stat" style={{ justifyContent: 'center' }}><AncientIcon name="coin" size={14} className="anc-icon--gold" /> Bạc: <strong>+{formatNumber(pendingOffline.silver)}</strong></div>
               )}
             </div>
           </div>

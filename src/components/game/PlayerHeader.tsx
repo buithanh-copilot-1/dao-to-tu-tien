@@ -14,6 +14,8 @@ export function PlayerHeader() {
       level={getDisplayLevel(player)}
       realm={getRealmLabel(player.realmId, player.tier)}
       combatPower={formatNumber(calcCombatPower(player))}
+      gender={player.gender}
+      element={player.element}
       currencies={[
         { type: 'crystal', amount: formatNumber(player.crystal) },
         { type: 'gold', amount: formatNumber(player.gold) },

@@ -1,5 +1,4 @@
 export const TOWER_MAX_FLOOR = 500;
-export const TOWER_DAILY_LIMIT = 25;
 export const TOWER_FLOORS_PER_CHAPTER = 50;
 
 export interface TowerChapter {

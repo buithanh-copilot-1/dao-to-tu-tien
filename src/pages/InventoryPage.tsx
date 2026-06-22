@@ -9,7 +9,7 @@ import {
   PageTitle,
   TabBar,
   ItemGrid,
-  GameButton,
+  AncientIcon,
 } from '@/components';
 import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { ItemDetailModal } from '@/components/game/ItemDetailModal';
@@ -41,7 +41,9 @@ export function InventoryPage() {
   const [selectedItem, setSelectedItem] = useState<GameItem | null>(null);
 
   const filtered = filterInventory(player, activeTab);
-  const emptySlots = Math.max(0, player.inventoryCapacity - countUsedSlots(player));
+  const used = countUsedSlots(player);
+  const capacityPct = Math.min(100, Math.round((used / player.inventoryCapacity) * 100));
+  const emptySlots = Math.max(0, player.inventoryCapacity - used);
   const gridItems = [
     ...filtered.map((item) => ({
       icon: item.icon,
@@ -70,25 +72,29 @@ export function InventoryPage() {
 
           <TabBar tabs={INVENTORY_TABS} activeId={activeTab} onChange={setActiveTab} variant="category" />
 
-          <div style={{ marginTop: 4 }}>
+          <div className="inv-scroll">
             <ItemGrid items={gridItems} columns={6} />
           </div>
 
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '8px 4px',
-            fontSize: 11,
-            color: 'var(--text-secondary)',
-          }}>
-            <span>
-              Số lượng: <strong style={{ color: 'var(--text-gold)' }}>{countUsedSlots(player)}/{player.inventoryCapacity}</strong>
-              <button type="button" className="currency-item__add" style={{ marginLeft: 6, width: 16, height: 16, fontSize: 12 }} onClick={expandInventory}>+</button>
-            </span>
-            <GameButton variant="claim" icon="💠" onClick={sortInventory}>
-              Sắp xếp
-            </GameButton>
+          <div className="inv-toolbar">
+            <div className="inv-capacity">
+              <div className="inv-capacity__head">
+                <span className="inv-capacity__label">
+                  <AncientIcon name="bag" size={13} /> Càn Khôn Túi
+                </span>
+                <span className="inv-capacity__count">{used}/{player.inventoryCapacity}</span>
+              </div>
+              <div className="inv-capacity__bar">
+                <div className="inv-capacity__fill" style={{ width: `${capacityPct}%` }} />
+              </div>
+            </div>
+
+            <button type="button" className="icon-seal inv-tool" onClick={sortInventory} title="Sắp xếp">
+              <AncientIcon name="sort" size={18} />
+            </button>
+            <button type="button" className="icon-seal inv-tool" onClick={expandInventory} title="Mở rộng +10 ô">
+              <AncientIcon name="plus" size={18} />
+            </button>
           </div>
         </GameBody>
 
@@ -104,7 +110,7 @@ export function InventoryPage() {
             onEquip={() => { equipItem(selectedItem.id); setSelectedItem(null); }}
             onUnequip={handleUnequip}
             onUse={() => { useItem(selectedItem.id); setSelectedItem(null); }}
-            onSell={() => { sellItem(selectedItem.id); setSelectedItem(null); }}
+            onSell={(qty) => { sellItem(selectedItem.id, qty); setSelectedItem(null); }}
             onToggleLock={() => toggleItemLock(selectedItem.id)}
           />
         )}

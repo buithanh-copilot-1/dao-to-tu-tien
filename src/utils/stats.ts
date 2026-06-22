@@ -1,5 +1,16 @@
 import type { EquipmentMap, GameItem, Player, PlayerStats } from '@/types/game';
+import type { AncientIconName } from '@/components/common/AncientIcon';
 import { getBreakthroughCost, getRealmGapMultiplier, getRealmPowerScale } from '@/data/realms';
+
+/** Nhãn + icon cổ phong cho từng chỉ số */
+export const STAT_META: Record<keyof PlayerStats, { label: string; icon: AncientIconName }> = {
+  hp: { label: 'Khí Huyết', icon: 'heart' },
+  attack: { label: 'Công Kích', icon: 'sword' },
+  defense: { label: 'Phòng Ngự', icon: 'shield' },
+  speed: { label: 'Thân Pháp', icon: 'bolt' },
+  spirit: { label: 'Thần Thức', icon: 'swirl' },
+  comprehension: { label: 'Ngộ Tính', icon: 'eye' },
+};
 
 const ELEMENT_STATS: Record<string, Partial<PlayerStats>> = {
   metal: { attack: 50, defense: 30 },

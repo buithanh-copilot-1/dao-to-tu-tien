@@ -62,14 +62,7 @@ export function App() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/showcase" element={<ShowcasePage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/create"
-          element={
-            <ProtectedRoute requireCharacter={false}>
-              <CharacterCreatePage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/create" element={<CharacterCreatePage />} />
         <Route path="/home" element={<GameRoute><HomePage /></GameRoute>} />
         <Route path="/character" element={<GameRoute><CharacterPage /></GameRoute>} />
         <Route path="/inventory" element={<GameRoute><InventoryPage /></GameRoute>} />

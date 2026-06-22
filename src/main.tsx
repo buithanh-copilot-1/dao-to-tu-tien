@@ -13,8 +13,17 @@ import './styles/tabs.css';
 import './styles/progress.css';
 import './styles/items.css';
 import './styles/components.css';
+import './styles/icons.css';
+import './styles/login.css';
+import './styles/cultivation.css';
 import './styles/battle.css';
 import './styles/tower.css';
+
+const SAVE_KEY = 'dao-to-tu-tien-save';
+if (new URLSearchParams(window.location.search).get('clear-save') === '1') {
+  localStorage.removeItem(SAVE_KEY);
+  window.history.replaceState({}, '', window.location.pathname);
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

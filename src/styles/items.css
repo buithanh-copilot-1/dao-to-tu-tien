@@ -4,7 +4,7 @@
   aspect-ratio: 1;
   background: rgba(14, 10, 8, 0.85);
   border: 1px solid var(--rarity-common);
-  border-radius: var(--radius-sm);
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,9 +14,43 @@
   box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
 }
 
+.item-slot::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 1px solid rgba(201, 168, 108, 0.1);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
 .item-slot:hover {
   transform: scale(1.05);
 }
+
+.item-slot:active {
+  transform: scale(0.98);
+}
+
+/* Góc ngọc — dấu phẩm cấp (chấm tròn nhỏ thay vì tam giác vuông) */
+.item-slot__corner {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  color: var(--rarity-common);
+  opacity: 0.7;
+  box-shadow: 0 0 4px currentColor;
+  pointer-events: none;
+}
+
+.item-slot--uncommon .item-slot__corner { color: var(--rarity-uncommon); }
+.item-slot--rare .item-slot__corner { color: var(--rarity-rare); }
+.item-slot--epic .item-slot__corner { color: var(--rarity-epic); }
+.item-slot--legendary .item-slot__corner { color: var(--rarity-legendary); opacity: 0.8; }
+.item-slot--mythic .item-slot__corner { color: var(--rarity-mythic); opacity: 0.85; }
 
 .item-slot--uncommon { border-color: var(--rarity-uncommon); box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4), 0 0 4px rgba(90, 154, 122, 0.3); }
 .item-slot--rare { border-color: var(--rarity-rare); box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4), 0 0 6px rgba(90, 122, 154, 0.3); }
@@ -63,20 +97,29 @@
 
 .item-slot__lock {
   position: absolute;
-  bottom: 2px;
-  right: 2px;
-  font-size: 10px;
+  top: 1px;
+  right: 1px;
+  display: flex;
+  color: var(--gold-light);
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.9));
 }
 
 .item-slot__stars {
   position: absolute;
-  bottom: 2px;
+  bottom: 3px;
   left: 0;
   right: 0;
   display: flex;
   justify-content: center;
-  gap: 1px;
-  font-size: 7px;
+  gap: 2px;
+}
+
+.item-slot__star {
+  width: 4px;
+  height: 4px;
+  background: var(--orange-glow);
+  box-shadow: 0 0 3px rgba(232, 192, 112, 0.8);
+  transform: rotate(45deg);
 }
 
 /* Item Grid */
@@ -89,6 +132,71 @@
 .item-grid--6 { grid-template-columns: repeat(6, 1fr); }
 .item-grid--5 { grid-template-columns: repeat(5, 1fr); }
 .item-grid--4 { grid-template-columns: repeat(4, 1fr); }
+
+/* Túi đồ — vùng cuộn + thanh công cụ */
+.inv-scroll {
+  margin-top: 4px;
+  max-height: calc(100vh - 360px);
+  overflow-y: auto;
+}
+
+.inv-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 6px 4px;
+}
+
+.inv-capacity {
+  flex: 1;
+  min-width: 0;
+}
+
+.inv-capacity__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.inv-capacity__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-title);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+}
+
+.inv-capacity__count {
+  font-family: var(--font-title);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-gold);
+}
+
+.inv-capacity__bar {
+  position: relative;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: rgba(8, 6, 4, 0.8);
+  border: 1px solid rgba(201, 168, 108, 0.25);
+  overflow: hidden;
+}
+
+.inv-capacity__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold-primary), var(--gold-light));
+  box-shadow: 0 0 8px rgba(201, 168, 108, 0.5);
+  transition: width 0.3s ease;
+}
+
+.inv-tool {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
 
 /* Equipment Slot */
 .equip-slot {
@@ -141,6 +249,183 @@
   display: flex;
   gap: 1px;
   font-size: 6px;
+}
+
+/* Chi tiết vật phẩm — ngọc hạp */
+.item-modal {
+  text-align: center;
+  padding-top: 4px;
+}
+
+.item-modal__portrait {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--rarity-common);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(40, 32, 24, 0.9), rgba(10, 8, 6, 0.98));
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.55);
+}
+
+.item-modal__portrait::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(201, 168, 108, 0.18);
+  border-radius: 9px;
+  pointer-events: none;
+}
+
+.item-modal__portrait--uncommon { border-color: var(--rarity-uncommon); box-shadow: inset 0 0 18px rgba(0,0,0,0.55), 0 0 12px rgba(90,154,122,0.35); }
+.item-modal__portrait--rare { border-color: var(--rarity-rare); box-shadow: inset 0 0 18px rgba(0,0,0,0.55), 0 0 12px rgba(90,122,154,0.35); }
+.item-modal__portrait--epic { border-color: var(--rarity-epic); box-shadow: inset 0 0 18px rgba(0,0,0,0.55), 0 0 12px rgba(122,90,154,0.4); }
+.item-modal__portrait--legendary { border-color: var(--rarity-legendary); box-shadow: inset 0 0 18px rgba(0,0,0,0.55), 0 0 16px rgba(201,122,48,0.45); }
+.item-modal__portrait--mythic { border-color: var(--rarity-mythic); box-shadow: inset 0 0 18px rgba(0,0,0,0.55), 0 0 16px rgba(168,50,50,0.45); }
+
+.item-modal__icon {
+  font-size: 44px;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6));
+}
+
+.item-modal__enhance {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-family: var(--font-title);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-gold);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.item-modal__name {
+  font-family: var(--font-title);
+  font-size: 17px;
+  letter-spacing: 1px;
+  color: var(--text-gold);
+}
+
+.item-modal__name--epic { color: #b88fd6; }
+.item-modal__name--legendary { color: var(--orange-glow); }
+.item-modal__name--mythic { color: var(--cinnabar-light); }
+
+.item-modal__meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 5px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.item-modal__dot { opacity: 0.5; }
+
+.item-modal__rarity { color: var(--rarity-common); }
+.item-modal__rarity--uncommon { color: var(--rarity-uncommon); }
+.item-modal__rarity--rare { color: var(--rarity-rare); }
+.item-modal__rarity--epic { color: var(--rarity-epic); }
+.item-modal__rarity--legendary { color: var(--rarity-legendary); }
+.item-modal__rarity--mythic { color: var(--rarity-mythic); }
+
+.item-modal__stats {
+  margin-top: 14px;
+  padding: 8px 4px;
+  border-top: 1px solid rgba(201, 168, 108, 0.18);
+  border-bottom: 1px solid rgba(201, 168, 108, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.item-modal__stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.item-modal__stat-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-secondary);
+}
+
+.item-modal__stat-name .anc-icon { color: var(--gold-primary); }
+
+.item-modal__stat-val {
+  font-family: var(--font-title);
+  font-weight: 700;
+  color: var(--jade-light);
+}
+
+.item-modal__stepper {
+  margin-top: 14px;
+}
+
+.item-modal__stepper-label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
+.item-modal__stepper-ctrl {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(8, 6, 4, 0.6);
+  border: 1px solid rgba(201, 168, 108, 0.22);
+}
+
+.item-modal__stepper-ctrl .icon-seal {
+  width: 30px;
+  height: 30px;
+}
+
+.item-modal__stepper-val {
+  min-width: 40px;
+  font-family: var(--font-title);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-gold);
+}
+
+.item-modal__stepper-max {
+  margin-left: 2px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(110, 201, 160, 0.4);
+  background: rgba(14, 10, 8, 0.6);
+  color: var(--jade-glow);
+  font-family: var(--font-title);
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.item-modal__stepper-max:hover {
+  border-color: var(--jade-glow);
+  box-shadow: var(--shadow-cyan);
+}
+
+.item-modal__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Reward row */

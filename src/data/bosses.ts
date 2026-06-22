@@ -1,4 +1,4 @@
-import { getRealmPowerScale } from '@/data/realms';
+import { getRealmPowerScale, getRealmShortLabel } from '@/data/realms';
 import type { BossDef } from '@/data/dungeons';
 
 function makeBoss(
@@ -82,6 +82,27 @@ export const BOSSES: BossDef[] = [
   makeBoss('boss_12a', 'Hỗn Nguyên Cổ Ma', '☯️', 'Cổ ma hỗn nguyên, từ thời hỗn mang', 12, 7, 10, 30, 1.5),
   makeBoss('boss_12b', 'Thái Cổ Thần Hoàng', '🏛️', 'Thần hoàng thái cổ, uy chấn vạn giới', 12, 8, 11, 30, 1.8),
   makeBoss('boss_12c', 'Vô Thượng Đạo Tổ', '🧘', 'Đạo tổ vô thượng, một niệm hóa tiên', 12, 9, 13, 32, 2.2),
+
+  // Thánh Nhân Cảnh
+  makeBoss('boss_13a', 'Thánh Nhân Tàn Ảnh', '🌅', 'Tàn ảnh thánh nhân, uy lực còn sót lại', 13, 7, 10, 31, 1.6),
+  makeBoss('boss_13b', 'Vạn Kiếp Thánh Thể', '💫', 'Thánh thể vạn kiếp, bất hủ bất diệt', 13, 9, 12, 31, 2.0),
+
+  // Chuẩn Đế Cảnh
+  makeBoss('boss_14a', 'Chuẩn Đế Bán Thân', '👁️', 'Bán thân chuẩn đế, một bước lên đế', 14, 7, 11, 32, 1.7),
+  makeBoss('boss_14b', 'Cửu U Đế Ảnh', '🌌', 'Đế ảnh cửu u, áp chế vạn đạo', 14, 9, 12, 32, 2.1),
+
+  // Đại Đế Cảnh
+  makeBoss('boss_15a', 'Đại Đế Phân Thân', '🔱', 'Phân thân đại đế, uy chấn thiên hạ', 15, 7, 11, 33, 1.8),
+  makeBoss('boss_15b', 'Vạn Đạo Đại Đế', '⚜️', 'Đại đế vạn đạo, pháp tắc quy một', 15, 9, 13, 33, 2.2),
+
+  // Tiên Đế Cảnh
+  makeBoss('boss_16a', 'Tiên Đế Tàn Hồn', '✴️', 'Tàn hồn tiên đế, niệm động càn khôn', 16, 7, 12, 34, 1.9),
+  makeBoss('boss_16b', 'Cửu Trọng Thiên Đế', '🌠', 'Thiên đế cửu trọng, trấn thủ cửu thiên', 16, 9, 13, 34, 2.3),
+
+  // Hồng Hoang Cảnh
+  makeBoss('boss_17a', 'Hồng Hoang Cổ Thần', '🪨', 'Cổ thần hồng hoang, từ thời khai thiên', 17, 7, 12, 35, 2.0),
+  makeBoss('boss_17b', 'Thái Sơ Hỗn Độn Tôn', '🌋', 'Hỗn độn tôn thái sơ, một chưởng diệt thế', 17, 8, 13, 35, 2.4),
+  makeBoss('boss_17c', 'Vô Thượng Hồng Hoang Đế', '👑', 'Hồng hoang đế vô thượng, đỉnh phong vạn giới', 17, 9, 14, 36, 2.8),
 ];
 
 export function getBossesByRealm(realmId: number): BossDef[] {
@@ -89,9 +110,5 @@ export function getBossesByRealm(realmId: number): BossDef[] {
 }
 
 export function getBossRealmLabel(realmId: number): string {
-  const labels = [
-    'Luyện Khí', 'Trúc Cơ', 'Kim Đan', 'Nguyên Anh', 'Hóa Thần', 'Luyện Hư',
-    'Hợp Thể', 'Đại Thừa', 'Chân Tiên', 'Kim Tiên', 'Đại La', 'Dao Tổ', 'Hỗn Nguyên',
-  ];
-  return labels[realmId] ?? 'Vô Danh';
+  return getRealmShortLabel(realmId);
 }

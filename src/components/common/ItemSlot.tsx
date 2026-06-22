@@ -1,3 +1,5 @@
+import { AncientIcon } from './AncientIcon';
+
 type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' | 'mythic';
 
 interface ItemSlotProps {
@@ -28,6 +30,7 @@ export function ItemSlot({
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
     >
+      {!empty && <span className="item-slot__corner" aria-hidden />}
       {!empty && icon && <span className="item-slot__icon">{icon}</span>}
       {enhance !== undefined && enhance > 0 && (
         <span className="item-slot__enhance">+{enhance}</span>
@@ -35,11 +38,15 @@ export function ItemSlot({
       {quantity !== undefined && quantity > 1 && (
         <span className="item-slot__quantity">{quantity}</span>
       )}
-      {locked && <span className="item-slot__lock">🔒</span>}
+      {locked && (
+        <span className="item-slot__lock">
+          <AncientIcon name="lock" size={11} />
+        </span>
+      )}
       {stars !== undefined && stars > 0 && (
         <div className="item-slot__stars">
           {Array.from({ length: stars }).map((_, i) => (
-            <span key={i}>⭐</span>
+            <span key={i} className="item-slot__star" />
           ))}
         </div>
       )}

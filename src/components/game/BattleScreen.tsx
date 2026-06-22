@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { GameButton, ProgressBar } from '@/components';
+import { GameButton, ProgressBar, AncientIcon } from '@/components';
+import { SpiritPortrait } from '@/components/game/SpiritPortrait';
 import { useGameStore } from '@/stores/gameStore';
 import { buildBattleTarget } from '@/systems/battleConfig';
 import { calcCombatPower } from '@/utils/stats';
@@ -27,11 +28,22 @@ interface BattleScreenProps {
   targetId: string;
   towerFloor?: number;
   onClose: () => void;
+  autoStart?: boolean;
+  fastPlayback?: boolean;
+  onComplete?: (win: boolean) => void;
 }
 
 let logIdSeq = 0;
 
-export function BattleScreen({ mode, targetId, towerFloor, onClose }: BattleScreenProps) {
+export function BattleScreen({
+  mode,
+  targetId,
+  towerFloor,
+  onClose,
+  autoStart = false,
+  fastPlayback = false,
+  onComplete,
+}: BattleScreenProps) {
   const player = useGameStore((s) => s.player)!;
   const canStartBattle = useGameStore((s) => s.canStartBattle);
   const resolveBattle = useGameStore((s) => s.resolveBattle);
@@ -60,9 +72,13 @@ export function BattleScreen({ mode, targetId, towerFloor, onClose }: BattleScre
   const resolveBattleRef = useRef(resolveBattle);
   const waveAnnouncedRef = useRef(-1);
 
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+
   resolveBattleRef.current = resolveBattle;
 
   const playerPower = calcCombatPower(player);
+  const playbackMs = fastPlayback ? 160 : 480;
   const currentWave = target?.waves[waveIndex];
   const enemyPower = currentWave?.power ?? target?.waves[0]?.power ?? 0;
 
@@ -105,6 +121,23 @@ export function BattleScreen({ mode, targetId, towerFloor, onClose }: BattleScre
     setWaveBanner('');
     appendLog('⚔️ Bắt đầu giao đấu!', 'system');
   }, [target, canStartBattle, mode, targetId, towerFloor, playerPower, player.name, appendLog]);
+
+  useEffect(() => {
+    if (!autoStart || !target) return;
+    const err = canStartBattle(mode, targetId, towerFloor);
+    if (err) return;
+    const t = setTimeout(() => startBattle(), 80);
+    return () => clearTimeout(t);
+  }, [autoStart, target, canStartBattle, mode, targetId, towerFloor, startBattle]);
+
+  useEffect(() => {
+    if (phase !== 'result' || !result || !autoStart) return;
+    const t = setTimeout(() => {
+      onCompleteRef.current?.(result.win);
+      if (!onCompleteRef.current) onClose();
+    }, fastPlayback ? 500 : 1200);
+    return () => clearTimeout(t);
+  }, [phase, result, autoStart, fastPlayback, onClose]);
 
   useEffect(() => {
     if (phase !== 'fighting' || !target || !battleResultRef.current) return;
@@ -184,13 +217,13 @@ export function BattleScreen({ mode, targetId, towerFloor, onClose }: BattleScre
 
       lineIdx += 1;
       logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: 'smooth' });
-    }, 480);
+    }, playbackMs);
 
     return () => {
       cancelled = true;
       clearInterval(interval);
     };
-  }, [phase, waveIndex, target, mode, targetId, towerFloor, appendLog, showDamage]);
+  }, [phase, waveIndex, target, mode, targetId, towerFloor, appendLog, showDamage, playbackMs]);
 
   if (!target) {
     return (
@@ -230,7 +263,7 @@ export function BattleScreen({ mode, targetId, towerFloor, onClose }: BattleScre
 
         {isActive && (
           <div className="battle-screen__status-bar">
-            <span className="battle-screen__status-pulse">⚔️ ĐANG GIAO ĐẤU</span>
+            <span className="battle-screen__status-pulse meta-stat"><AncientIcon name="sword" size={13} /> ĐANG GIAO ĐẤU</span>
             <span className="battle-screen__status-round">Hiệp {round || 1}</span>
             {target.waves.length > 1 && (
               <span className="battle-screen__status-wave">Đợt {waveIndex + 1}/{target.waves.length}</span>
@@ -251,9 +284,9 @@ export function BattleScreen({ mode, targetId, towerFloor, onClose }: BattleScre
             <div className="battle-screen__fighters">
               <div className={`battle-screen__fighter ${animSide === 'enemy' ? 'battle-screen__fighter--hit' : ''}`}>
                 <div className="battle-screen__avatar-wrap">
-                  <span className={`battle-screen__avatar ${animSide === 'player' ? 'battle-screen__avatar--attack' : animSide === 'enemy' ? 'battle-screen__avatar--hit' : ''}`}>
-                    {target.playerIcon}
-                  </span>
+                  <div className={`battle-screen__spirit ${animSide === 'player' ? 'battle-screen__avatar--attack' : animSide === 'enemy' ? 'battle-screen__avatar--hit' : ''}`}>
+                    <SpiritPortrait gender={player.gender} element={player.element} size="md" paused={false} />
+                  </div>
                   {popups.filter((p) => p.side === 'player').map((p) => (
                     <span key={p.id} className="battle-screen__damage battle-screen__damage--player">
                       -{formatNumber(p.value)}
@@ -261,7 +294,7 @@ export function BattleScreen({ mode, targetId, towerFloor, onClose }: BattleScre
                   ))}
                 </div>
                 <span className="battle-screen__name">{player.name}</span>
-                <span className="battle-screen__power">🔥 {formatNumber(playerPower)}</span>
+                <span className="battle-screen__power meta-stat"><AncientIcon name="flame" size={11} className="anc-icon--power" /> {formatNumber(playerPower)}</span>
                 <div className="battle-screen__hp-bar">
                   <ProgressBar
                     current={showPlayerHp}
@@ -287,7 +320,7 @@ export function BattleScreen({ mode, targetId, towerFloor, onClose }: BattleScre
                   ))}
                 </div>
                 <span className="battle-screen__name">{wave.name}</span>
-                <span className="battle-screen__power">🔥 {formatNumber(enemyPower)}</span>
+                <span className="battle-screen__power meta-stat"><AncientIcon name="flame" size={11} className="anc-icon--power" /> {formatNumber(enemyPower)}</span>
                 <div className="battle-screen__hp-bar">
                   <ProgressBar
                     current={showEnemyHp}
@@ -348,10 +381,10 @@ export function BattleScreen({ mode, targetId, towerFloor, onClose }: BattleScre
             </div>
             {result.win && (
               <div className="battle-screen__rewards">
-                {target.rewards.gold ? <span>🪙 +{formatNumber(target.rewards.gold)}</span> : null}
-                {target.rewards.crystal ? <span>💎 +{formatNumber(target.rewards.crystal)}</span> : null}
-                {target.rewards.jade ? <span>🟢 +{target.rewards.jade}</span> : null}
-                {target.rewards.itemId ? <span>📦 Vật phẩm</span> : null}
+                {target.rewards.gold ? <span className="meta-stat"><AncientIcon name="coin" size={13} className="anc-icon--gold" /> +{formatNumber(target.rewards.gold)}</span> : null}
+                {target.rewards.crystal ? <span className="meta-stat"><AncientIcon name="gem" size={13} className="anc-icon--crystal" /> +{formatNumber(target.rewards.crystal)}</span> : null}
+                {target.rewards.jade ? <span className="meta-stat"><AncientIcon name="jade" size={13} className="anc-icon--jade" /> +{target.rewards.jade}</span> : null}
+                {target.rewards.itemId ? <span className="meta-stat"><AncientIcon name="bag" size={13} className="anc-icon--gold" /> Vật phẩm</span> : null}
               </div>
             )}
           </div>
@@ -377,9 +410,18 @@ export function BattleScreen({ mode, targetId, towerFloor, onClose }: BattleScre
           </div>
         )}
         {phase === 'result' && (
-          <GameButton variant="primary" onClick={onClose} style={{ minWidth: 160 }}>
-            Xác nhận
-          </GameButton>
+          <>
+            {autoStart && (
+              <div className="battle-screen__fighting-footer">
+                <span>{result?.win ? 'Tự động lên tầng tiếp...' : 'Dừng tự động...'}</span>
+              </div>
+            )}
+            {!autoStart && (
+              <GameButton variant="primary" onClick={onClose} style={{ minWidth: 160 }}>
+                Xác nhận
+              </GameButton>
+            )}
+          </>
         )}
       </div>
     </div>

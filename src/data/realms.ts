@@ -14,7 +14,25 @@ export const REALMS: Realm[] = [
   { id: 10, name: 'Đại La Kim Tiên', maxTier: 9, baseRate: 20000000, breakthroughBase: 20000000000, powerMultiplier: 12000 },
   { id: 11, name: 'Dao Tổ Cảnh', maxTier: 9, baseRate: 80000000, breakthroughBase: 80000000000, powerMultiplier: 30000 },
   { id: 12, name: 'Hỗn Nguyên Đại La', maxTier: 9, baseRate: 300000000, breakthroughBase: 300000000000, powerMultiplier: 80000 },
+  { id: 13, name: 'Thánh Nhân Cảnh', maxTier: 9, baseRate: 1200000000, breakthroughBase: 1200000000000, powerMultiplier: 200000 },
+  { id: 14, name: 'Chuẩn Đế Cảnh', maxTier: 9, baseRate: 4500000000, breakthroughBase: 4500000000000, powerMultiplier: 500000 },
+  { id: 15, name: 'Đại Đế Cảnh', maxTier: 9, baseRate: 16000000000, breakthroughBase: 16000000000000, powerMultiplier: 1200000 },
+  { id: 16, name: 'Tiên Đế Cảnh', maxTier: 9, baseRate: 60000000000, breakthroughBase: 60000000000000, powerMultiplier: 3000000 },
+  { id: 17, name: 'Hồng Hoang Cảnh', maxTier: 9, baseRate: 220000000000, breakthroughBase: 220000000000000, powerMultiplier: 8000000 },
 ];
+
+const REALM_SHORT_OVERRIDES: Record<number, string> = {
+  10: 'Đại La',
+  11: 'Dao Tổ',
+};
+
+/** Tên rút gọn cảnh giới — dùng cho filter boss, UI gọn */
+export function getRealmShortLabel(realmId: number): string {
+  if (realmId in REALM_SHORT_OVERRIDES) return REALM_SHORT_OVERRIDES[realmId];
+  const realm = REALMS[realmId];
+  if (!realm) return 'Vô Danh';
+  return realm.name.replace(/ Kỳ$/, '').replace(/ Cảnh$/, '');
+}
 
 export function getMaxRealmId(): number {
   return REALMS.length - 1;

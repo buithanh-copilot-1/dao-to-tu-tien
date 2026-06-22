@@ -11,6 +11,7 @@ import {
   GamePanel,
   GameButton,
   ProgressBar,
+  AncientIcon,
 } from '@/components';
 import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { useGameStore } from '@/stores/gameStore';
@@ -55,7 +56,7 @@ export function QuestPage() {
                     onClick={() => claimActivityMilestone(pts)}
                     disabled={claimed || !canClaim}
                   >
-                    {claimed ? '✓' : ''} {pts}
+                    {claimed && <AncientIcon name="check" size={11} />} {pts}
                   </GameButton>
                 );
               })}
@@ -75,7 +76,7 @@ export function QuestPage() {
               return (
                 <div key={q.id} className="list-row" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 6 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: 24 }}>{q.icon}</span>
+                    <span className="entity-icon entity-icon--sm">{q.icon}</span>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 12, color: 'var(--text-gold)' }}>{q.title}</div>
                       <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{q.description}</div>

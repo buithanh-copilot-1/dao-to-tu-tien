@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { TowerFloorDef } from '@/data/tower';
+import { AncientIcon } from '@/components';
 import { formatNumber } from '@/utils/format';
 
 export interface TowerLevelProps {
@@ -7,12 +8,13 @@ export interface TowerLevelProps {
   data: TowerFloorDef;
   cleared: boolean;
   isCurrent: boolean;
+  isClimbing: boolean;
   locked: boolean;
   selected: boolean;
   onSelect: (floor: number) => void;
 }
 
-function TowerLevel({ floor, data, cleared, isCurrent, locked, selected, onSelect }: TowerLevelProps) {
+function TowerLevel({ floor, data, cleared, isCurrent, isClimbing, locked, selected, onSelect }: TowerLevelProps) {
   return (
     <button
       type="button"
@@ -22,6 +24,7 @@ function TowerLevel({ floor, data, cleared, isCurrent, locked, selected, onSelec
         'tower-level',
         cleared && 'tower-level--cleared',
         isCurrent && 'tower-level--current',
+        isClimbing && 'tower-level--climbing',
         locked && 'tower-level--locked',
         selected && 'tower-level--selected',
         data.isChapterBoss && 'tower-level--boss',
@@ -34,7 +37,7 @@ function TowerLevel({ floor, data, cleared, isCurrent, locked, selected, onSelec
         <span className="tower-level__num">{floor}</span>
         <span className="tower-level__icon">{data.icon}</span>
         <span className="tower-level__status">
-          {cleared ? '✓' : isCurrent ? '⚔' : locked ? '🔒' : '·'}
+          {cleared ? <AncientIcon name="check" size={11} /> : isCurrent ? <AncientIcon name="sword" size={11} /> : locked ? <AncientIcon name="lock" size={10} /> : '·'}
         </span>
       </div>
       <span className="tower-level__wing tower-level__wing--right" />
@@ -47,6 +50,7 @@ interface TowerPagodaProps {
   towerBestFloor: number;
   nextFloor: number;
   selectedFloor: number | null;
+  climbingFloor?: number | null;
   onSelectFloor: (floor: number) => void;
   getFloorData: (floor: number) => TowerFloorDef;
 }
@@ -56,17 +60,19 @@ export function TowerPagoda({
   towerBestFloor,
   nextFloor,
   selectedFloor,
+  climbingFloor = null,
   onSelectFloor,
   getFloorData,
 }: TowerPagodaProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = scrollRef.current?.querySelector('[data-current="true"]');
+    const target = climbingFloor ?? (nextFloor);
+    const el = scrollRef.current?.querySelector(`[data-floor="${target}"]`);
     if (el) {
-      el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      el.scrollIntoView({ block: 'center', behavior: climbingFloor ? 'smooth' : 'smooth' });
     }
-  }, [floors, nextFloor]);
+  }, [floors, nextFloor, climbingFloor]);
 
   const topFloor = floors[floors.length - 1];
   const topData = getFloorData(topFloor);
@@ -90,6 +96,7 @@ export function TowerPagoda({
                 data={data}
                 cleared={floor <= towerBestFloor}
                 isCurrent={floor === nextFloor}
+                isClimbing={floor === climbingFloor}
                 locked={floor > nextFloor}
                 selected={selectedFloor === floor}
                 onSelect={onSelectFloor}
@@ -113,7 +120,12 @@ interface TowerFloorScreenProps {
   isCurrent: boolean;
   winChance: number;
   canChallenge: boolean;
+  canAuto: boolean;
+  visualAutoRunning: boolean;
   onChallenge: () => void;
+  onAutoFast: () => void;
+  onAutoVisual: () => void;
+  onStopAuto: () => void;
 }
 
 export function TowerFloorScreen({
@@ -123,7 +135,12 @@ export function TowerFloorScreen({
   isCurrent,
   winChance,
   canChallenge,
+  canAuto,
+  visualAutoRunning,
   onChallenge,
+  onAutoFast,
+  onAutoVisual,
+  onStopAuto,
 }: TowerFloorScreenProps) {
   return (
     <div className={`tower-floor-screen ${isCurrent ? 'tower-floor-screen--current' : ''}`}>
@@ -152,25 +169,51 @@ export function TowerFloorScreen({
       </div>
 
       <div className="tower-floor-screen__rewards">
-        <span>🪙 {formatNumber(data.goldReward)}</span>
-        <span>💎 {formatNumber(data.crystalReward)}</span>
-        {data.jadeReward > 0 && <span>🟢 {data.jadeReward}</span>}
+        <span className="meta-stat"><AncientIcon name="coin" size={13} className="anc-icon--gold" /> {formatNumber(data.goldReward)}</span>
+        <span className="meta-stat"><AncientIcon name="gem" size={13} className="anc-icon--crystal" /> {formatNumber(data.crystalReward)}</span>
+        {data.jadeReward > 0 && <span className="meta-stat"><AncientIcon name="jade" size={13} className="anc-icon--jade" /> {data.jadeReward}</span>}
       </div>
 
       <div className="tower-floor-screen__action">
         {cleared ? (
-          <span className="tower-floor-screen__cleared">✓ Đã vượt tầng này</span>
+          <span className="tower-floor-screen__cleared meta-stat"><AncientIcon name="check" size={13} /> Đã vượt tầng này</span>
         ) : isCurrent ? (
-          <button
-            type="button"
-            className="tower-floor-screen__btn"
-            disabled={!canChallenge}
-            onClick={onChallenge}
-          >
-            ⚔️ Khiêu chiến
-          </button>
+          <div className="tower-floor-screen__buttons">
+            {visualAutoRunning ? (
+              <button type="button" className="tower-floor-screen__btn tower-floor-screen__btn--stop" onClick={onStopAuto}>
+                <AncientIcon name="pause" size={13} /> Dừng tự động
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="tower-floor-screen__btn"
+                  disabled={!canChallenge}
+                  onClick={onChallenge}
+                >
+                  <AncientIcon name="sword" size={14} /> Khiêu chiến
+                </button>
+                <button
+                  type="button"
+                  className="tower-floor-screen__btn tower-floor-screen__btn--auto"
+                  disabled={!canAuto}
+                  onClick={onAutoFast}
+                >
+                  <AncientIcon name="cycle" size={14} /> Vượt nhanh
+                </button>
+                <button
+                  type="button"
+                  className="tower-floor-screen__btn tower-floor-screen__btn--visual"
+                  disabled={!canAuto}
+                  onClick={onAutoVisual}
+                >
+                  <AncientIcon name="play" size={13} /> Tự động xem
+                </button>
+              </>
+            )}
+          </div>
         ) : (
-          <span className="tower-floor-screen__locked">🔒 Vượt tầng trước để mở khóa</span>
+          <span className="tower-floor-screen__locked meta-stat"><AncientIcon name="lock" size={13} /> Vượt tầng trước để mở khóa</span>
         )}
       </div>
     </div>

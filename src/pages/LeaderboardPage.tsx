@@ -10,6 +10,7 @@ import {
   TabBar,
   GamePanel,
   RealmBadge,
+  AncientIcon,
 } from '@/components';
 import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { useGameStore } from '@/stores/gameStore';
@@ -63,8 +64,8 @@ export function LeaderboardPage() {
 
             {sorted.slice(0, 15).map((row) => (
               <div key={row.name + row.rank} className="list-row">
-                <span className={`list-row__rank ${row.rank <= 3 ? `list-row__rank--top${row.rank}` : ''}`}>
-                  {row.rank <= 3 ? ['🥇', '🥈', '🥉'][row.rank - 1] : row.rank}
+                <span className={`rank-medal ${row.rank <= 3 ? `rank-medal--top${row.rank}` : ''}`}>
+                  {row.rank}
                 </span>
                 <div className="list-row__avatar">{row.isPlayer ? (player.gender === 'male' ? '🧙‍♂️' : '🧙‍♀️') : '🧙'}</div>
                 <div className="list-row__info">
@@ -73,7 +74,9 @@ export function LeaderboardPage() {
                   </div>
                   <RealmBadge text={row.realm} />
                 </div>
-                <span className="list-row__value">🔥 {formatNumber(row.power)}</span>
+                <span className="list-row__value meta-stat">
+                  <AncientIcon name="flame" size={12} className="anc-icon--power" /> {formatNumber(row.power)}
+                </span>
               </div>
             ))}
           </div>
@@ -88,7 +91,9 @@ export function LeaderboardPage() {
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 12, color: 'var(--green-stat)' }}>{player.name} (Bạn)</div>
                   <RealmBadge text={realmLabel} />
-                  <div style={{ fontSize: 11, color: 'var(--orange-power)', marginTop: 2 }}>🔥 {formatNumber(power)}</div>
+                  <div className="meta-stat" style={{ fontSize: 11, color: 'var(--orange-power)', marginTop: 2 }}>
+                    <AncientIcon name="flame" size={11} className="anc-icon--power" /> {formatNumber(power)}
+                  </div>
                 </div>
               </div>
             </GamePanel>

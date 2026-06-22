@@ -9,6 +9,7 @@ import {
   PageTitle,
   GamePanel,
   GameButton,
+  AncientIcon,
 } from '@/components';
 import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { BattleScreen } from '@/components/game/BattleScreen';
@@ -37,8 +38,11 @@ export function ArenaPage() {
           <PageTitle title="Đấu Pháp Đài" showOrnament />
 
           <GamePanel title="Thông tin">
-            <div style={{ fontSize: 12, display: 'flex', justifyContent: 'space-between' }}>
-              <span>Lực chiến: <strong style={{ color: 'var(--orange-power)' }}>{formatNumber(power)}</strong></span>
+            <div style={{ fontSize: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span className="meta-stat">
+                <AncientIcon name="flame" size={13} className="anc-icon--power" /> Lực chiến:
+                <strong style={{ color: 'var(--orange-power)' }}>{formatNumber(power)}</strong>
+              </span>
               <span>Lượt còn: <strong style={{ color: 'var(--text-gold)' }}>{remaining}/{ARENA_DAILY_LIMIT}</strong></span>
             </div>
           </GamePanel>
@@ -48,11 +52,13 @@ export function ArenaPage() {
               const winChance = calcWinChance(power, opp.power);
               return (
                 <div key={opp.id} className="list-row">
-                  <span style={{ fontSize: 28 }}>{opp.icon}</span>
+                  <span className="entity-icon">{opp.icon}</span>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 12, color: 'var(--text-gold)' }}>{opp.name}</div>
                     <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{opp.realm}</div>
-                    <div style={{ fontSize: 10, color: 'var(--orange-power)' }}>🔥 {formatNumber(opp.power)} · Thắng {winChance}%</div>
+                    <div style={{ fontSize: 10, color: 'var(--orange-power)' }} className="meta-stat">
+                      <AncientIcon name="flame" size={11} className="anc-icon--power" /> {formatNumber(opp.power)} · Thắng {winChance}%
+                    </div>
                   </div>
                   <GameButton
                     variant="primary"

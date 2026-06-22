@@ -173,3 +173,15 @@ export function getCategoryLabel(cat: ItemCategory): string {
   };
   return labels[cat];
 }
+
+export function getRarityLabel(rarity: GameItem['rarity']): string {
+  const labels: Record<GameItem['rarity'], string> = {
+    common: 'Phàm Phẩm',
+    uncommon: 'Linh Phẩm',
+    rare: 'Bảo Phẩm',
+    epic: 'Tiên Phẩm',
+    legendary: 'Thánh Phẩm',
+    mythic: 'Thần Phẩm',
+  };
+  return labels[rarity];
+}
