@@ -1,0 +1,163 @@
+/* Progress Bar — linh khí */
+.progress-bar {
+  width: 100%;
+}
+
+.progress-bar__labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-family: var(--font-title);
+  font-size: 10px;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+}
+
+.progress-bar__track {
+  position: relative;
+  height: 16px;
+  background: rgba(8, 6, 4, 0.9);
+  border: 1px solid rgba(201, 168, 108, 0.3);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.progress-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--jade-dark), var(--jade-light), var(--jade-glow));
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 10px rgba(110, 201, 160, 0.4);
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.progress-bar__fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15), transparent 60%);
+}
+
+.progress-bar__text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-title);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  z-index: 1;
+}
+
+.progress-bar--thin .progress-bar__track {
+  height: 6px;
+}
+
+.progress-bar--thin .progress-bar__fill {
+  background: linear-gradient(90deg, var(--jade-dark), var(--jade-glow));
+  box-shadow: 0 0 6px rgba(110, 201, 160, 0.3);
+}
+
+/* XP bar */
+.xp-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(8, 6, 4, 0.7);
+  border: 1px solid rgba(201, 168, 108, 0.15);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.xp-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple-dark), var(--jade-glow));
+  transition: width 0.5s ease;
+}
+
+/* Activity gauge */
+.activity-gauge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.activity-gauge__circle {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--gold-primary);
+  background: rgba(14, 10, 8, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-gold);
+}
+
+.activity-gauge__value {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--text-gold);
+  line-height: 1;
+}
+
+.activity-gauge__label {
+  font-size: 8px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+.activity-milestones {
+  flex: 1;
+  position: relative;
+  padding-top: 28px;
+}
+
+.activity-milestones__track {
+  height: 3px;
+  background: rgba(201, 168, 108, 0.15);
+  border-radius: 0;
+  position: relative;
+}
+
+.activity-milestones__fill {
+  height: 100%;
+  background: var(--gold-gradient);
+  transition: width 0.5s;
+}
+
+.activity-milestones__points {
+  display: flex;
+  justify-content: space-between;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.activity-milestones__point {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.activity-milestones__chest {
+  font-size: 18px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.activity-milestones__chest--locked {
+  opacity: 0.35;
+  filter: grayscale(0.6);
+}
+
+.activity-milestones__num {
+  font-size: 9px;
+  color: var(--text-muted);
+}

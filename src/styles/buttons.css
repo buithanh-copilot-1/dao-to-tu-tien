@@ -1,0 +1,190 @@
+/* Game Buttons — ấn triện & ngọc bội */
+.game-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  font-family: var(--font-title);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.game-btn:active {
+  transform: scale(0.97);
+}
+
+/* Primary — ấn vàng */
+.game-btn--primary {
+  background: var(--gold-gradient);
+  border: 1px solid var(--gold-light);
+  color: var(--text-ink);
+  box-shadow: var(--shadow-gold), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.game-btn--primary::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(139, 105, 20, 0.3);
+  pointer-events: none;
+}
+
+.game-btn--primary:hover {
+  box-shadow: 0 0 22px rgba(232, 212, 168, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Secondary — ngọc bích */
+.game-btn--secondary {
+  background: linear-gradient(180deg, rgba(61, 107, 90, 0.5), rgba(42, 74, 61, 0.7));
+  border: 1px solid rgba(110, 201, 160, 0.4);
+  color: var(--text-primary);
+}
+
+.game-btn--secondary:hover {
+  border-color: var(--jade-glow);
+  box-shadow: var(--shadow-cyan);
+}
+
+/* Light (Login) — giấy da */
+.game-btn--light {
+  background: linear-gradient(180deg, #f5ead8, #e0d0b0);
+  border: 1px solid var(--gold-dark);
+  color: var(--text-ink);
+  border-radius: var(--radius-sm);
+  padding: 12px 32px;
+  font-size: 13px;
+  min-width: 260px;
+  letter-spacing: 2px;
+}
+
+.game-btn--light:hover {
+  background: linear-gradient(180deg, #fff8ee, #ede0c8);
+  box-shadow: var(--shadow-gold);
+}
+
+/* Claim — chu sa nhỏ */
+.game-btn--claim {
+  background: linear-gradient(180deg, var(--cinnabar-light), var(--cinnabar-dark));
+  border: 1px solid var(--cinnabar-light);
+  color: var(--paper);
+  padding: 6px 16px;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 2px;
+}
+
+/* Go / Navigate */
+.game-btn--go {
+  background: rgba(20, 16, 12, 0.8);
+  border: 1px solid rgba(201, 168, 108, 0.35);
+  color: var(--jade-glow);
+  padding: 6px 16px;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.game-btn--go:hover {
+  border-color: var(--jade-glow);
+  box-shadow: var(--shadow-cyan);
+}
+
+/* Banner — ngọc bội lớn */
+.game-btn--banner {
+  background: var(--gold-gradient);
+  border: 2px solid var(--gold-light);
+  color: var(--text-ink);
+  padding: 14px 40px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 6px;
+  clip-path: polygon(6% 0%, 94% 0%, 100% 50%, 94% 100%, 6% 100%, 0% 50%);
+  box-shadow: var(--shadow-gold);
+  min-width: 280px;
+}
+
+.game-btn--banner::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(139, 105, 20, 0.25);
+  clip-path: inherit;
+  pointer-events: none;
+}
+
+.game-btn--banner:hover {
+  box-shadow: 0 0 28px rgba(232, 212, 168, 0.6);
+}
+
+/* Hexagonal */
+.game-btn--hex {
+  background: var(--gold-gradient);
+  border: 2px solid var(--gold-light);
+  color: var(--text-ink);
+  padding: 12px 32px;
+  font-size: 16px;
+  clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
+  box-shadow: var(--shadow-gold);
+}
+
+.game-btn--full {
+  width: 100%;
+}
+
+.game-btn__icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.game-btn__badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+}
+
+.game-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  filter: grayscale(0.4);
+}
+
+/* Pill toggle — thẻ tre */
+.pill-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.pill-toggle__item {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(201, 168, 108, 0.25);
+  background: rgba(14, 10, 8, 0.8);
+  color: var(--text-secondary);
+  font-family: var(--font-title);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  letter-spacing: 1px;
+}
+
+.pill-toggle__item--active {
+  border-color: var(--gold-primary);
+  background: linear-gradient(180deg, rgba(201, 168, 108, 0.2), rgba(139, 105, 20, 0.1));
+  color: var(--text-gold);
+  box-shadow: inset 0 0 12px rgba(201, 168, 108, 0.1);
+}

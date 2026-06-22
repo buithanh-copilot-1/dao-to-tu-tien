@@ -1,0 +1,133 @@
+/* Game Frame — khung cổ điển */
+.game-frame {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  height: 100%;
+  margin: 0 auto;
+  background: var(--ink-deep);
+  overflow: hidden;
+}
+
+.game-frame--bordered {
+  border: var(--frame-border) solid var(--gold-primary);
+  box-shadow:
+    inset 0 0 0 4px rgba(10, 8, 6, 0.9),
+    inset 0 0 40px rgba(201, 168, 108, 0.06),
+    0 0 50px rgba(0, 0, 0, 0.9);
+}
+
+.game-frame__ornaments {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 150;
+}
+
+.game-frame__corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--gold-light);
+}
+
+.game-frame__corner--tl {
+  top: 5px;
+  left: 5px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.game-frame__corner--tr {
+  top: 5px;
+  right: 5px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.game-frame__corner--bl {
+  bottom: 5px;
+  left: 5px;
+  border-right: none;
+  border-top: none;
+}
+
+.game-frame__corner--br {
+  bottom: 5px;
+  right: 5px;
+  border-left: none;
+  border-top: none;
+}
+
+.game-frame__corner::after {
+  content: '◈';
+  position: absolute;
+  font-size: 8px;
+  color: var(--gold-primary);
+  line-height: 1;
+}
+
+.game-frame__corner--tl::after { bottom: -2px; right: -2px; }
+.game-frame__corner--tr::after { bottom: -2px; left: -2px; }
+.game-frame__corner--bl::after { top: -2px; right: -2px; }
+.game-frame__corner--br::after { top: -2px; left: -2px; }
+
+/* Game screen — nền mực tàu + sương mù */
+.game-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 120% 60% at 50% 0%, rgba(61, 107, 90, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 40% at 80% 100%, rgba(168, 50, 50, 0.06) 0%, transparent 50%),
+    linear-gradient(180deg, #12100c 0%, var(--ink-deep) 40%, #080604 100%);
+}
+
+.game-screen__mist {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  background:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 30% 20%, rgba(240, 228, 204, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(61, 107, 90, 0.05) 0%, transparent 45%);
+}
+
+.game-screen__content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.game-screen__header {
+  flex-shrink: 0;
+  border-bottom: var(--frame-inner);
+  background: linear-gradient(180deg, rgba(20, 16, 12, 0.95), rgba(10, 8, 6, 0.85));
+}
+
+.game-screen__body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 var(--safe-padding);
+  display: flex;
+  flex-direction: column;
+}
+
+.home-body {
+  min-height: 0;
+}
+
+.game-screen__footer {
+  flex-shrink: 0;
+  border-top: var(--frame-inner);
+}

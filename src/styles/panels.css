@@ -1,0 +1,200 @@
+/* Game Panel — cuộn giấy cổ */
+.game-panel {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(30, 24, 18, 0.97) 0%, rgba(14, 10, 8, 0.98) 100%);
+  border: 1px solid rgba(201, 168, 108, 0.45);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-panel);
+  overflow: hidden;
+}
+
+.game-panel::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(201, 168, 108, 0.12);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.game-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(232, 212, 168, 0.3), transparent);
+  pointer-events: none;
+}
+
+.game-panel__header {
+  padding: 10px 16px 8px;
+  text-align: center;
+  border-bottom: 1px solid rgba(201, 168, 108, 0.2);
+  position: relative;
+  background: linear-gradient(180deg, rgba(201, 168, 108, 0.08), transparent);
+}
+
+.game-panel__header::before,
+.game-panel__header::after {
+  content: '—';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(201, 168, 108, 0.4);
+  font-size: 10px;
+}
+
+.game-panel__header::before { left: 16px; }
+.game-panel__header::after { right: 16px; }
+
+.game-panel__title {
+  font-family: var(--font-title);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-gold);
+  letter-spacing: 4px;
+}
+
+.game-panel__body {
+  padding: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Page Title */
+.page-title {
+  text-align: center;
+  padding: 12px 16px 14px;
+  position: relative;
+}
+
+.page-title__bracket {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: rgba(201, 168, 108, 0.5);
+  vertical-align: middle;
+  margin: 0 4px;
+}
+
+.page-title__text {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-gold);
+  letter-spacing: 6px;
+  text-shadow:
+    0 0 16px rgba(232, 212, 168, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+.page-title__subtitle {
+  font-family: var(--font-title);
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  letter-spacing: 5px;
+}
+
+.page-title__ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.page-title__ornament::before,
+.page-title__ornament::after {
+  content: '';
+  flex: 1;
+  max-width: 70px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+}
+
+.page-title__ornament-icon {
+  color: var(--cinnabar-light);
+  font-size: 11px;
+}
+
+/* Section Header */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.section-header__diamond {
+  color: var(--gold-dark);
+  font-size: 7px;
+}
+
+.section-header__text {
+  font-family: var(--font-title);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-gold);
+  letter-spacing: 3px;
+  padding: 2px 0;
+  border-bottom: 1px solid rgba(201, 168, 108, 0.25);
+}
+
+/* Realm Badge — ngọc ấn */
+.realm-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, var(--purple-realm), var(--purple-dark));
+  border: 1px solid rgba(201, 168, 108, 0.5);
+  font-family: var(--font-title);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-gold);
+  white-space: nowrap;
+  line-height: 1.5;
+  letter-spacing: 1px;
+}
+
+/* Notification Dot */
+.notify-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--cinnabar-light);
+  border: 1.5px solid var(--paper);
+  box-shadow: 0 0 8px rgba(168, 50, 50, 0.6);
+  flex-shrink: 0;
+}
+
+.notify-dot--sm {
+  width: 8px;
+  height: 8px;
+}
+
+/* Back Button — ấn triện */
+.back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--gold-primary);
+  background: rgba(20, 16, 12, 0.9);
+  color: var(--text-gold);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+.back-btn:hover {
+  background: rgba(201, 168, 108, 0.12);
+  box-shadow: var(--shadow-gold);
+}

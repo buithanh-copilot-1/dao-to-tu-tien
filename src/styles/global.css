@@ -1,0 +1,78 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--ink-deep);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* Scrollbar — tre trúc */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold-dark);
+  border-radius: 0;
+}
+
+/* Utility */
+.text-gold { color: var(--text-gold); }
+.text-green { color: var(--green-stat); }
+.text-orange { color: var(--orange-power); }
+.text-cyan { color: var(--jade-glow); }
+.text-muted { color: var(--text-muted); }
+
+.glow-gold {
+  text-shadow:
+    0 0 10px rgba(232, 212, 168, 0.5),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.glow-cyan {
+  text-shadow: 0 0 10px rgba(110, 201, 160, 0.6);
+}
+
+.glow-orange {
+  text-shadow:
+    0 0 10px rgba(212, 160, 74, 0.6),
+    0 0 18px rgba(232, 192, 112, 0.3);
+}

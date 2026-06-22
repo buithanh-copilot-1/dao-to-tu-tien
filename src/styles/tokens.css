@@ -1,0 +1,90 @@
+:root {
+  /* Ink & paper — cổ phong */
+  --ink-deep: #0a0806;
+  --ink-mid: #14100c;
+  --ink-light: #1e1812;
+  --paper: #f0e4cc;
+  --paper-tint: rgba(240, 228, 204, 0.06);
+  --paper-warm: rgba(200, 170, 120, 0.12);
+
+  --bg-deep: var(--ink-deep);
+  --bg-panel: rgba(20, 16, 12, 0.92);
+  --bg-panel-light: rgba(30, 24, 18, 0.95);
+  --bg-overlay: rgba(8, 6, 4, 0.88);
+
+  /* Bronze & gold — đồng kim */
+  --gold-primary: #c9a86c;
+  --gold-light: #e8d4a8;
+  --gold-dark: #8b6914;
+  --gold-gradient: linear-gradient(180deg, #e8d4a8 0%, #c9a86c 45%, #8b6914 100%);
+  --gold-border: linear-gradient(135deg, #e8d4a8, #8b6914, #e8d4a8);
+
+  /* Cinnabar — chu sa */
+  --cinnabar: #a83232;
+  --cinnabar-light: #c94a4a;
+  --cinnabar-dark: #6b1a1a;
+
+  /* Jade — ngọc bích */
+  --jade: #3d6b5a;
+  --jade-light: #5a9a7a;
+  --jade-glow: #6ec9a0;
+  --jade-dark: #2a4a3d;
+
+  /* Accent (mapped for compatibility) */
+  --cyan-glow: var(--jade-glow);
+  --cyan-bright: var(--jade-light);
+  --purple-realm: #4a3060;
+  --purple-dark: #2d1a40;
+  --orange-power: #d4a04a;
+  --orange-glow: #e8c070;
+  --green-timer: var(--jade-glow);
+  --green-stat: var(--jade-light);
+  --red-notify: var(--cinnabar-light);
+  --red-badge: var(--cinnabar);
+  --red-alert: var(--cinnabar-light);
+
+  /* Rarity */
+  --rarity-common: #9a8f7a;
+  --rarity-uncommon: var(--jade-light);
+  --rarity-rare: #5a7a9a;
+  --rarity-epic: #7a5a9a;
+  --rarity-legendary: #c97a30;
+  --rarity-mythic: var(--cinnabar);
+
+  /* Text */
+  --text-primary: #f0e8d8;
+  --text-secondary: #b8a890;
+  --text-gold: var(--gold-light);
+  --text-muted: #7a6e5e;
+  --text-ink: #2a1810;
+
+  /* Typography */
+  --font-display: 'Ma Shan Zheng', 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
+  --font-title: 'ZCOOL XiaoWei', 'Noto Serif SC', serif;
+  --font-body: 'Noto Serif SC', 'Georgia', serif;
+
+  /* Spacing */
+  --header-height: 72px;
+  --bottom-nav-height: 76px;
+  --safe-padding: 12px;
+
+  /* Effects */
+  --shadow-gold: 0 0 14px rgba(201, 168, 108, 0.35);
+  --shadow-cyan: 0 0 14px rgba(110, 201, 160, 0.35);
+  --shadow-panel:
+    inset 0 1px 0 rgba(232, 212, 168, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 4px 20px rgba(0, 0, 0, 0.5);
+  --shadow-inset-paper: inset 0 0 30px rgba(240, 228, 204, 0.03);
+
+  /* Border radius — ít bo tròn, vuông cổ */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-pill: 999px;
+
+  /* Frame */
+  --frame-border: 2px;
+  --frame-color: var(--gold-primary);
+  --frame-inner: 1px solid rgba(201, 168, 108, 0.25);
+}
