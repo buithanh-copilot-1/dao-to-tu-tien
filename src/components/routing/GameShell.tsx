@@ -1,7 +1,7 @@
 import { useEffect, type ReactNode } from 'react';
 import { useGameStore } from '@/stores/gameStore';
 import { useGameTick } from '@/hooks/useGameTick';
-import { Modal, GameButton, AncientIcon, GameToastBanner, ItemCatalogHost } from '@/components';
+import { Modal, AncientModal, GameButton, AncientIcon, GameToastBanner, ItemCatalogHost } from '@/components';
 import { TribulationResultModal } from '@/components/game/TribulationResultModal';
 import { formatDurationShort, formatNumber } from '@/utils/format';
 
@@ -82,13 +82,20 @@ export function GameShell({ children }: GameShellProps) {
           onClose={clearBreakthroughMessage}
         />
       ) : breakthroughMessage && (
-        <Modal
+        <AncientModal
+          title="Đột phá thành công"
+          icon="flame"
+          type="detail"
           onClose={clearBreakthroughMessage}
-          footer={
-            <GameButton variant="primary" onClick={clearBreakthroughMessage}>
-              Tiếp tục tu luyện
-            </GameButton>
-          }
+          actions={[
+            {
+              id: 'continue-cultivation',
+              label: 'Tiếp tục tu luyện',
+              variant: 'primary',
+              icon: 'sparkle',
+              onClick: clearBreakthroughMessage,
+            },
+          ]}
         >
           <div style={{ textAlign: 'center', padding: '16px 0', fontSize: 15, color: 'var(--text-gold)' }}>
             <div>{breakthroughMessage}</div>
@@ -111,7 +118,7 @@ export function GameShell({ children }: GameShellProps) {
               </div>
             )}
           </div>
-        </Modal>
+        </AncientModal>
       )}
     </>
   );

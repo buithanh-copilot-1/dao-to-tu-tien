@@ -14,6 +14,7 @@ import './styles/progress.css';
 import './styles/items.css';
 import './styles/equipment.css';
 import './styles/components.css';
+import './styles/ancient-modal.css';
 import './styles/icons.css';
 import './styles/login.css';
 import './styles/cultivation.css';

@@ -6,6 +6,7 @@ export { BottomNav, DEFAULT_NAV_ITEMS } from './navigation/BottomNav';
 export { SideMenu, LEFT_MENU_ITEMS, RIGHT_MENU_ITEMS } from './navigation/SideMenu';
 export { NotifyDot } from './common/NotifyDot';
 export { AncientIcon, type AncientIconName } from './common/AncientIcon';
+export { AncientModal, type ModalProps as AncientModalProps, type ModalAction as AncientModalAction } from './common/AncientModal';
 export { RealmBadge } from './common/RealmBadge';
 export { BackButton } from './common/BackButton';
 export { GameButton } from './common/GameButton';
