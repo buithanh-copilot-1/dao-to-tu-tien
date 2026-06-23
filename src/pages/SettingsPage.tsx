@@ -1,3 +1,4 @@
+import { useRef, type ChangeEvent } from 'react';
 import type { BattleSpeed, GameSettings } from '@/types/game';
 import {
   AncientIcon,
@@ -16,6 +17,7 @@ import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { DEFAULT_GAME_SETTINGS, useGameStore } from '@/stores/gameStore';
 import { useGameNav } from '@/hooks/useGameNav';
 import { useRedirectBack } from '@/hooks/useRedirectBack';
+import { exportPlayerToJSON, importPlayerFromJSON } from '@/utils/playerExport';
 
 interface SettingSwitchProps {
   icon: AncientIconName;
@@ -55,13 +57,57 @@ function SettingSwitch({ icon, title, description, checked, onToggle }: SettingS
 
 export function SettingsPage() {
   const settings = useGameStore((s) => s.settings);
+  const player = useGameStore((s) => s.player);
   const updateSettings = useGameStore((s) => s.updateSettings);
   const resetSettings = useGameStore((s) => s.resetSettings);
+  const showToast = useGameStore((s) => s.showToast);
   const { activeNav, navItems, handleNav } = useGameNav();
   const { goBack } = useRedirectBack('/home');
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   const setSetting = <K extends keyof GameSettings,>(key: K, value: GameSettings[K]) => {
     updateSettings({ [key]: value } as Partial<GameSettings>);
+  };
+
+  const exportPlayer = () => {
+    if (!player) {
+      showToast('Chưa có dữ liệu nhân vật để xuất file', { variant: 'error' });
+      return;
+    }
+    exportPlayerToJSON(player);
+    showToast('Đã tải file backup nhân vật', { variant: 'success' });
+  };
+
+  const openImportPicker = () => {
+    importInputRef.current?.click();
+  };
+
+  const importPlayer = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const importedPlayer = await importPlayerFromJSON(file);
+      useGameStore.setState({
+        hasCharacter: true,
+        player: importedPlayer,
+        showOfflineReward: false,
+        pendingOffline: null,
+        breakthroughMessage: null,
+        breakthroughPowerDelta: null,
+        breakthroughTribulation: null,
+        toast: null,
+        lastBattleLoot: null,
+        lastDailyResetAt: Date.now(),
+        dailyCounters: { dungeons: {}, arena: 0, bosses: {}, secret: {} },
+        towerBestFloor: 0,
+      });
+      showToast(`Đã khôi phục dữ liệu cho ${importedPlayer.name}`, { variant: 'success' });
+    } catch {
+      showToast('Import thất bại: file JSON không hợp lệ', { variant: 'error' });
+    } finally {
+      event.target.value = '';
+    }
   };
 
   return (
@@ -164,6 +210,19 @@ export function SettingsPage() {
               >
                 Khôi phục mặc định
               </GameButton>
+              <GameButton variant="secondary" fullWidth onClick={exportPlayer} disabled={!player}>
+                Export dữ liệu nhân vật
+              </GameButton>
+              <GameButton variant="secondary" fullWidth onClick={openImportPicker}>
+                Import dữ liệu nhân vật
+              </GameButton>
+              <input
+                ref={importInputRef}
+                type="file"
+                accept="application/json,.json"
+                onChange={importPlayer}
+                style={{ display: 'none' }}
+              />
             </div>
           </GamePanel>
         </GameBody>
