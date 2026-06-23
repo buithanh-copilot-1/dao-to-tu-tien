@@ -55,6 +55,7 @@ import type { BattleMode } from '@/types/battle';
 import { TOWER_MAX_FLOOR, getTowerFloor } from '@/data/tower';
 import { runTowerAutoClimbSync } from '@/systems/towerClimb';
 import type { AutoTowerResult } from '@/systems/towerAuto';
+import { exportPlayerToJSON } from '@/utils/playerExport';
 
 const EMPTY_COUNTERS = {
   dungeons: {} as Record<string, number>,
@@ -189,9 +190,10 @@ export const useGameStore = create<GameStore>()(
 
       createCharacter: (name, gender, element) => {
         const player = createNewPlayer(name, gender, element);
+        const syncedPlayer = syncQuestProgress(player);
         set({
           hasCharacter: true,
-          player: syncQuestProgress(player),
+          player: syncedPlayer,
           showOfflineReward: false,
           pendingOffline: null,
           breakthroughMessage: null,
@@ -203,6 +205,7 @@ export const useGameStore = create<GameStore>()(
           dailyCounters: { ...EMPTY_COUNTERS },
           towerBestFloor: 0,
         });
+        exportPlayerToJSON(syncedPlayer);
       },
 
       checkDailyReset: () => {
