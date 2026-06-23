@@ -31,8 +31,7 @@ export function refreshCultivationRate(player: Player, bonus = 1): Player {
 export function tickCultivation(player: Player, deltaMs: number, bonus = 1): Player {
   const rate = getCultivationRate(player.realmId, player.tier, player.element, bonus);
   const gained = (rate * deltaMs) / 1000;
-  const cost = getBreakthroughCost(player.realmId, player.tier);
-  const newCultivation = Math.min(player.cultivation + gained, cost);
+  const newCultivation = player.cultivation + gained;
 
   return {
     ...player,
