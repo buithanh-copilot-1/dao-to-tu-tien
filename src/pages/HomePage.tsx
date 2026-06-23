@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   GameFrame,
   GameScreen,
@@ -21,6 +22,18 @@ import { canBreakthrough, getTribulationInfo, isAtPeak } from '@/systems/cultiva
 import { getBreakthroughCost, getRealmLabel, getNextRealmLabel } from '@/data/realms';
 import { formatNumber } from '@/utils/format';
 
+const HOME_MENU_STORAGE_KEYS = {
+  left: 'dao-to-tu-tien-home-show-left-menu',
+  right: 'dao-to-tu-tien-home-show-right-menu',
+} as const;
+
+function readMenuVisibility(key: string) {
+  if (typeof window === 'undefined') return true;
+
+  const saved = window.localStorage.getItem(key);
+  return saved === null ? true : saved === 'true';
+}
+
 function formatRealmStage(label: string): string {
   return label.replace(' - ', ' · ');
 }
@@ -32,6 +45,8 @@ export function HomePage() {
   const toggleDevFastBreakthrough = useGameStore((s) => s.toggleDevFastBreakthrough);
   const doBreakthrough = useGameStore((s) => s.doBreakthrough);
   const { activeNav, navItems, handleNav, handleSideMenu } = useGameNav();
+  const [showLeftMenu, setShowLeftMenu] = useState(() => readMenuVisibility(HOME_MENU_STORAGE_KEYS.left));
+  const [showRightMenu, setShowRightMenu] = useState(() => readMenuVisibility(HOME_MENU_STORAGE_KEYS.right));
 
   const breakthroughCost = getBreakthroughCost(player.realmId, player.tier);
   const atPeak = isAtPeak(player);
@@ -48,13 +63,33 @@ export function HomePage() {
     notify: item.id === 'events' ? claimableQuests : item.notify,
   }));
 
+  useEffect(() => {
+    window.localStorage.setItem(HOME_MENU_STORAGE_KEYS.left, String(showLeftMenu));
+  }, [showLeftMenu]);
+
+  useEffect(() => {
+    window.localStorage.setItem(HOME_MENU_STORAGE_KEYS.right, String(showRightMenu));
+  }, [showRightMenu]);
+
   return (
     <GameFrame>
       <GameScreen className="game-screen--home">
         <GameHeader><PlayerHeader /></GameHeader>
 
-        <SideMenu items={LEFT_MENU_ITEMS} position="left" onItemClick={handleSideMenu} />
-        <SideMenu items={rightMenu} position="right" onItemClick={handleSideMenu} />
+        <SideMenu
+          items={LEFT_MENU_ITEMS}
+          position="left"
+          collapsed={!showLeftMenu}
+          onToggle={() => setShowLeftMenu((value) => !value)}
+          onItemClick={handleSideMenu}
+        />
+        <SideMenu
+          items={rightMenu}
+          position="right"
+          collapsed={!showRightMenu}
+          onToggle={() => setShowRightMenu((value) => !value)}
+          onItemClick={handleSideMenu}
+        />
 
         <GameBody className="home-body">
           <div className="home-stage">
