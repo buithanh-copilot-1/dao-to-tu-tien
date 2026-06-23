@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import type { ElementType, Gender } from '@/types/game';
 import meditationFemale from '@/assets/home/meditation-female.png';
 import meditationMale from '@/assets/home/meditation-male.png';
+import { formatNumber } from '@/utils/format';
 import { ELEMENT_VISUALS } from './SpiritPortrait';
 
 interface CultivationAvatarProps {
@@ -9,12 +10,20 @@ interface CultivationAvatarProps {
   element: ElementType;
   cultivating: boolean;
   realmId: number;
+  totalPlaySeconds: number;
 }
 
-export function CultivationAvatar({ gender, element, cultivating, realmId }: CultivationAvatarProps) {
+export function CultivationAvatar({
+  gender,
+  element,
+  cultivating,
+  realmId,
+  totalPlaySeconds,
+}: CultivationAvatarProps) {
   const colors = ELEMENT_VISUALS[element];
   const auraScale = 1 + realmId * 0.04;
   const meditationImage = gender === 'female' ? meditationFemale : meditationMale;
+  const cultivationYears = Math.floor(totalPlaySeconds / 60);
 
   return (
     <div
@@ -60,6 +69,7 @@ export function CultivationAvatar({ gender, element, cultivating, realmId }: Cul
           )}
         </div>
       </div>
+      <p className="cultivation-scene__years">Tu luyện {formatNumber(cultivationYears)} năm</p>
     </div>
   );
 }
