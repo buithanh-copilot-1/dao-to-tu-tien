@@ -63,6 +63,7 @@ export function HomePage() {
               element={player.element}
               cultivating={player.autoCultivate || devFastBreakthrough}
               realmId={player.realmId}
+              totalPlaySeconds={player.totalPlaySeconds}
             />
 
             {import.meta.env.DEV && (
