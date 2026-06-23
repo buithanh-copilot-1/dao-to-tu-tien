@@ -1180,20 +1180,40 @@
   background: radial-gradient(circle, #fff9d7, #c88a18 68%, #4b2d07);
 }
 
+.create-screen__element--metal strong {
+  color: #ffe6a3;
+}
+
 .create-screen__element--wood .create-screen__element-orb {
   background: radial-gradient(circle, #c8ffc2, #327342 68%, #0d2618);
+}
+
+.create-screen__element--wood strong {
+  color: #9ee282;
 }
 
 .create-screen__element--water .create-screen__element-orb {
   background: radial-gradient(circle, #d4f2ff, #226eb1 68%, #071f43);
 }
 
+.create-screen__element--water strong {
+  color: #a9d8ff;
+}
+
 .create-screen__element--fire .create-screen__element-orb {
   background: radial-gradient(circle, #ffe2a8, #cc4a22 68%, #3c0b08);
 }
 
+.create-screen__element--fire strong {
+  color: #ffb28a;
+}
+
 .create-screen__element--earth .create-screen__element-orb {
   background: radial-gradient(circle, #fff0c4, #9a6b2d 68%, #30200c);
+}
+
+.create-screen__element--earth strong {
+  color: #f1d39a;
 }
 
 .create-screen__section--name {

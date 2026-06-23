@@ -2,7 +2,8 @@
 .item-slot {
   position: relative;
   aspect-ratio: 1;
-  background: rgba(14, 10, 8, 0.85);
+  background:
+    radial-gradient(circle at 50% 38%, rgba(120, 110, 92, 0.18), rgba(12, 9, 7, 0.92) 78%);
   border: 1px solid var(--rarity-common);
   border-radius: 6px;
   display: flex;
@@ -11,7 +12,7 @@
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
   overflow: hidden;
-  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 1px 0 rgba(232, 212, 168, 0.12), inset 0 0 8px rgba(0, 0, 0, 0.5);
 }
 
 .item-slot::after {
@@ -52,11 +53,11 @@
 .item-slot--legendary .item-slot__corner { color: var(--rarity-legendary); opacity: 0.8; }
 .item-slot--mythic .item-slot__corner { color: var(--rarity-mythic); opacity: 0.85; }
 
-.item-slot--uncommon { border-color: var(--rarity-uncommon); box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4), 0 0 4px rgba(90, 154, 122, 0.3); }
-.item-slot--rare { border-color: var(--rarity-rare); box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4), 0 0 6px rgba(90, 122, 154, 0.3); }
-.item-slot--epic { border-color: var(--rarity-epic); box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4), 0 0 6px rgba(122, 90, 154, 0.3); }
-.item-slot--legendary { border-color: var(--rarity-legendary); box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4), 0 0 8px rgba(201, 122, 48, 0.35); }
-.item-slot--mythic { border-color: var(--rarity-mythic); box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4), 0 0 8px rgba(168, 50, 50, 0.35); }
+.item-slot--uncommon { border-color: var(--rarity-uncommon); background: radial-gradient(circle at 50% 36%, rgba(90, 154, 122, 0.3), rgba(12, 9, 7, 0.92) 80%); box-shadow: inset 0 1px 0 rgba(232,212,168,0.12), inset 0 0 8px rgba(0,0,0,0.5), 0 0 5px rgba(90, 154, 122, 0.3); }
+.item-slot--rare { border-color: var(--rarity-rare); background: radial-gradient(circle at 50% 36%, rgba(74, 120, 180, 0.34), rgba(12, 9, 7, 0.92) 80%); box-shadow: inset 0 1px 0 rgba(232,212,168,0.12), inset 0 0 8px rgba(0,0,0,0.5), 0 0 6px rgba(90, 122, 154, 0.35); }
+.item-slot--epic { border-color: var(--rarity-epic); background: radial-gradient(circle at 50% 36%, rgba(140, 90, 190, 0.34), rgba(12, 9, 7, 0.92) 80%); box-shadow: inset 0 1px 0 rgba(232,212,168,0.12), inset 0 0 8px rgba(0,0,0,0.5), 0 0 7px rgba(122, 90, 154, 0.4); }
+.item-slot--legendary { border-color: var(--rarity-legendary); background: radial-gradient(circle at 50% 36%, rgba(214, 142, 56, 0.36), rgba(12, 9, 7, 0.92) 80%); box-shadow: inset 0 1px 0 rgba(232,212,168,0.12), inset 0 0 8px rgba(0,0,0,0.5), 0 0 9px rgba(201, 122, 48, 0.45); }
+.item-slot--mythic { border-color: var(--rarity-mythic); background: radial-gradient(circle at 50% 36%, rgba(190, 60, 60, 0.38), rgba(12, 9, 7, 0.92) 80%); box-shadow: inset 0 1px 0 rgba(232,212,168,0.12), inset 0 0 8px rgba(0,0,0,0.5), 0 0 10px rgba(168, 50, 50, 0.45); }
 
 .item-slot--empty {
   border-color: rgba(201, 168, 108, 0.12);

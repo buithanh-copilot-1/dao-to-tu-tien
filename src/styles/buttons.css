@@ -20,25 +20,42 @@
   transform: scale(0.97);
 }
 
-/* Primary — ấn vàng */
+/* Primary — ấn vàng đúc nổi */
 .game-btn--primary {
-  background: var(--gold-gradient);
-  border: 1px solid var(--gold-light);
-  color: var(--text-ink);
-  box-shadow: var(--shadow-gold), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
+  background: linear-gradient(180deg, #fbe7ba 0%, #ecca85 40%, #cda052 60%, #a67c2c 100%);
+  border: 1px solid #f6e0a6;
+  border-radius: 9px;
+  color: #3a2410;
+  box-shadow:
+    0 2px 0 #6e4f14,
+    0 5px 14px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -2px 4px rgba(120, 86, 18, 0.4);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .game-btn--primary::before {
   content: '';
   position: absolute;
   inset: 3px;
-  border: 1px solid rgba(139, 105, 20, 0.3);
+  border: 1px solid rgba(120, 86, 18, 0.5);
+  border-radius: 6px;
   pointer-events: none;
 }
 
 .game-btn--primary:hover {
-  box-shadow: 0 0 22px rgba(232, 212, 168, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  background: linear-gradient(180deg, #fff0cf 0%, #f4d693 40%, #d9aa5a 60%, #b2862f 100%);
+  box-shadow:
+    0 2px 0 #6e4f14,
+    0 0 22px rgba(232, 212, 168, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.game-btn--primary:active {
+  box-shadow:
+    0 1px 0 #6e4f14,
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 2px 6px rgba(120, 86, 18, 0.5);
 }
 
 /* Secondary — ngọc bích */

@@ -2,10 +2,10 @@
 .game-panel {
   position: relative;
   background:
-    linear-gradient(180deg, rgba(30, 24, 18, 0.97) 0%, rgba(14, 10, 8, 0.98) 100%);
-  border: 1px solid rgba(201, 168, 108, 0.45);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-panel);
+    linear-gradient(180deg, rgba(34, 27, 20, 0.97) 0%, rgba(13, 10, 8, 0.98) 100%);
+  border: 1px solid rgba(201, 168, 108, 0.5);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel), 0 0 0 1px rgba(0, 0, 0, 0.5);
   overflow: hidden;
 }
 
@@ -81,13 +81,15 @@
 
 .page-title__text {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 400;
-  color: var(--text-gold);
   letter-spacing: 6px;
-  text-shadow:
-    0 0 16px rgba(232, 212, 168, 0.4),
-    0 2px 6px rgba(0, 0, 0, 0.9);
+  background: linear-gradient(180deg, #fff3d4 0%, #ecca85 45%, #c79a3e 75%, #a67c2c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-light);
+  filter: drop-shadow(0 0 14px rgba(232, 212, 168, 0.35)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9));
 }
 
 .page-title__subtitle {

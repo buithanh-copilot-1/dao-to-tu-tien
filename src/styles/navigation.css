@@ -30,32 +30,42 @@
 
 .bottom-nav__icon-wrap {
   position: relative;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 168, 108, 0.5);
+  background: radial-gradient(circle at 50% 34%, rgba(201, 168, 108, 0.18), rgba(14, 10, 8, 0.95) 72%);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.5);
+  transition: width 0.2s, height 0.2s, box-shadow 0.25s, border-color 0.25s;
+}
+
+.bottom-nav__icon-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 168, 108, 0.18);
+  pointer-events: none;
 }
 
 .bottom-nav__item--active .bottom-nav__icon-wrap {
-  width: 52px;
-  height: 52px;
-}
-
-.bottom-nav__item--active .bottom-nav__icon-wrap::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--gold-primary);
-  background: linear-gradient(180deg, rgba(201, 168, 108, 0.15), rgba(20, 16, 12, 0.8));
-  box-shadow: var(--shadow-gold);
-  animation: navGlow 2.5s ease-in-out infinite;
+  width: 54px;
+  height: 54px;
+  margin-top: -12px;
+  border-color: var(--gold-light);
+  background: radial-gradient(circle at 50% 32%, rgba(232, 212, 168, 0.32), rgba(120, 86, 18, 0.55) 60%, rgba(14, 10, 8, 0.95) 85%);
+  box-shadow:
+    0 0 16px rgba(201, 168, 108, 0.5),
+    inset 0 0 12px rgba(0, 0, 0, 0.5);
+  animation: navGlow 2.6s ease-in-out infinite;
 }
 
 @keyframes navGlow {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; box-shadow: 0 0 18px rgba(201, 168, 108, 0.4); }
+  0%, 100% { box-shadow: 0 0 14px rgba(201, 168, 108, 0.4), inset 0 0 12px rgba(0, 0, 0, 0.5); }
+  50% { box-shadow: 0 0 22px rgba(232, 212, 168, 0.6), inset 0 0 12px rgba(0, 0, 0, 0.5); }
 }
 
 .bottom-nav__icon {
@@ -129,11 +139,11 @@
   position: relative;
   width: 46px;
   height: 46px;
-  border-radius: var(--radius-sm);
+  border-radius: 50%;
   border: 1px solid var(--gold-primary);
   background:
-    linear-gradient(135deg, rgba(201, 168, 108, 0.15), rgba(14, 10, 8, 0.9));
-  box-shadow: var(--shadow-gold), inset 0 0 10px rgba(0, 0, 0, 0.4);
+    radial-gradient(circle at 50% 34%, rgba(201, 168, 108, 0.2), rgba(14, 10, 8, 0.92) 74%);
+  box-shadow: 0 0 10px rgba(201, 168, 108, 0.25), inset 0 0 10px rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,6 +154,7 @@
   content: '';
   position: absolute;
   inset: 3px;
+  border-radius: 50%;
   border: 1px solid rgba(201, 168, 108, 0.2);
   pointer-events: none;
 }
