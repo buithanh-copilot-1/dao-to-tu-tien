@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { ElementType, EquipmentMap, GameSave, GameSettings, Gender, Player } from '@/types/game';
-import { getBreakthroughCost } from '@/data/realms';
 import { calcStats, getCultivationRateBonus } from '@/utils/stats';
 import { ARENA_DAILY_LIMIT, ARENA_OPPONENTS } from '@/data/arena';
 import { BOSSES, DUNGEONS } from '@/data/dungeons';
@@ -252,9 +251,6 @@ export const useGameStore = create<GameStore>()(
         }
 
         if (!player.autoCultivate) return;
-
-        const cost = getBreakthroughCost(player.realmId, player.tier);
-        if (player.cultivation >= cost) return;
 
         const ticked = tickCultivation(player, deltaMs, getCultivationRateBonus(player));
         set({ player: syncQuestProgress(ticked) });

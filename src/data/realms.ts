@@ -40,17 +40,19 @@ export function getMaxRealmId(): number {
 
 /**
  * Hệ số sức mạnh theo cảnh giới + bậc.
- * - Mỗi cảnh giới ~4x (chênh lệch tuyệt đối càng cao càng lớn)
- * - Mỗi bậc trong cảnh ~28%
+ * - Mỗi lần đột phá tăng theo chuỗi cộng dồn toàn bộ bậc đã đi qua (~28% mỗi bậc)
+ * - Không bị tụt chỉ số khi chuyển sang cảnh giới mới (bậc quay về 1)
  * - Gia tốc bổ sung khi cảnh giới cao (realmId lớn)
  */
 export function getRealmPowerScale(realmId: number, tier: number): number {
-  const REALM_GROWTH = 4.0;
   const TIER_GROWTH = 1.28;
-  const realmFactor = Math.pow(REALM_GROWTH, realmId);
-  const tierFactor = Math.pow(TIER_GROWTH, Math.max(tier - 1, 0));
+  const prevRealmStages = REALMS
+    .slice(0, Math.max(realmId, 0))
+    .reduce((total, realm) => total + realm.maxTier, 0);
+  const totalStage = prevRealmStages + Math.max(tier - 1, 0);
+  const tierFactor = Math.pow(TIER_GROWTH, totalStage);
   const highRealmAccel = 1 + realmId * 0.1;
-  return realmFactor * tierFactor * highRealmAccel;
+  return tierFactor * highRealmAccel;
 }
 
 /** Hệ số chênh lệch giữa các cảnh — tăng nhanh hơn ở cấp cao */
