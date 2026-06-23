@@ -1,10 +1,25 @@
 import type { Player } from '@/types/game';
 import { REALMS, getBreakthroughCost, getCultivationRate, getRealmLabel, getMaxRealmId } from '@/data/realms';
-import { calcStats } from '@/utils/stats';
+import { calcCombatPower, calcStats } from '@/utils/stats';
+
+export interface TribulationInfo {
+  targetRealmId: number;
+  targetLabel: string;
+  difficulty: number;
+  combatPower: number;
+  successRate: number;
+  retainedCultivationPct: number;
+}
 
 export type BreakthroughResult =
-  | { success: true; player: Player; message: string }
-  | { success: false; reason: string };
+  | { success: true; player: Player; message: string; tribulation?: TribulationInfo }
+  | { success: false; reason: string; player?: Player; tribulation?: TribulationInfo };
+
+const TRIBULATION_RETAINED_CULTIVATION_PCT = 0.65;
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
 
 export function refreshCultivationRate(player: Player, bonus = 1): Player {
   return {
@@ -39,6 +54,84 @@ export function canBreakthrough(player: Player): boolean {
   return player.cultivation >= cost;
 }
 
+export function isRealmBreakthrough(player: Player): boolean {
+  const realm = REALMS[player.realmId];
+  if (!realm) return false;
+  return player.tier >= realm.maxTier && player.realmId < getMaxRealmId();
+}
+
+function getTribulationBaselinePlayer(player: Player): Player {
+  const cost = getBreakthroughCost(player.realmId, player.tier);
+  return {
+    ...player,
+    cultivation: cost,
+    equipment: {},
+    sect: undefined,
+    techniques: undefined,
+    talents: undefined,
+    pets: undefined,
+    activePet: undefined,
+    mounts: undefined,
+    activeMount: undefined,
+    ascensionCount: 0,
+  };
+}
+
+export function getTribulationInfo(player: Player): TribulationInfo | null {
+  if (!isRealmBreakthrough(player) || !canBreakthrough(player)) return null;
+
+  const targetRealmId = player.realmId + 1;
+  const baselinePower = calcCombatPower(getTribulationBaselinePlayer(player));
+  const difficulty = Math.max(1, Math.floor(baselinePower * (1.55 + targetRealmId * 0.06)));
+  const combatPower = calcCombatPower({
+    ...player,
+    cultivation: getBreakthroughCost(player.realmId, player.tier),
+  });
+  const ratio = combatPower / difficulty;
+  const successRate = clamp(Math.round((0.35 + ratio * 0.35) * 100), 35, 95);
+
+  return {
+    targetRealmId,
+    targetLabel: getRealmLabel(targetRealmId, 1),
+    difficulty,
+    combatPower,
+    successRate,
+    retainedCultivationPct: TRIBULATION_RETAINED_CULTIVATION_PCT,
+  };
+}
+
+function rollTribulation(player: Player): { passed: true; info: TribulationInfo } | { passed: false; info: TribulationInfo; player: Player } {
+  const info = getTribulationInfo(player);
+  if (!info) {
+    return {
+      passed: true,
+      info: {
+        targetRealmId: player.realmId,
+        targetLabel: getRealmLabel(player.realmId, player.tier),
+        difficulty: 0,
+        combatPower: calcCombatPower(player),
+        successRate: 100,
+        retainedCultivationPct: 1,
+      },
+    };
+  }
+
+  if (Math.random() * 100 < info.successRate) {
+    return { passed: true, info };
+  }
+
+  const cost = getBreakthroughCost(player.realmId, player.tier);
+  let failedPlayer: Player = {
+    ...player,
+    cultivation: Math.floor(cost * info.retainedCultivationPct),
+    lastOnlineAt: Date.now(),
+  };
+  failedPlayer = refreshCultivationRate(failedPlayer);
+  failedPlayer.stats = calcStats(failedPlayer);
+
+  return { passed: false, info, player: failedPlayer };
+}
+
 export function fillCultivationForBreakthrough(player: Player): Player {
   if (isAtPeak(player)) return player;
   const cost = getBreakthroughCost(player.realmId, player.tier);
@@ -59,10 +152,22 @@ export function attemptBreakthrough(player: Player): BreakthroughResult {
 
   let newRealmId = player.realmId;
   let newTier = player.tier;
+  let passedTribulation: TribulationInfo | undefined;
 
   if (player.tier < realm.maxTier) {
     newTier += 1;
   } else if (player.realmId < getMaxRealmId()) {
+    const tribulation = rollTribulation(player);
+    if (!tribulation.passed) {
+      return {
+        success: false,
+        player: tribulation.player,
+        tribulation: tribulation.info,
+        reason: `Độ kiếp thất bại! Kiếp lôi phản phệ, tu vi còn ${Math.round(tribulation.info.retainedCultivationPct * 100)}%. Hãy tăng lực chiến rồi thử lại.`,
+      };
+    }
+    passedTribulation = tribulation.info;
+
     newRealmId += 1;
     newTier = 1;
   } else {
@@ -80,8 +185,10 @@ export function attemptBreakthrough(player: Player): BreakthroughResult {
   newPlayer = refreshCultivationRate(newPlayer);
   newPlayer.stats = calcStats(newPlayer);
 
-  const message = `Đột phá thành công! Đạt ${getRealmLabel(newRealmId, newTier)}`;
-  return { success: true, player: newPlayer, message };
+  const message = passedTribulation
+    ? `Độ kiếp thành công! Vượt qua thiên lôi, đạt ${getRealmLabel(newRealmId, newTier)}`
+    : `Đột phá thành công! Đạt ${getRealmLabel(newRealmId, newTier)}`;
+  return { success: true, player: newPlayer, message, tribulation: passedTribulation };
 }
 
 /** Dev/test: đột phá không cần đủ tu vi */

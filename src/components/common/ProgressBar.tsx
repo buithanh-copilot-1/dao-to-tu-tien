@@ -1,3 +1,5 @@
+import { formatProgressValue } from '@/utils/format';
+
 interface ProgressBarProps {
   current: number;
   max: number;
@@ -5,6 +7,8 @@ interface ProgressBarProps {
   labelRight?: string;
   showText?: boolean;
   thin?: boolean;
+  variant?: 'default' | 'cultivation';
+  displayText?: string;
 }
 
 export function ProgressBar({
@@ -12,20 +16,19 @@ export function ProgressBar({
   max,
   labelLeft,
   labelRight,
-  showText = true,
+  showText,
   thin = false,
+  variant = 'default',
+  displayText,
 }: ProgressBarProps) {
+  const showBarText = displayText != null ? true : (showText ?? !thin);
   const percent = Math.min((current / max) * 100, 100);
-  const formatNum = (n: number) => {
-    if (n >= 1e12) return `${(n / 1e12).toFixed(2)}T`;
-    if (n >= 1e9) return `${(n / 1e9).toFixed(2)}B`;
-    if (n >= 1e6) return `${(n / 1e6).toFixed(2)}M`;
-    if (n >= 1e3) return `${(n / 1e3).toFixed(2)}K`;
-    return n.toString();
-  };
+  const barText = displayText ?? `${formatProgressValue(current)}/${formatProgressValue(max)}`;
 
   return (
-    <div className={`progress-bar ${thin ? 'progress-bar--thin' : ''}`}>
+    <div
+      className={`progress-bar ${thin ? 'progress-bar--thin' : ''} ${variant === 'cultivation' ? 'progress-bar--cultivation' : ''}`}
+    >
       {(labelLeft || labelRight) && (
         <div className="progress-bar__labels">
           <span>{labelLeft}</span>
@@ -34,11 +37,7 @@ export function ProgressBar({
       )}
       <div className="progress-bar__track">
         <div className="progress-bar__fill" style={{ width: `${percent}%` }} />
-        {showText && (
-          <span className="progress-bar__text">
-            {formatNum(current)}/{formatNum(max)}
-          </span>
-        )}
+        {showBarText && <span className="progress-bar__text">{barText}</span>}
       </div>
     </div>
   );

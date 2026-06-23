@@ -6,16 +6,18 @@ import {
   GameBody,
   GameFooter,
   BottomNav,
-  PageTitle,
+  PageHead,
   TabBar,
   GamePanel,
   GameButton,
   ProgressBar,
   AncientIcon,
+  ItemIcon,
 } from '@/components';
 import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { useGameStore } from '@/stores/gameStore';
 import { useGameNav } from '@/hooks/useGameNav';
+import { useSideMenuBack } from '@/hooks/useSideMenuBack';
 import { ACTIVITY_MILESTONES } from '@/data/quests';
 import type { QuestType } from '@/types/game';
 
@@ -30,6 +32,7 @@ export function QuestPage() {
   const claimQuest = useGameStore((s) => s.claimQuest);
   const claimActivityMilestone = useGameStore((s) => s.claimActivityMilestone);
   const { activeNav, navItems, handleNav } = useGameNav();
+  const { goBack } = useSideMenuBack();
   const [tab, setTab] = useState<QuestType>('daily');
 
   const quests = player.quests.filter((q) => q.type === tab);
@@ -40,7 +43,7 @@ export function QuestPage() {
         <GameHeader><PlayerHeader /></GameHeader>
 
         <GameBody>
-          <PageTitle title="Nhiệm vụ" showOrnament />
+          <PageHead title="Nhiệm vụ" showOrnament onBack={goBack} />
 
           <GamePanel title={`Điểm hoạt động: ${player.activityPoints}`}>
             <ProgressBar current={player.activityPoints} max={100} labelLeft="0" labelRight="100" />
@@ -76,7 +79,9 @@ export function QuestPage() {
               return (
                 <div key={q.id} className="list-row" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 6 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span className="entity-icon entity-icon--sm">{q.icon}</span>
+                    <span className="entity-icon entity-icon--sm">
+                      <ItemIcon icon={q.icon} className="reward-item-icon" />
+                    </span>
                     <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 12, color: 'var(--text-gold)' }}>{q.title}</div>
                       <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{q.description}</div>

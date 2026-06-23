@@ -12,12 +12,16 @@ import './styles/buttons.css';
 import './styles/tabs.css';
 import './styles/progress.css';
 import './styles/items.css';
+import './styles/equipment.css';
 import './styles/components.css';
 import './styles/icons.css';
 import './styles/login.css';
 import './styles/cultivation.css';
 import './styles/battle.css';
+import './styles/dungeon.css';
 import './styles/tower.css';
+import './styles/toast.css';
+import './styles/settings.css';
 
 const SAVE_KEY = 'dao-to-tu-tien-save';
 if (new URLSearchParams(window.location.search).get('clear-save') === '1') {

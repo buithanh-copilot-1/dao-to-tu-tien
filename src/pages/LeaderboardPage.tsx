@@ -6,15 +6,17 @@ import {
   GameBody,
   GameFooter,
   BottomNav,
-  PageTitle,
+  PageHead,
   TabBar,
   GamePanel,
   RealmBadge,
   AncientIcon,
+  ItemIcon,
 } from '@/components';
 import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { useGameStore } from '@/stores/gameStore';
 import { useGameNav } from '@/hooks/useGameNav';
+import { useRedirectBack } from '@/hooks/useRedirectBack';
 import { buildLeaderboard } from '@/data/leaderboard';
 import { getRealmLabel } from '@/data/realms';
 import { calcCombatPower } from '@/utils/stats';
@@ -28,6 +30,7 @@ const RANK_TABS = [
 export function LeaderboardPage() {
   const player = useGameStore((s) => s.player)!;
   const { navItems, handleNav } = useGameNav();
+  const { goBack } = useRedirectBack('/tower');
   const [activeTab, setActiveTab] = useState('power');
 
   const realmLabel = getRealmLabel(player.realmId, player.tier);
@@ -45,37 +48,45 @@ export function LeaderboardPage() {
         <GameHeader><PlayerHeader /></GameHeader>
 
         <GameBody>
-          <PageTitle title="Bảng Xếp Hạng" />
+          <PageHead title="Bảng Xếp Hạng" onBack={goBack} />
 
           <TabBar tabs={RANK_TABS} activeId={activeTab} onChange={setActiveTab} />
 
-          <div style={{ marginTop: 8 }}>
-            <div style={{
-              display: 'flex',
-              padding: '6px 8px',
-              fontSize: 10,
-              color: 'var(--text-muted)',
-              borderBottom: '1px solid rgba(212,175,55,0.15)',
-            }}>
-              <span style={{ width: 32 }}>Hạng</span>
-              <span style={{ flex: 1 }}>Người chơi</span>
-              <span style={{ width: 80, textAlign: 'right' }}>Lực Chiến</span>
+          <div className="data-table data-table--leaderboard" style={{ marginTop: 8 }}>
+            <div className="data-table__head">
+              <span className="data-table__th data-table__th--center">Hạng</span>
+              <span className="data-table__th data-table__th--left">Người chơi</span>
+              <span className="data-table__th data-table__th--right">Lực chiến</span>
             </div>
 
             {sorted.slice(0, 15).map((row) => (
-              <div key={row.name + row.rank} className="list-row">
-                <span className={`rank-medal ${row.rank <= 3 ? `rank-medal--top${row.rank}` : ''}`}>
+              <div
+                key={row.name + row.rank}
+                className={`data-table__row ${row.isPlayer ? 'data-table__row--highlight' : ''}`}
+              >
+                <span className={`data-table__cell data-table__cell--center rank-medal ${row.rank <= 3 ? `rank-medal--top${row.rank}` : ''}`}>
                   {row.rank}
                 </span>
-                <div className="list-row__avatar">{row.isPlayer ? (player.gender === 'male' ? '🧙‍♂️' : '🧙‍♀️') : '🧙'}</div>
-                <div className="list-row__info">
-                  <div className="list-row__name" style={row.isPlayer ? { color: 'var(--green-stat)' } : undefined}>
-                    {row.name}{row.isPlayer ? ' (Bạn)' : ''}
+                <div className="data-table__cell data-table__cell--left data-table__player">
+                  <div className="list-row__avatar">
+                    <ItemIcon
+                      icon={row.isPlayer ? (player.gender === 'male' ? '🧙‍♂️' : '🧙‍♀️') : '🧙'}
+                      className="list-row__avatar-icon"
+                    />
                   </div>
-                  <RealmBadge text={row.realm} />
+                  <div className="data-table__player-info">
+                    <div
+                      className="list-row__name"
+                      style={row.isPlayer ? { color: 'var(--green-stat)' } : undefined}
+                    >
+                      {row.name}{row.isPlayer ? ' (Bạn)' : ''}
+                    </div>
+                    <RealmBadge text={row.realm} />
+                  </div>
                 </div>
-                <span className="list-row__value meta-stat">
-                  <AncientIcon name="flame" size={12} className="anc-icon--power" /> {formatNumber(row.power)}
+                <span className="data-table__cell data-table__cell--right meta-stat">
+                  <AncientIcon name="flame" size={12} className="anc-icon--power" />
+                  {formatNumber(row.power)}
                 </span>
               </div>
             ))}
@@ -83,17 +94,29 @@ export function LeaderboardPage() {
 
           {playerEntry && (
             <GamePanel title="Hạng của bạn">
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 0' }}>
-                <span style={{ fontSize: 28, fontWeight: 700, color: 'var(--text-gold)', width: 40, textAlign: 'center' }}>
-                  {playerEntry.rank}
-                </span>
-                <div className="list-row__avatar">{player.gender === 'male' ? '🧙‍♂️' : '🧙‍♀️'}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 12, color: 'var(--green-stat)' }}>{player.name} (Bạn)</div>
-                  <RealmBadge text={realmLabel} />
-                  <div className="meta-stat" style={{ fontSize: 11, color: 'var(--orange-power)', marginTop: 2 }}>
-                    <AncientIcon name="flame" size={11} className="anc-icon--power" /> {formatNumber(power)}
+              <div className="data-table data-table--leaderboard">
+                <div className="data-table__row data-table__row--highlight">
+                  <span className="data-table__cell data-table__cell--center rank-medal" style={{ fontSize: 20 }}>
+                    {playerEntry.rank}
+                  </span>
+                  <div className="data-table__cell data-table__cell--left data-table__player">
+                    <div className="list-row__avatar">
+                      <ItemIcon
+                        icon={player.gender === 'male' ? '🧙‍♂️' : '🧙‍♀️'}
+                        className="list-row__avatar-icon"
+                      />
+                    </div>
+                    <div className="data-table__player-info">
+                      <div className="list-row__name" style={{ color: 'var(--green-stat)' }}>
+                        {player.name} (Bạn)
+                      </div>
+                      <RealmBadge text={realmLabel} />
+                    </div>
                   </div>
+                  <span className="data-table__cell data-table__cell--right meta-stat">
+                    <AncientIcon name="flame" size={12} className="anc-icon--power" />
+                    {formatNumber(power)}
+                  </span>
                 </div>
               </div>
             </GamePanel>

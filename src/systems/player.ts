@@ -14,6 +14,7 @@ export function createNewPlayer(name: string, gender: Gender, element: ElementTy
     element,
     realmId: 0,
     tier: 1,
+    spiritRootLevel: 1,
     cultivation: 0,
     cultivationRate: 0,
     autoCultivate: true,

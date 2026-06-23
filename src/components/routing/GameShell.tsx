@@ -1,7 +1,8 @@
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { useGameStore } from '@/stores/gameStore';
 import { useGameTick } from '@/hooks/useGameTick';
-import { Modal, GameButton, AncientIcon } from '@/components';
+import { Modal, GameButton, AncientIcon, GameToastBanner, ItemCatalogHost } from '@/components';
+import { TribulationResultModal } from '@/components/game/TribulationResultModal';
 import { formatDurationShort, formatNumber } from '@/utils/format';
 
 interface GameShellProps {
@@ -13,18 +14,37 @@ export function GameShell({ children }: GameShellProps) {
 
   const showOfflineReward = useGameStore((s) => s.showOfflineReward);
   const pendingOffline = useGameStore((s) => s.pendingOffline);
+  const settings = useGameStore((s) => s.settings);
   const claimOfflineRewards = useGameStore((s) => s.claimOfflineRewards);
   const dismissOfflineRewards = useGameStore((s) => s.dismissOfflineRewards);
   const breakthroughMessage = useGameStore((s) => s.breakthroughMessage);
+  const breakthroughPowerDelta = useGameStore((s) => s.breakthroughPowerDelta);
+  const breakthroughTribulation = useGameStore((s) => s.breakthroughTribulation);
   const clearBreakthroughMessage = useGameStore((s) => s.clearBreakthroughMessage);
-  const toastMessage = useGameStore((s) => s.toastMessage);
-  const clearToast = useGameStore((s) => s.clearToast);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('game-reduced-motion', settings.reducedMotion);
+    document.documentElement.dataset.battleSpeed = settings.battleSpeed;
+
+    return () => {
+      document.documentElement.classList.remove('game-reduced-motion');
+      delete document.documentElement.dataset.battleSpeed;
+    };
+  }, [settings.battleSpeed, settings.reducedMotion]);
+
+  useEffect(() => {
+    if (settings.autoClaimOffline && showOfflineReward && pendingOffline) {
+      claimOfflineRewards();
+    }
+  }, [claimOfflineRewards, pendingOffline, settings.autoClaimOffline, showOfflineReward]);
 
   return (
     <>
       {children}
+      <GameToastBanner />
+      <ItemCatalogHost />
 
-      {showOfflineReward && pendingOffline && (
+      {showOfflineReward && pendingOffline && !settings.autoClaimOffline && (
         <Modal
           onClose={dismissOfflineRewards}
           footer={
@@ -55,7 +75,13 @@ export function GameShell({ children }: GameShellProps) {
         </Modal>
       )}
 
-      {breakthroughMessage && (
+      {breakthroughTribulation ? (
+        <TribulationResultModal
+          notice={breakthroughTribulation}
+          showPowerDelta={settings.showPowerDelta}
+          onClose={clearBreakthroughMessage}
+        />
+      ) : breakthroughMessage && (
         <Modal
           onClose={clearBreakthroughMessage}
           footer={
@@ -65,17 +91,25 @@ export function GameShell({ children }: GameShellProps) {
           }
         >
           <div style={{ textAlign: 'center', padding: '16px 0', fontSize: 15, color: 'var(--text-gold)' }}>
-            {breakthroughMessage}
-          </div>
-        </Modal>
-      )}
-
-      {toastMessage && (
-        <Modal onClose={clearToast} footer={
-          <GameButton variant="primary" onClick={clearToast}>OK</GameButton>
-        }>
-          <div style={{ textAlign: 'center', padding: '12px 0', fontSize: 14, color: 'var(--text-secondary)' }}>
-            {toastMessage}
+            <div>{breakthroughMessage}</div>
+            {settings.showPowerDelta && breakthroughPowerDelta !== null && breakthroughPowerDelta !== 0 && (
+              <div
+                style={{
+                  marginTop: 12,
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: breakthroughPowerDelta > 0 ? '#7ee07a' : '#f08080',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                }}
+              >
+                <AncientIcon name="flame" size={16} />
+                {breakthroughPowerDelta > 0 ? '+' : ''}
+                {formatNumber(breakthroughPowerDelta)} lực chiến
+              </div>
+            )}
           </div>
         </Modal>
       )}

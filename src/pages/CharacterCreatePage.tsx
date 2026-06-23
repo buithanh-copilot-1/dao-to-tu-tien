@@ -1,26 +1,41 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '@/stores/gameStore';
+import { GenderPreviewCard } from '@/components/game/GenderPreviewCard';
 import type { ElementType, Gender } from '@/types/game';
-import loginBg from '@/assets/login/bg.png';
-import loginLogo from '@/assets/login/logo.png';
-import loginPlatform from '@/assets/login/platform.png';
+import createLogo from '@/assets/create/logo_daoto.png';
+import createBg from '@/assets/create/bg.png';
+import inputNameFrame from '@/assets/create/input_nhapten.png';
+import btnStartTuTien from '@/assets/create/btn_batdaututien.png';
+import portraitMale from '@/assets/create/ui_nhanvat_nam.png';
+import portraitFemale from '@/assets/create/ui_nhanvat_nu.png';
+import linhCanKim from '@/assets/create/linhcan_kim.png';
+import linhCanMoc from '@/assets/create/linhcan_moc.png';
+import linhCanThuy from '@/assets/create/linhcan_thuy.png';
+import linhCanHoa from '@/assets/create/linhcan_hoa.png';
+import linhCanTho from '@/assets/create/linhcan_tho.png';
 
-const GENDERS: Array<{ id: Gender; label: string; icon: string }> = [
-  { id: 'male', label: 'Nam', icon: '♂' },
-  { id: 'female', label: 'Nữ', icon: '♀' },
+const PORTRAITS: Record<Gender, string> = {
+  male: portraitMale,
+  female: portraitFemale,
+};
+
+const GENDERS: Array<{ id: Gender; label: string; symbol: string }> = [
+  { id: 'male', label: 'Nam', symbol: '♂' },
+  { id: 'female', label: 'Nữ', symbol: '♀' },
 ];
 
 const ELEMENTS: Array<{
   id: ElementType;
   name: string;
   description: string;
+  img: string;
 }> = [
-  { id: 'metal', name: 'Kim', description: 'Cứng rắn, sắc bén' },
-  { id: 'wood', name: 'Mộc', description: 'Sinh sôi, hỗ trợ' },
-  { id: 'water', name: 'Thủy', description: 'Linh hoạt, khống chế' },
-  { id: 'fire', name: 'Hỏa', description: 'Bùng nổ, sát thương' },
-  { id: 'earth', name: 'Thổ', description: 'Vững chắc, phòng thủ' },
+  { id: 'metal', name: 'Kim', description: 'Cứng rắn, sắc bén', img: linhCanKim },
+  { id: 'wood', name: 'Mộc', description: 'Sinh sôi, hỗ trợ', img: linhCanMoc },
+  { id: 'water', name: 'Thủy', description: 'Linh hoạt, khống chế', img: linhCanThuy },
+  { id: 'fire', name: 'Hỏa', description: 'Bùng nổ, sát thương', img: linhCanHoa },
+  { id: 'earth', name: 'Thổ', description: 'Vững chắc, phòng thủ', img: linhCanTho },
 ];
 
 const RANDOM_NAMES = [
@@ -34,48 +49,6 @@ const RANDOM_NAMES = [
   'Thanh Huyền',
 ];
 
-function ElementGlyph({ type }: { type: ElementType }) {
-  return (
-    <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-      {type === 'metal' && (
-        <>
-          <path d="M32 6 48 29 32 58 16 29Z" />
-          <path d="M32 6v52M16 29h32M23 29l9 29 9-29" />
-          <path d="M20 44 8 53M44 44l12 9" />
-        </>
-      )}
-      {type === 'wood' && (
-        <>
-          <path d="M32 55V23" />
-          <path d="M31 26C18 18 15 9 16 6c11 2 17 8 16 20Z" />
-          <path d="M34 30c13-9 22-8 25-5-7 10-15 13-25 5Z" />
-          <path d="M30 38c-12 1-20 8-22 15 10 2 18-2 22-15Z" />
-        </>
-      )}
-      {type === 'water' && (
-        <>
-          <path d="M10 34c8-18 25-22 38-12 7 5 9 14 4 22-5 9-17 13-28 8" />
-          <path d="M16 39c10 2 18-2 25-12" />
-          <path d="M22 24c-2 10 3 18 15 22" />
-        </>
-      )}
-      {type === 'fire' && (
-        <>
-          <path d="M34 6c4 13 16 18 16 34 0 11-8 18-18 18S14 51 14 40c0-9 5-15 11-21-1 8 2 13 9 16-5-10-3-19 0-29Z" />
-          <path d="M31 39c-5 5-6 13 1 19 7-5 8-13 2-20" />
-        </>
-      )}
-      {type === 'earth' && (
-        <>
-          <path d="M8 48 24 18l10 18 8-11 14 23Z" />
-          <path d="M20 48h36M24 18l-3 30M42 25l-4 23" />
-          <path d="M13 42c10 1 18-2 25-9" />
-        </>
-      )}
-    </svg>
-  );
-}
-
 export function CharacterCreatePage() {
   const navigate = useNavigate();
   const createCharacter = useGameStore((s) => s.createCharacter);
@@ -85,7 +58,7 @@ export function CharacterCreatePage() {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
 
-  const oppositeGender = gender === 'male' ? 'female' : 'male';
+  const inactiveGender: Gender = gender === 'male' ? 'female' : 'male';
 
   const randomName = () => {
     setName(RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)]);
@@ -105,12 +78,11 @@ export function CharacterCreatePage() {
 
   return (
     <main className="create-page">
-      <img className="create-page__bg" src={loginBg} alt="" aria-hidden="true" draggable={false} />
-      <img className="create-page__platform" src={loginPlatform} alt="" aria-hidden="true" draggable={false} />
+      <img className="create-page__bg" src={createBg} alt="" aria-hidden="true" draggable={false} />
 
       <section className="create-screen" aria-label="Tạo nhân vật">
         <header className="create-screen__header">
-          <img className="create-screen__logo" src={loginLogo} alt="Đạo Tổ Tu Tiên" draggable={false} />
+          <img className="create-screen__logo" src={createLogo} alt="Đạo Tổ Tu Tiên" draggable={false} />
           <h1>Tạo nhân vật</h1>
         </header>
 
@@ -118,13 +90,14 @@ export function CharacterCreatePage() {
           <div className={`create-screen__portrait create-screen__portrait--${gender}`}>
             <div className="create-screen__moon" aria-hidden="true" />
             <div className="create-screen__aura" aria-hidden="true" />
-            <div className="create-screen__cultivator" aria-hidden="true">
-              <span className="create-screen__hair" />
-              <span className="create-screen__head" />
-              <span className="create-screen__robe" />
-              <span className="create-screen__sleeve create-screen__sleeve--left" />
-              <span className="create-screen__sleeve create-screen__sleeve--right" />
-            </div>
+            <img
+              key={gender}
+              className="create-screen__portrait-img"
+              src={PORTRAITS[gender]}
+              alt=""
+              aria-hidden="true"
+              draggable={false}
+            />
           </div>
 
           <aside className="create-screen__side">
@@ -134,72 +107,63 @@ export function CharacterCreatePage() {
                 <button
                   key={item.id}
                   type="button"
-                  className={`create-screen__gender ${item.id === gender ? 'create-screen__gender--active' : ''}`}
+                  className={`create-screen__gender create-screen__gender--${item.id} ${item.id === gender ? 'create-screen__gender--active' : ''}`}
                   onClick={() => setGender(item.id)}
+                  aria-pressed={item.id === gender}
                 >
-                  <span>{item.icon}</span>
-                  {item.label}
+                  <span className="create-screen__gender-icon" aria-hidden="true">
+                    {item.symbol}
+                  </span>
+                  <span className="create-screen__gender-label">{item.label}</span>
                 </button>
               ))}
             </div>
 
-            <button
-              type="button"
-              className={`create-screen__thumb create-screen__thumb--${oppositeGender}`}
-              onClick={() => setGender(oppositeGender)}
-              aria-label={`Chọn ${oppositeGender === 'male' ? 'Nam' : 'Nữ'}`}
-            >
-              <span className="create-screen__thumb-face" aria-hidden="true" />
-              <strong>Chọn {oppositeGender === 'male' ? 'Nam' : 'Nữ'}</strong>
-            </button>
+            <GenderPreviewCard gender={inactiveGender} onSelect={() => setGender(inactiveGender)} />
           </aside>
         </div>
 
-        <section className="create-screen__section">
-          <h2>Chọn linh căn</h2>
-          <div className="create-screen__elements">
-            {ELEMENTS.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                className={`create-screen__element create-screen__element--${item.id} ${
-                  item.id === element ? 'create-screen__element--active' : ''
-                }`}
-                onClick={() => setElement(item.id)}
-              >
-                <span className="create-screen__element-orb">
-                  <ElementGlyph type={item.id} />
-                </span>
-                <strong>{item.name}</strong>
-                <small>{item.description}</small>
-              </button>
-            ))}
-          </div>
-        </section>
+        <div className="create-screen__bottom">
+          <section className="create-screen__section create-screen__section--elements">
+            <h2>Chọn linh căn</h2>
+            <div className="create-screen__elements">
+              {ELEMENTS.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={`create-screen__element ${item.id === element ? 'create-screen__element--active' : ''}`}
+                  onClick={() => setElement(item.id)}
+                >
+                  <img src={item.img} alt={`${item.name} - ${item.description}`} draggable={false} />
+                </button>
+              ))}
+            </div>
+          </section>
 
-        <section className="create-screen__section create-screen__section--name">
-          <h2>Tên nhân vật</h2>
-          <div className="create-screen__name-row">
-            <input
-              value={name}
-              onChange={(event) => {
-                setName(event.target.value);
-                setError('');
-              }}
-              placeholder="Nhập tên nhân vật (2-12 ký tự)"
-              maxLength={12}
-              aria-label="Tên nhân vật"
-            />
-            <button type="button" onClick={randomName} aria-label="Random tên">
-              ⚂
-            </button>
-          </div>
-          {error && <p className="create-screen__error">{error}</p>}
-        </section>
+          <section className="create-screen__section create-screen__section--name">
+            <h2>Tên nhân vật</h2>
+            <div className="create-screen__name-field">
+              <img className="create-screen__name-frame" src={inputNameFrame} alt="" aria-hidden draggable={false} />
+              <input
+                className="create-screen__name-input"
+                value={name}
+                onChange={(event) => {
+                  setName(event.target.value);
+                  setError('');
+                }}
+                placeholder="Nhập tên nhân vật (2-12 ký tự)"
+                maxLength={12}
+                aria-label="Tên nhân vật"
+              />
+              <button type="button" className="create-screen__name-random" onClick={randomName} aria-label="Random tên" />
+            </div>
+            {error && <p className="create-screen__error">{error}</p>}
+          </section>
 
-        <button type="button" className="create-screen__start" onClick={handleStart}>
-          Bắt đầu tu tiên
-        </button>
+          <button type="button" className="create-screen__start" onClick={handleStart}>
+            <img src={btnStartTuTien} alt="Bắt đầu tu tiên" draggable={false} />
+          </button>
+        </div>
       </section>
     </main>
   );

@@ -6,15 +6,17 @@ import {
   GameBody,
   GameFooter,
   BottomNav,
-  PageTitle,
+  PageHead,
   GamePanel,
   GameButton,
   AncientIcon,
+  ItemIcon,
 } from '@/components';
 import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { BattleScreen } from '@/components/game/BattleScreen';
 import { useGameStore } from '@/stores/gameStore';
 import { useGameNav } from '@/hooks/useGameNav';
+import { useSideMenuBack } from '@/hooks/useSideMenuBack';
 import { ARENA_DAILY_LIMIT, ARENA_OPPONENTS } from '@/data/arena';
 import { calcCombatPower } from '@/utils/stats';
 import { calcWinChance } from '@/systems/combat';
@@ -24,6 +26,7 @@ export function ArenaPage() {
   const player = useGameStore((s) => s.player)!;
   const dailyCounters = useGameStore((s) => s.dailyCounters);
   const { activeNav, navItems, handleNav } = useGameNav();
+  const { goBack } = useSideMenuBack();
   const [opponentId, setOpponentId] = useState<string | null>(null);
 
   const power = calcCombatPower(player);
@@ -35,7 +38,7 @@ export function ArenaPage() {
         <GameHeader><PlayerHeader /></GameHeader>
 
         <GameBody>
-          <PageTitle title="Đấu Pháp Đài" showOrnament />
+          <PageHead title="Đấu Pháp Đài" showOrnament onBack={goBack} />
 
           <GamePanel title="Thông tin">
             <div style={{ fontSize: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -52,7 +55,9 @@ export function ArenaPage() {
               const winChance = calcWinChance(power, opp.power);
               return (
                 <div key={opp.id} className="list-row">
-                  <span className="entity-icon">{opp.icon}</span>
+                  <span className="entity-icon">
+                    <ItemIcon icon={opp.icon} className="reward-item-icon" />
+                  </span>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 12, color: 'var(--text-gold)' }}>{opp.name}</div>
                     <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{opp.realm}</div>

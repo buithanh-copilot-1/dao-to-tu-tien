@@ -1,3 +1,5 @@
+import { AncientIcon } from './AncientIcon';
+
 interface PageTitleProps {
   title: string;
   subtitle?: string;
@@ -15,7 +17,7 @@ export function PageTitle({ title, subtitle, showOrnament = true }: PageTitlePro
       {subtitle && <p className="page-title__subtitle">{subtitle}</p>}
       {showOrnament && (
         <div className="page-title__ornament">
-          <span className="page-title__ornament-icon">☯</span>
+          <AncientIcon name="realm" size={12} className="page-title__ornament-icon" />
         </div>
       )}
     </div>

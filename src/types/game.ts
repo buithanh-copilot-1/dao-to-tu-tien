@@ -1,9 +1,21 @@
 export type ElementType = 'metal' | 'wood' | 'water' | 'fire' | 'earth';
 export type Gender = 'male' | 'female';
+/** common -> Trắng, uncommon -> Lam, rare -> Lục, epic -> Vàng, legendary -> Cam, mythic -> Đỏ. */
 export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' | 'mythic';
 export type ItemCategory = 'equipment' | 'pill' | 'material' | 'other';
 export type EquipSlotType = 'weapon' | 'armor' | 'bracer' | 'boots' | 'treasure' | 'belt' | 'ring' | 'pendant';
 export type QuestType = 'daily' | 'main' | 'achievement';
+export type BattleSpeed = 'slow' | 'normal' | 'fast';
+
+export interface GameSettings {
+  soundEnabled: boolean;
+  musicEnabled: boolean;
+  vibrationEnabled: boolean;
+  reducedMotion: boolean;
+  battleSpeed: BattleSpeed;
+  autoClaimOffline: boolean;
+  showPowerDelta: boolean;
+}
 
 export interface Realm {
   id: number;
@@ -70,12 +82,35 @@ export interface OfflineRewards {
   durationMs: number;
 }
 
+/** Trạng thái gia nhập tông môn. `rank` 0-based theo bậc trong data/sects. */
+export interface SectState {
+  id: string;
+  rank: number;
+  contribution: number;
+}
+
 export interface Player {
   name: string;
   gender: Gender;
   element: ElementType;
   realmId: number;
   tier: number;
+  /** Tông môn đang gia nhập (nếu có) */
+  sect?: SectState;
+  /** Công pháp đã lĩnh ngộ: id công pháp → cấp độ (1+) */
+  techniques?: Record<string, number>;
+  /** Thiên phú đã điểm: id thiên phú → số điểm đã đầu tư */
+  talents?: Record<string, number>;
+  /** Linh thú sở hữu: id → cấp; linh thú đang xuất chiến */
+  pets?: Record<string, number>;
+  activePet?: string;
+  /** Tọa kỵ sở hữu: id → cấp; tọa kỵ đang cưỡi */
+  mounts?: Record<string, number>;
+  activeMount?: string;
+  /** Số lần phi thăng — mỗi lần +10% toàn bộ chỉ số vĩnh viễn */
+  ascensionCount?: number;
+  /** Cấp linh căn (1–10), tăng chỉ số ngũ hành */
+  spiritRootLevel?: number;
   cultivation: number;
   cultivationRate: number;
   autoCultivate: boolean;
@@ -102,6 +137,7 @@ export interface Player {
 export interface GameSave {
   hasCharacter: boolean;
   player: Player | null;
+  settings: GameSettings;
   showOfflineReward: boolean;
   pendingOffline: OfflineRewards | null;
   leaderboardRefreshAt: number;
@@ -110,6 +146,7 @@ export interface GameSave {
     dungeons: Record<string, number>;
     arena: number;
     bosses: Record<string, number>;
+    secret: Record<string, number>;
   };
   towerBestFloor: number;
 }

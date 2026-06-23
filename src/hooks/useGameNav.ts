@@ -6,7 +6,7 @@ export const NAV_ROUTES: Record<string, string> = {
   character: '/character',
   inventory: '/inventory',
   cultivation: '/home',
-  sect: '/quests',
+  sect: '/sect',
   immortal: '/dungeon',
   ranking: '/leaderboard',
   arena: '/arena',
@@ -14,20 +14,29 @@ export const NAV_ROUTES: Record<string, string> = {
   tower: '/tower',
   explore: '/dungeon',
   realm: '/dungeon',
+  settings: '/settings',
 };
 
 export const SIDE_MENU_ROUTES: Record<string, string> = {
   ranking: '/leaderboard',
   arena: '/arena',
-  secret: '/dungeon',
+  secret: '/secret-realm',
+  market: '/market',
+  pet: '/pet',
+  mount: '/mount',
   events: '/quests',
   benefits: '/quests',
   heaven: '/tower',
   '7day': '/quests',
-  'first-charge': '/quests',
-  'month-card': '/quests',
-  'growth-fund': '/quests',
-  'sect-war': '/dungeon',
+  'sect-war': '/sect',
+  // Cụm tính năng tu luyện (LEFT menu)
+  sect: '/sect',
+  technique: '/technique',
+  talent: '/talent',
+  alchemy: '/alchemy',
+  forge: '/forge',
+  ascension: '/ascension',
+  settings: '/settings',
 };
 
 export function useGameNav() {
@@ -40,7 +49,14 @@ export function useGameNav() {
 
   const navItems = DEFAULT_NAV_ITEMS.map((item) => ({
     ...item,
-    notify: item.id === 'sect' ? claimable : item.id === 'inventory' ? false : item.notify,
+    notify:
+      item.id === 'sect'
+        ? claimable
+        : item.id === 'inventory'
+          ? false
+          : item.id === 'character'
+            ? false
+            : item.notify,
   }));
 
   const handleNav = (id: string) => {
@@ -50,8 +66,14 @@ export function useGameNav() {
 
   const handleSideMenu = (id: string) => {
     const route = SIDE_MENU_ROUTES[id];
-    if (route) navigate(route);
+    if (route) {
+      navigate(route, { state: { from: location.pathname + location.search } });
+    }
   };
 
-  return { activeNav, navItems, handleNav, handleSideMenu, navigate };
+  const goWithFrom = (path: string) => {
+    navigate(path, { state: { from: location.pathname + location.search } });
+  };
+
+  return { activeNav, navItems, handleNav, handleSideMenu, navigate, goWithFrom };
 }

@@ -11,9 +11,11 @@ export { BackButton } from './common/BackButton';
 export { GameButton } from './common/GameButton';
 export { GamePanel } from './common/GamePanel';
 export { PageTitle, SectionHeader } from './common/PageTitle';
+export { PageHead } from './common/PageHead';
 export { TabBar } from './common/TabBar';
 export { ProgressBar, XpBar } from './common/ProgressBar';
-export { ItemSlot, ItemGrid, EquipSlot } from './common/ItemSlot';
+export { ItemSlot, ItemGrid, EquipSlot, RARITY_FRAMES } from './common/ItemSlot';
+export { ItemIcon } from './common/ItemIcon';
 export {
   PillToggle,
   GameInput,
@@ -24,3 +26,6 @@ export {
   DEFAULT_ELEMENTS,
   Modal,
 } from './common/MiscComponents';
+export { GameToastBanner } from './common/GameToastBanner';
+export { CatalogItemButton } from './common/CatalogItemButton';
+export { ItemCatalogHost } from './game/ItemCatalogHost';

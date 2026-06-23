@@ -20,6 +20,7 @@ import {
   GameInput,
   ItemGrid,
   EquipSlot,
+  ItemIcon,
 } from '@/components';
 
 const PAGES = [
@@ -61,7 +62,7 @@ export function ShowcasePage() {
                 fontSize: 11,
                 textDecoration: 'none',
               }}>
-                {p.icon} {p.label}
+                <ItemIcon icon={p.icon} className="showcase-link__icon" /> {p.label}
               </Link>
             ))}
           </div>
@@ -137,14 +138,19 @@ export function ShowcasePage() {
                 </div>
                 <ProgressBar current={65} max={100} thin showText={false} />
                 <div className="mission-row">
-                  <div className="mission-row__icon">🧘</div>
+                  <div className="mission-row__icon">
+                    <ItemIcon icon="🧘" className="mission-row__glyph" />
+                  </div>
                   <div className="mission-row__content">
                     <div className="mission-row__title">Tu luyện 2 giờ</div>
                     <div className="mission-row__progress-text">Tiến độ: 120/120 phút</div>
                     <ProgressBar current={120} max={120} thin showText={false} />
                   </div>
                   <div className="mission-row__rewards">
-                    <div className="mission-row__reward">💎<span className="mission-row__reward-qty">50</span></div>
+                    <div className="mission-row__reward">
+                      <ItemIcon icon="💎" className="mission-row__glyph" />
+                      <span className="mission-row__reward-qty">50</span>
+                    </div>
                   </div>
                   <div className="mission-row__action">
                     <GameButton variant="claim" notify>Nhận</GameButton>

@@ -1,10 +1,19 @@
-export type BattleMode = 'dungeon' | 'boss' | 'arena' | 'tower';
+export type BattleMode = 'dungeon' | 'boss' | 'arena' | 'tower' | 'secret';
+
+export interface BattleItemDrop {
+  templateId: string;
+  quantity: number;
+}
 
 export interface BattleRewards {
   gold?: number;
   crystal?: number;
   jade?: number;
+  /** @deprecated dùng items */
   itemId?: string;
+  items?: BattleItemDrop[];
+  /** Có thể rơi thêm vật phẩm ngẫu nhiên */
+  bonusDrop?: boolean;
 }
 
 export interface BattleWave {

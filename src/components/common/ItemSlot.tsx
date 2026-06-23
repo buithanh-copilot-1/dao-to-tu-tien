@@ -1,6 +1,22 @@
 import { AncientIcon } from './AncientIcon';
+import { ItemIcon } from './ItemIcon';
+import type { Rarity } from '@/types/game';
+import { getRarityStarCount } from '@/data/rarity';
+import frameCommon from '@/assets/items/frame_common.png';
+import frameUncommon from '@/assets/items/frame_uncommon.png';
+import frameRare from '@/assets/items/frame_rare.png';
+import frameEpic from '@/assets/items/frame_epic.png';
+import frameLegendary from '@/assets/items/frame_legendary.png';
+import frameMythic from '@/assets/items/frame_mythic.png';
 
-type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary' | 'mythic';
+export const RARITY_FRAMES: Record<Rarity, string> = {
+  common: frameCommon,
+  uncommon: frameUncommon,
+  rare: frameRare,
+  epic: frameEpic,
+  legendary: frameLegendary,
+  mythic: frameMythic,
+};
 
 interface ItemSlotProps {
   icon?: string;
@@ -8,8 +24,10 @@ interface ItemSlotProps {
   enhance?: number;
   quantity?: number;
   locked?: boolean;
+  equipped?: boolean;
   stars?: number;
   empty?: boolean;
+  size?: 'sm' | 'lg';
   onClick?: () => void;
 }
 
@@ -19,19 +37,27 @@ export function ItemSlot({
   enhance,
   quantity,
   locked,
+  equipped,
   stars,
   empty,
+  size = 'sm',
   onClick,
 }: ItemSlotProps) {
+  const starCount = stars ?? (size === 'lg' && !empty ? getRarityStarCount(rarity) : 0);
+
   return (
     <div
-      className={`item-slot ${empty ? 'item-slot--empty' : `item-slot--${rarity}`}`}
+      className={[
+        'item-slot',
+        `item-slot--${size}`,
+        empty ? 'item-slot--empty' : `item-slot--${rarity}`,
+      ].filter(Boolean).join(' ')}
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
     >
-      {!empty && <span className="item-slot__corner" aria-hidden />}
-      {!empty && icon && <span className="item-slot__icon">{icon}</span>}
+      {!empty && icon && <ItemIcon icon={icon} className="item-slot__icon" />}
+      {!empty && <img className="item-slot__frame" src={RARITY_FRAMES[rarity]} alt="" aria-hidden draggable={false} />}
       {enhance !== undefined && enhance > 0 && (
         <span className="item-slot__enhance">+{enhance}</span>
       )}
@@ -40,12 +66,18 @@ export function ItemSlot({
       )}
       {locked && (
         <span className="item-slot__lock">
-          <AncientIcon name="lock" size={11} />
+          <AncientIcon name="lock" size={10} />
         </span>
       )}
-      {stars !== undefined && stars > 0 && (
+      {equipped && (
+        <span className="item-slot__equipped">
+          <AncientIcon name="shield" size={8} />
+          <span>Mặc</span>
+        </span>
+      )}
+      {starCount > 0 && (
         <div className="item-slot__stars">
-          {Array.from({ length: stars }).map((_, i) => (
+          {Array.from({ length: starCount }).map((_, i) => (
             <span key={i} className="item-slot__star" />
           ))}
         </div>
@@ -80,12 +112,12 @@ export function EquipSlot({ label, icon, enhance, stars }: EquipSlotProps) {
   return (
     <div className="equip-slot">
       <span className="equip-slot__label">{label}</span>
-      <span className="equip-slot__icon">{icon}</span>
-      {enhance !== undefined && <span className="equip-slot__enhance">+{enhance}</span>}
-      {stars !== undefined && (
+      <ItemIcon icon={icon} className="equip-slot__icon" />
+      {enhance !== undefined && enhance > 0 && <span className="equip-slot__enhance">+{enhance}</span>}
+      {stars !== undefined && stars > 0 && (
         <div className="equip-slot__stars">
           {Array.from({ length: stars }).map((_, i) => (
-            <span key={i}>⭐</span>
+            <span key={i} className="equip-slot__star" />
           ))}
         </div>
       )}

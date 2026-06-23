@@ -1,6 +1,7 @@
 import { NotifyDot } from '../common/NotifyDot';
 import { RealmBadge } from '../common/RealmBadge';
 import { AncientIcon } from '../common/AncientIcon';
+import { ItemIcon } from '../common/ItemIcon';
 import { SpiritPortrait } from '../game/SpiritPortrait';
 import type { ElementType, Gender } from '@/types/game';
 
@@ -24,7 +25,7 @@ export function PlayerAvatar({ src, level, notify, emoji = '🧙', gender, eleme
           <SpiritPortrait gender={gender} element={element} size="sm" className="player-avatar__spirit" />
         ) : (
           <div className="player-avatar__img" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>
-            {emoji}
+            <ItemIcon icon={emoji} className="player-avatar__fallback-icon" />
           </div>
         )}
       </div>

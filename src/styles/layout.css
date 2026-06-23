@@ -119,13 +119,19 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-gutter: stable;
   padding: 0 var(--safe-padding);
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
-.home-body {
+.game-screen__body.home-body {
+  overflow: hidden;
+  padding: 0 8px 4px;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .game-screen__footer {

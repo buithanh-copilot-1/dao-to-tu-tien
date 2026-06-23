@@ -3,6 +3,8 @@ import type { BattleMode, BattleTarget } from '@/types/battle';
 import { ARENA_OPPONENTS } from '@/data/arena';
 import { BOSSES, DUNGEONS } from '@/data/dungeons';
 import { getTowerFloor } from '@/data/tower';
+import { getSecretRealm } from '@/data/secretRealm';
+import { getDropPreviewItems } from '@/systems/drops';
 
 export function buildBattleTarget(
   mode: BattleMode,
@@ -15,21 +17,25 @@ export function buildBattleTarget(
   if (mode === 'dungeon') {
     const d = DUNGEONS.find((x) => x.id === id);
     if (!d) return null;
-    const waves = [0.55, 0.75, 1.0].map((mul, i) => ({
-      wave: i + 1,
-      name: i < 2 ? `Yêu thú đợt ${i + 1}` : 'Thủ vệ động phủ',
-      icon: i < 2 ? '👾' : '💀',
-      power: Math.floor(d.enemyPower * mul),
-      hp: Math.floor(d.enemyPower * mul * 8),
-    }));
     return {
       id: d.id,
       mode,
       title: d.name,
       subtitle: d.description,
       playerIcon,
-      waves,
-      rewards: { gold: d.goldReward, crystal: d.crystalReward, itemId: d.itemDrop },
+      waves: [{
+        wave: 1,
+        name: d.name,
+        icon: d.icon,
+        power: d.enemyPower,
+        hp: Math.floor(d.enemyPower * 8),
+      }],
+      rewards: {
+        gold: d.goldReward,
+        crystal: d.crystalReward,
+        items: getDropPreviewItems('dungeon', { dungeon: d }),
+        bonusDrop: true,
+      },
     };
   }
 
@@ -43,7 +49,13 @@ export function buildBattleTarget(
       subtitle: b.description,
       playerIcon,
       waves: [{ wave: 1, name: b.name, icon: b.icon, power: b.power, hp: b.hp }],
-      rewards: { gold: b.goldReward, crystal: b.crystalReward, jade: b.jadeReward },
+      rewards: {
+        gold: b.goldReward,
+        crystal: b.crystalReward,
+        jade: b.jadeReward,
+        items: getDropPreviewItems('boss', { boss: b }),
+        bonusDrop: true,
+      },
     };
   }
 
@@ -63,7 +75,12 @@ export function buildBattleTarget(
         power: o.power,
         hp: Math.floor(o.power * 6),
       }],
-      rewards: { gold: o.goldReward, crystal: o.crystalReward },
+      rewards: {
+        gold: o.goldReward,
+        crystal: o.crystalReward,
+        items: getDropPreviewItems('arena', { arena: o }),
+        bonusDrop: true,
+      },
     };
   }
 
@@ -83,7 +100,39 @@ export function buildBattleTarget(
         power: t.enemyPower,
         hp: t.enemyHp,
       }],
-      rewards: { gold: t.goldReward, crystal: t.crystalReward, jade: t.jadeReward },
+      rewards: {
+        gold: t.goldReward,
+        crystal: t.crystalReward,
+        jade: t.jadeReward,
+        items: getDropPreviewItems('tower', { tower: t }),
+        bonusDrop: true,
+      },
+    };
+  }
+
+  if (mode === 'secret') {
+    const r = getSecretRealm(id);
+    if (!r) return null;
+    return {
+      id: r.id,
+      mode,
+      title: r.name,
+      subtitle: r.description,
+      playerIcon,
+      waves: [{
+        wave: 1,
+        name: r.name,
+        icon: '🌀',
+        power: r.power,
+        hp: Math.floor(r.power * 8),
+      }],
+      rewards: {
+        gold: r.goldReward,
+        crystal: r.crystalReward,
+        jade: r.jadeReward,
+        items: getDropPreviewItems('secret', { secret: r }),
+        bonusDrop: true,
+      },
     };
   }
 

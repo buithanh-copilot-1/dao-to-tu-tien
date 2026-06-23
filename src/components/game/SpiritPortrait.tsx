@@ -1,5 +1,7 @@
+import type { CSSProperties } from 'react';
 import type { ElementType, Gender } from '@/types/game';
-import { AncientSpiritFigure } from './AncientSpiritFigure';
+import meditationFemale from '@/assets/home/meditation-female.png';
+import meditationMale from '@/assets/home/meditation-male.png';
 
 export const ELEMENT_VISUALS: Record<ElementType, { primary: string; glow: string; name: string }> = {
   metal: { primary: '#c8d0dc', glow: 'rgba(200, 208, 220, 0.45)', name: 'Kim' },
@@ -28,16 +30,17 @@ export function SpiritPortrait({
   className = '',
 }: SpiritPortraitProps) {
   const colors = ELEMENT_VISUALS[element];
+  const image = gender === 'female' ? meditationFemale : meditationMale;
 
   return (
-    <div className={`spirit-portrait spirit-portrait--${size} ${className}`}>
-      <AncientSpiritFigure
-        gender={gender}
-        elementColor={colors.primary}
-        elementGlow={colors.glow}
-        paused={paused}
-        size={SIZE_MAP[size]}
-      />
+    <div
+      className={`spirit-portrait spirit-portrait--${size} spirit-portrait--${gender} ${paused ? 'spirit-portrait--paused' : ''} ${className}`}
+      style={{
+        '--portrait-color': colors.primary,
+        '--portrait-glow': colors.glow,
+      } as CSSProperties}
+    >
+      <img className="spirit-portrait__img" src={image} alt="" draggable={false} />
     </div>
   );
 }

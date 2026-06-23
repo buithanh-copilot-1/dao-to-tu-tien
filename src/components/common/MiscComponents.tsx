@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { AncientIcon } from './AncientIcon';
+import { ItemIcon } from './ItemIcon';
 
 interface PillToggleOption {
   id: string;
@@ -23,7 +24,7 @@ export function PillToggle({ options, activeId, onChange }: PillToggleProps) {
           onClick={() => onChange(opt.id)}
           type="button"
         >
-          {opt.icon && <span>{opt.icon}</span>}
+          {opt.icon && <ItemIcon icon={opt.icon} className="pill-toggle__icon" />}
           {opt.label}
         </button>
       ))}
@@ -50,7 +51,7 @@ export function GameInput({ value, onChange, placeholder, actionIcon, onAction }
       />
       {actionIcon && (
         <span className="game-input-wrap__action" onClick={onAction} role="button" tabIndex={0}>
-          {actionIcon}
+          <ItemIcon icon={actionIcon} className="game-input-wrap__action-icon" />
         </span>
       )}
     </div>
@@ -126,7 +127,9 @@ export function ElementSelector({ elements, activeId, onChange }: ElementSelecto
           role="button"
           tabIndex={0}
         >
-          <div className="element-item__circle">{el.icon}</div>
+          <div className="element-item__circle">
+            <ItemIcon icon={el.icon} className="element-item__glyph" />
+          </div>
           <span className="element-item__name">{el.name}</span>
           <span className="element-item__desc">{el.description}</span>
         </div>
@@ -136,23 +139,24 @@ export function ElementSelector({ elements, activeId, onChange }: ElementSelecto
 }
 
 export const DEFAULT_ELEMENTS: ElementOption[] = [
-  { id: 'metal', name: 'Kim', icon: '⚔️', description: 'Cứng rắn, sắc bén' },
-  { id: 'wood', name: 'Mộc', icon: '🌿', description: 'Sinh sôi, trị liệu' },
-  { id: 'water', name: 'Thủy', icon: '💧', description: 'Linh hoạt, khống chế' },
-  { id: 'fire', name: 'Hỏa', icon: '🔥', description: 'Bùng nổ, sát thương' },
-  { id: 'earth', name: 'Thổ', icon: '⛰️', description: 'Vững chắc, phòng thủ' },
+  { id: 'metal', name: 'Kim', icon: 'ancient:sword', description: 'Cứng rắn, sắc bén' },
+  { id: 'wood', name: 'Mộc', icon: 'item:herb', description: 'Sinh sôi, trị liệu' },
+  { id: 'water', name: 'Thủy', icon: 'ancient:swirl', description: 'Linh hoạt, khống chế' },
+  { id: 'fire', name: 'Hỏa', icon: 'ancient:flame', description: 'Bùng nổ, sát thương' },
+  { id: 'earth', name: 'Thổ', icon: 'ancient:mountain', description: 'Vững chắc, phòng thủ' },
 ];
 
 interface ModalProps {
   children: ReactNode;
   onClose?: () => void;
   footer?: ReactNode;
+  panelClassName?: string;
 }
 
-export function Modal({ children, onClose, footer }: ModalProps) {
+export function Modal({ children, onClose, footer, panelClassName }: ModalProps) {
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-panel" onClick={(e) => e.stopPropagation()}>
+      <div className={`modal-panel ${panelClassName ?? ''}`.trim()} onClick={(e) => e.stopPropagation()}>
         {onClose && (
           <button className="modal-panel__close" onClick={onClose} type="button">
             <AncientIcon name="close" size={15} />

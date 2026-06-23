@@ -1,5 +1,6 @@
 import type { GameItem, ItemCategory, Player } from '@/types/game';
 import { createItem } from '@/data/itemTemplates';
+import { RARITY_META, RARITY_SORT_WEIGHT } from '@/data/rarity';
 
 export function countUsedSlots(player: Player): number {
   return player.inventory.length;
@@ -48,6 +49,26 @@ export function addItemByTemplate(player: Player, templateId: string, quantity =
   return addItem(player, createItem(templateId, quantity));
 }
 
+/** Tổng số lượng vật phẩm theo templateId (cộng dồn mọi stack). */
+export function countByTemplate(player: Player, templateId: string): number {
+  return player.inventory
+    .filter((i) => i.templateId === templateId)
+    .reduce((sum, i) => sum + i.quantity, 0);
+}
+
+/** Tiêu hao `quantity` vật phẩm theo templateId (gộp qua các stack). */
+export function removeByTemplate(player: Player, templateId: string, quantity: number): Player {
+  let remaining = quantity;
+  let updated = player;
+  for (const item of player.inventory.filter((i) => i.templateId === templateId)) {
+    if (remaining <= 0) break;
+    const take = Math.min(item.quantity, remaining);
+    updated = removeItem(updated, item.id, take);
+    remaining -= take;
+  }
+  return updated;
+}
+
 export function removeItem(player: Player, itemId: string, quantity = 1): Player {
   const item = findItem(player, itemId);
   if (!item) return player;
@@ -73,11 +94,10 @@ export function removeItem(player: Player, itemId: string, quantity = 1): Player
 }
 
 export function sortInventory(player: Player): Player {
-  const rarityOrder = { mythic: 0, legendary: 1, epic: 2, rare: 3, uncommon: 4, common: 5 };
   const sorted = [...player.inventory].sort((a, b) => {
     const cat = a.category.localeCompare(b.category);
     if (cat !== 0) return cat;
-    const rar = rarityOrder[a.rarity] - rarityOrder[b.rarity];
+    const rar = RARITY_SORT_WEIGHT[a.rarity] - RARITY_SORT_WEIGHT[b.rarity];
     if (rar !== 0) return rar;
     return a.name.localeCompare(b.name);
   });
@@ -117,7 +137,9 @@ export function expandCapacity(player: Player, cost = 500): { player: Player; er
 }
 
 export function filterInventory(player: Player, tab: string): GameItem[] {
-  const items = player.inventory.filter((i) => !isItemEquipped(player, i.id) || tab === 'all');
+  if (tab === 'all') return player.inventory;
+
+  const items = player.inventory.filter((i) => !isItemEquipped(player, i.id));
   switch (tab) {
     case 'equip':
       return items.filter((i) => i.category === 'equipment');
@@ -128,7 +150,7 @@ export function filterInventory(player: Player, tab: string): GameItem[] {
     case 'other':
       return items.filter((i) => i.category === 'other');
     default:
-      return player.inventory;
+      return items;
   }
 }
 
@@ -175,13 +197,5 @@ export function getCategoryLabel(cat: ItemCategory): string {
 }
 
 export function getRarityLabel(rarity: GameItem['rarity']): string {
-  const labels: Record<GameItem['rarity'], string> = {
-    common: 'Phàm Phẩm',
-    uncommon: 'Linh Phẩm',
-    rare: 'Bảo Phẩm',
-    epic: 'Tiên Phẩm',
-    legendary: 'Thánh Phẩm',
-    mythic: 'Thần Phẩm',
-  };
-  return labels[rarity];
+  return RARITY_META[rarity].label;
 }

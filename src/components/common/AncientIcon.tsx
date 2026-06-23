@@ -1,8 +1,12 @@
-import type { CSSProperties } from 'react';
+import { useId, type CSSProperties } from 'react';
 
 /**
  * Bộ icon cổ phong vẽ bằng SVG (nét bút), thay cho emoji.
- * Dùng currentColor để thừa hưởng màu từ class cha.
+ *
+ * Nét được tô bằng gradient kim loại (sáng trên → tối dưới) để hợp phong cách
+ * tiên hiệp dập nổi, thay vì đơn sắc phẳng. Màu gradient lấy từ hai biến CSS
+ * `--ic-from` / `--ic-to` (đặt theo tone trong icons.css). Mặc định cả hai bằng
+ * `currentColor` nên các chỗ chỉ set `color` vẫn hoạt động như cũ.
  */
 export type AncientIconName =
   | 'cycle'
@@ -30,7 +34,21 @@ export type AncientIconName =
   | 'heart'
   | 'bolt'
   | 'swirl'
-  | 'eye';
+  | 'eye'
+  | 'scroll'
+  | 'gift'
+  | 'calendar'
+  | 'trophy'
+  | 'compass'
+  | 'festival'
+  | 'streak'
+  | 'pagoda'
+  | 'arena'
+  | 'realm'
+  | 'person'
+  | 'meditate'
+  | 'mountain'
+  | 'soul';
 
 interface AncientIconProps {
   name: AncientIconName;
@@ -39,9 +57,9 @@ interface AncientIconProps {
   style?: CSSProperties;
 }
 
+// Nét tô bằng gradient của nhóm cha (<g>), nên không set `stroke` ở đây.
 const S = {
   fill: 'none',
-  stroke: 'currentColor',
   strokeWidth: 1.6,
   strokeLinecap: 'round' as const,
   strokeLinejoin: 'round' as const,
@@ -209,9 +227,141 @@ const PATHS: Record<AncientIconName, React.ReactNode> = {
       <circle {...S} cx="12" cy="12" r="2.6" />
     </>
   ),
+  scroll: (
+    <>
+      <path {...S} d="M8 4.5h8v15H8z" />
+      <path {...S} d="M8 4.5C6 4.5 5.5 6 5.5 7.5S6 10.5 8 10.5" />
+      <path {...S} d="M16 4.5c2 0 2.5 1.5 2.5 3s-.5 3-2.5 3" />
+      <path {...S} d="M9.5 8.5h5" />
+      <path {...S} d="M9.5 11.5h5" />
+      <path {...S} d="M9.5 14.5h3.5" />
+    </>
+  ),
+  gift: (
+    <>
+      <rect {...S} x="5.5" y="10.5" width="13" height="9" rx="1" />
+      <path {...S} d="M12 10.5v9" />
+      <path {...S} d="M5.5 10.5h13" />
+      <path {...S} d="M9.5 10.5c0-2.2 1.2-3.2 2.5-3.2s2.5 1 2.5 3.2" />
+      <path {...S} d="M14.5 10.5c0-2.2-1.2-3.2-2.5-3.2" />
+      <path {...S} d="M10 5.5c.8 1.2 1.6 1.8 2 2.8" />
+      <path {...S} d="M14 5.5c-.8 1.2-1.6 1.8-2 2.8" />
+    </>
+  ),
+  calendar: (
+    <>
+      <rect {...S} x="5" y="6.5" width="14" height="13.5" rx="1.2" />
+      <path {...S} d="M5 10h14" />
+      <path {...S} d="M8.5 4.5v3" />
+      <path {...S} d="M15.5 4.5v3" />
+      <path {...S} d="M9 13.5h2" />
+      <path {...S} d="M13 13.5h2" />
+      <path {...S} d="M9 16.5h2" />
+    </>
+  ),
+  trophy: (
+    <>
+      <path {...S} d="M8 6.5h8l-1 6.5a3 3 0 0 1-6 0z" />
+      <path {...S} d="M8 7.5H5.5a2 2 0 0 0 0 4H8" />
+      <path {...S} d="M16 7.5h2.5a2 2 0 0 1 0 4H16" />
+      <path {...S} d="M12 16v2.5" />
+      <path {...S} d="M9 20.5h6" />
+      <path {...S} d="M10 18.5h4" />
+    </>
+  ),
+  compass: (
+    <>
+      <circle {...S} cx="12" cy="12" r="8.5" />
+      <path {...S} d="M12 4.5v2" />
+      <path {...S} d="M12 17.5v2" />
+      <path {...S} d="M4.5 12h2" />
+      <path {...S} d="M17.5 12h2" />
+      <path {...S} d="M12 8.5l2.5 5-5-2.5z" />
+    </>
+  ),
+  festival: (
+    <>
+      <path {...S} d="M6 18.5l3-9 3 4 4-7" />
+      <path {...S} d="M16 6.5l1.5 1.5M18.5 9l2 .5M17 11.5l1.5 1.5" />
+      <circle {...S} cx="7.5" cy="7.5" r="1.2" />
+      <circle {...S} cx="11" cy="5.5" r=".9" />
+    </>
+  ),
+  streak: (
+    <>
+      <rect {...S} x="5" y="6" width="14" height="13" rx="1.2" />
+      <path {...S} d="M5 10h14" />
+      <path {...S} d="M8.5 4.5v3" />
+      <path {...S} d="M15.5 4.5v3" />
+      <path {...S} d="M8.5 13.5l1.8 1.8 3.4-3.6" />
+      <path {...S} d="M15.5 16.5h.01" opacity={0} />
+    </>
+  ),
+  pagoda: (
+    <>
+      <path {...S} d="M12 4.5l7 3.5v2H5v-2z" />
+      <path {...S} d="M10 10h4l1.5 3H8.5z" />
+      <path {...S} d="M8.5 13h7l1 2.5h-9z" />
+      <path {...S} d="M7.5 15.5h9l.8 2H6.7z" />
+      <path {...S} d="M11 18.5v2" />
+      <path {...S} d="M13 18.5v2" />
+      <path {...S} d="M9 20.5h6" />
+    </>
+  ),
+  arena: (
+    <>
+      <path {...S} d="M6.5 18.5l5.5-12" />
+      <path {...S} d="M17.5 18.5l-5.5-12" />
+      <path {...S} d="M9 14.5h6" />
+      <path {...S} d="M10 17.5h4" />
+      <path {...S} d="M4.5 19.5h4" />
+      <path {...S} d="M15.5 19.5h4" />
+    </>
+  ),
+  realm: (
+    <>
+      <path {...S} d="M12 4.5l1.4 4.8L18 10.5l-4.6 1.2L12 16.5l-1.4-4.8L6 10.5l4.6-1.2z" />
+      <path {...S} d="M5.5 6.5l.8 1.4M18.5 6.5l-.8 1.4M5.5 17.5l1.2-.8M18.5 17.5l-1.2-.8" />
+    </>
+  ),
+  person: (
+    <>
+      <circle {...S} cx="12" cy="8.5" r="3.2" />
+      <path {...S} d="M6.5 20.5c.8-3.6 3-5.5 5.5-5.5s4.7 1.9 5.5 5.5" />
+    </>
+  ),
+  meditate: (
+    <>
+      <circle {...S} cx="12" cy="7.5" r="2.6" />
+      <path {...S} d="M8.5 12.5c1.2-1.2 2.4-1.8 3.5-1.8s2.3.6 3.5 1.8" />
+      <path {...S} d="M6.5 17.5c2.2-2.2 3.6-3 5.5-3s3.3.8 5.5 3" />
+      <path {...S} d="M9.5 20.5h5" />
+      <path {...S} d="M4.5 14.5c1.5-.8 3-.8 4.5 0" />
+      <path {...S} d="M19.5 14.5c-1.5-.8-3-.8-4.5 0" />
+    </>
+  ),
+  mountain: (
+    <>
+      <path {...S} d="M3.5 19.5h17" />
+      <path {...S} d="M5.5 19.5L12 6.5l6.5 13" />
+      <path {...S} d="M10 19.5l4.5-8 4.5 8" />
+      <path {...S} d="M16.5 12.5l2-2.5 3.5 9.5" opacity={0.85} />
+    </>
+  ),
+  soul: (
+    <>
+      <circle {...S} cx="12" cy="12" r="3.2" />
+      <path {...S} d="M12 4.5c1.8 2.4 4.5 3.4 4.5 6.2a4.5 4.5 0 0 1-9 0c0-2.8 2.7-3.8 4.5-6.2z" />
+      <path {...S} d="M7.5 16.5c1.2 1.4 2.7 2 4.5 2s3.3-.6 4.5-2" />
+      <path {...S} d="M5 9.5c.8 1.2 1.6 1.8 2.5 2.2M19 9.5c-.8 1.2-1.6 1.8-2.5 2.2" opacity={0.75} />
+    </>
+  ),
 };
 
 export function AncientIcon({ name, size = 20, className = '', style }: AncientIconProps) {
+  const gid = useId();
+  const gradId = `anc-grad-${gid}`;
+
   return (
     <svg
       className={`anc-icon ${className}`}
@@ -221,7 +371,16 @@ export function AncientIcon({ name, size = 20, className = '', style }: AncientI
       aria-hidden
       style={style}
     >
-      {PATHS[name]}
+      <defs>
+        {/* Gradient kim loại dọc — sáng trên, tối dưới. Stops dùng biến CSS
+            (mặc định currentColor) để tone màu điều khiển được từ ngoài. */}
+        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="var(--ic-from, currentColor)" />
+          <stop offset="0.5" stopColor="var(--ic-mid, var(--ic-from, currentColor))" />
+          <stop offset="1" stopColor="var(--ic-to, currentColor)" />
+        </linearGradient>
+      </defs>
+      <g stroke={`url(#${gradId})`}>{PATHS[name]}</g>
     </svg>
   );
 }

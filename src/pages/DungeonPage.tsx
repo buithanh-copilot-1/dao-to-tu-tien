@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   GameFrame,
   GameScreen,
@@ -6,23 +5,29 @@ import {
   GameBody,
   GameFooter,
   BottomNav,
-  PageTitle,
+  PageHead,
   TabBar,
-  GamePanel,
   GameButton,
   AncientIcon,
+  ItemIcon,
+  CatalogItemButton,
 } from '@/components';
 import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { BattleScreen } from '@/components/game/BattleScreen';
 import { useGameStore } from '@/stores/gameStore';
 import { useGameNav } from '@/hooks/useGameNav';
+import { useSideMenuBack } from '@/hooks/useSideMenuBack';
 import { BOSSES, DUNGEONS } from '@/data/dungeons';
 import { getBossRealmLabel } from '@/data/bosses';
-import { getMaxRealmId } from '@/data/realms';
+import { getMaxRealmId, getRealmShortLabel } from '@/data/realms';
 import { calcCombatPower } from '@/utils/stats';
 import { calcWinChance } from '@/systems/combat';
+import { getDropPreviewItems } from '@/systems/drops';
 import { formatNumber } from '@/utils/format';
+import { ITEM_TEMPLATES } from '@/data/itemTemplates';
 import type { BattleMode } from '@/types/battle';
+import { useMemo, useState, type ReactNode } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 interface ActiveBattle {
   mode: BattleMode;
@@ -31,138 +36,318 @@ interface ActiveBattle {
 
 const BOSS_DAILY_LIMIT = 3;
 
+interface ContentRowProps {
+  icon: string;
+  title: string;
+  badge?: string;
+  meta: ReactNode;
+  actionLabel: string;
+  disabled?: boolean;
+  locked?: boolean;
+  featured?: boolean;
+  onAction: () => void;
+}
+
+function ContentRow({
+  icon,
+  title,
+  badge,
+  meta,
+  actionLabel,
+  disabled,
+  locked,
+  featured,
+  onAction,
+}: ContentRowProps) {
+  return (
+    <div className={`content-row ${locked ? 'content-row--locked' : ''} ${featured ? 'content-row--featured' : ''}`}>
+      <ItemIcon icon={icon} className="content-row__icon" />
+      <div className="content-row__body">
+        <div className="content-row__title">
+          {title}
+          {badge && <span className="content-row__badge">{badge}</span>}
+        </div>
+        <div className="content-row__meta">{meta}</div>
+      </div>
+      <GameButton variant={featured ? 'primary' : 'secondary'} onClick={onAction} disabled={disabled} className="content-row__btn">
+        {actionLabel}
+      </GameButton>
+    </div>
+  );
+}
+
 export function DungeonPage() {
   const player = useGameStore((s) => s.player)!;
   const dailyCounters = useGameStore((s) => s.dailyCounters);
   const { activeNav, navItems, handleNav } = useGameNav();
-  const [tab, setTab] = useState('dungeon');
+  const { goBack } = useSideMenuBack();
+  const [searchParams] = useSearchParams();
+  const [tab, setTab] = useState(() => (searchParams.get('tab') === 'boss' ? 'boss' : 'dungeon'));
   const [battle, setBattle] = useState<ActiveBattle | null>(null);
-  const [bossRealmFilter, setBossRealmFilter] = useState<number | 'all'>('all');
+  const [showLockedDungeons, setShowLockedDungeons] = useState(false);
+  const [showAllBossRealms, setShowAllBossRealms] = useState(false);
+  const [bossRealmFilter, setBossRealmFilter] = useState(player.realmId);
 
   const power = calcCombatPower(player);
 
-  const bossRealms = Array.from(new Set(BOSSES.map((b) => b.minRealmId))).sort((a, b) => a - b);
-  const filteredBosses = bossRealmFilter === 'all'
-    ? BOSSES
-    : BOSSES.filter((b) => b.minRealmId === bossRealmFilter);
+  const bossRealms = useMemo(
+    () => Array.from(new Set(BOSSES.map((b) => b.minRealmId))).sort((a, b) => a - b),
+    [],
+  );
+
+  const visibleBossRealms = useMemo(() => {
+    if (showAllBossRealms) return bossRealms;
+    const min = Math.max(0, player.realmId - 1);
+    const max = Math.min(getMaxRealmId(), player.realmId + 1);
+    return bossRealms.filter((r) => r >= min && r <= max);
+  }, [bossRealms, player.realmId, showAllBossRealms]);
+
+  const bossesInRealm = useMemo(
+    () => BOSSES.filter((b) => b.minRealmId === bossRealmFilter),
+    [bossRealmFilter],
+  );
+
+  const { openDungeons, lockedDungeons, recommendedDungeonId } = useMemo(() => {
+    const open = DUNGEONS.filter((d) => player.realmId >= d.minRealmId);
+    const locked = DUNGEONS.filter((d) => player.realmId < d.minRealmId);
+    const recommended = open.find((d) => (dailyCounters.dungeons[d.id] ?? 0) < d.dailyLimit)?.id
+      ?? open[open.length - 1]?.id;
+    return { openDungeons: open, lockedDungeons: locked, recommendedDungeonId: recommended };
+  }, [player.realmId, dailyCounters.dungeons]);
+
+  const realmFilterIndex = visibleBossRealms.indexOf(bossRealmFilter);
+  const canPrevRealm = realmFilterIndex > 0;
+  const canNextRealm = realmFilterIndex >= 0 && realmFilterIndex < visibleBossRealms.length - 1;
+
+  const shiftBossRealm = (dir: -1 | 1) => {
+    const idx = visibleBossRealms.indexOf(bossRealmFilter);
+    if (idx < 0) return;
+    const next = visibleBossRealms[idx + dir];
+    if (next != null) setBossRealmFilter(next);
+  };
 
   return (
     <GameFrame>
       <GameScreen>
         <GameHeader><PlayerHeader /></GameHeader>
 
-        <GameBody>
-          <PageTitle title="Bí Cảnh" showOrnament />
-
-          <GamePanel title="Lực chiến">
-            <div className="meta-stat" style={{ fontSize: 16, color: 'var(--orange-power)', justifyContent: 'center', width: '100%' }}>
-              <AncientIcon name="flame" size={16} className="anc-icon--power" /> {formatNumber(power)}
-            </div>
-          </GamePanel>
+        <GameBody className="dungeon-body">
+          <PageHead title="Phó Bản" showOrnament onBack={goBack} />
+          <p className="dungeon-summary">
+            <AncientIcon name="flame" size={13} className="anc-icon--power" />
+            Lực chiến <strong>{formatNumber(power)}</strong>
+          </p>
 
           <TabBar
             tabs={[
-              { id: 'dungeon', label: `Phó bản (${DUNGEONS.length})` },
-              { id: 'boss', label: `Boss (${BOSSES.length})` },
+              { id: 'dungeon', label: 'Phó bản' },
+              { id: 'boss', label: 'Boss' },
             ]}
             activeId={tab}
             onChange={setTab}
           />
 
           {tab === 'dungeon' && (
-            <div className="content-list">
-              {DUNGEONS.map((d) => {
-                const runs = dailyCounters.dungeons[d.id] ?? 0;
-                const locked = player.realmId < d.minRealmId;
-                const winChance = calcWinChance(power, d.enemyPower);
-                return (
-                  <div key={d.id} className={`content-list__row ${locked ? 'content-list__row--locked' : ''}`}>
-                    <span className="content-list__icon">{d.icon}</span>
-                    <div className="content-list__info">
-                      <div className="content-list__title">{d.name}</div>
-                      <div className="content-list__desc">{d.description}</div>
-                      <div className="content-list__meta">
-                        <span className="meta-stat">3 đợt</span>
-                        <span className="meta-stat"><AncientIcon name="coin" size={11} className="anc-icon--gold" />{formatNumber(d.goldReward)}</span>
-                        <span className="meta-stat"><AncientIcon name="gem" size={11} className="anc-icon--crystal" />{formatNumber(d.crystalReward)}</span>
-                        <span className="meta-stat">{runs}/{d.dailyLimit} lượt · {winChance}%</span>
-                      </div>
+            <div className="dungeon-section">
+              <div className="dungeon-section__head">
+                <span className="dungeon-section__label">Có thể vào</span>
+                <span className="dungeon-section__count">{openDungeons.length} phó bản</span>
+              </div>
+
+              <div className="content-list content-list--compact">
+                {openDungeons.map((d) => {
+                  const runs = dailyCounters.dungeons[d.id] ?? 0;
+                  const winChance = calcWinChance(power, d.enemyPower);
+                  const exhausted = runs >= d.dailyLimit;
+                  return (
+                    <ContentRow
+                      key={d.id}
+                      icon={d.icon}
+                      title={d.name}
+                      badge={d.id === recommendedDungeonId ? 'Đề xuất' : undefined}
+                      featured={d.id === recommendedDungeonId}
+                      meta={(
+                        <>
+                          <span>{getRealmShortLabel(d.minRealmId)}</span>
+                          <span>·</span>
+                          <span>{winChance}% thắng</span>
+                          <span>·</span>
+                          <span>{runs}/{d.dailyLimit} lượt</span>
+                          <span>·</span>
+                          <span className="meta-stat"><AncientIcon name="coin" size={10} className="anc-icon--gold" />{formatNumber(d.goldReward)}</span>
+                          {getDropPreviewItems('dungeon', { dungeon: d }).map((drop) => (
+                            <CatalogItemButton
+                              key={drop.templateId}
+                              templateId={drop.templateId}
+                              className="meta-stat catalog-chip-btn"
+                              title={ITEM_TEMPLATES[drop.templateId]?.name}
+                            >
+                              <ItemIcon icon={ITEM_TEMPLATES[drop.templateId]?.icon ?? '📦'} className="reward-item-icon" />
+                            </CatalogItemButton>
+                          ))}
+                        </>
+                      )}
+                      actionLabel={exhausted ? 'Hết lượt' : 'Vào'}
+                      disabled={exhausted}
+                      onAction={() => setBattle({ mode: 'dungeon', targetId: d.id })}
+                    />
+                  );
+                })}
+              </div>
+
+              {lockedDungeons.length > 0 && (
+                <div className="dungeon-collapsible">
+                  <button
+                    type="button"
+                    className="dungeon-collapsible__toggle"
+                    onClick={() => setShowLockedDungeons((v) => !v)}
+                  >
+                    <AncientIcon name="gate" size={12} />
+                    {showLockedDungeons ? 'Ẩn' : 'Xem'} phó bản chưa mở ({lockedDungeons.length})
+                    <span className={`dungeon-collapsible__chevron ${showLockedDungeons ? 'dungeon-collapsible__chevron--open' : ''}`}>›</span>
+                  </button>
+                  {showLockedDungeons && (
+                    <div className="content-list content-list--compact">
+                      {lockedDungeons.map((d) => (
+                        <ContentRow
+                          key={d.id}
+                          icon={d.icon}
+                          title={d.name}
+                          locked
+                          meta={<span>Cần {getRealmShortLabel(d.minRealmId)}</span>}
+                          actionLabel="Khóa"
+                          disabled
+                          onAction={() => {}}
+                        />
+                      ))}
                     </div>
-                    <GameButton
-                      variant="primary"
-                      onClick={() => setBattle({ mode: 'dungeon', targetId: d.id })}
-                      disabled={locked || runs >= d.dailyLimit}
-                      style={{ fontSize: 10 }}
-                    >
-                      {locked ? 'Khóa' : 'Vào'}
-                    </GameButton>
-                  </div>
-                );
-              })}
+                  )}
+                </div>
+              )}
             </div>
           )}
 
           {tab === 'boss' && (
-            <>
-              <div className="boss-realm-filter">
+            <div className="dungeon-section">
+              <div className="boss-realm-nav">
                 <button
                   type="button"
-                  className={`boss-realm-filter__item ${bossRealmFilter === 'all' ? 'boss-realm-filter__item--active' : ''}`}
-                  onClick={() => setBossRealmFilter('all')}
+                  className="boss-realm-nav__arrow"
+                  disabled={!canPrevRealm}
+                  onClick={() => shiftBossRealm(-1)}
+                  aria-label="Cảnh giới trước"
                 >
-                  Tất cả
+                  ‹
                 </button>
-                {bossRealms.map((realmId) => (
-                  <button
-                    key={realmId}
-                    type="button"
-                    className={`boss-realm-filter__item ${bossRealmFilter === realmId ? 'boss-realm-filter__item--active' : ''}`}
-                    onClick={() => setBossRealmFilter(realmId)}
-                  >
-                    {getBossRealmLabel(realmId)}
-                  </button>
-                ))}
+                <div className="boss-realm-nav__center">
+                  <span className="boss-realm-nav__realm">{getBossRealmLabel(bossRealmFilter)}</span>
+                  <span className="boss-realm-nav__sub">
+                    {bossesInRealm.length} boss · {bossRealmFilter <= player.realmId ? 'Đã mở' : 'Chưa đủ cảnh'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className="boss-realm-nav__arrow"
+                  disabled={!canNextRealm}
+                  onClick={() => shiftBossRealm(1)}
+                  aria-label="Cảnh giới sau"
+                >
+                  ›
+                </button>
               </div>
 
-              <div className="content-list">
-                {filteredBosses.map((b) => {
+              {showAllBossRealms ? (
+                <div className="boss-realm-chips">
+                  {bossRealms.map((realmId) => (
+                    <button
+                      key={realmId}
+                      type="button"
+                      className={`boss-realm-chips__item ${bossRealmFilter === realmId ? 'boss-realm-chips__item--active' : ''} ${realmId > player.realmId ? 'boss-realm-chips__item--locked' : ''}`}
+                      onClick={() => setBossRealmFilter(realmId)}
+                    >
+                      {getBossRealmLabel(realmId)}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="boss-realm-chips boss-realm-chips--nearby">
+                  {visibleBossRealms.map((realmId) => (
+                    <button
+                      key={realmId}
+                      type="button"
+                      className={`boss-realm-chips__item ${bossRealmFilter === realmId ? 'boss-realm-chips__item--active' : ''}`}
+                      onClick={() => setBossRealmFilter(realmId)}
+                    >
+                      {getBossRealmLabel(realmId)}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <button
+                type="button"
+                className="dungeon-link-btn"
+                onClick={() => {
+                  setShowAllBossRealms((v) => !v);
+                  if (!showAllBossRealms && !visibleBossRealms.includes(bossRealmFilter)) {
+                    setBossRealmFilter(player.realmId);
+                  }
+                }}
+              >
+                {showAllBossRealms ? 'Thu gọn danh sách cảnh giới' : 'Xem tất cả cảnh giới'}
+              </button>
+
+              <div className="content-list content-list--compact">
+                {bossesInRealm.map((b) => {
                   const runs = dailyCounters.bosses[b.id] ?? 0;
                   const locked = player.realmId < b.minRealmId;
                   const winChance = calcWinChance(power, b.power);
+                  const exhausted = runs >= BOSS_DAILY_LIMIT;
                   const isEndgame = b.minRealmId >= getMaxRealmId() - 1;
                   return (
-                    <div key={b.id} className={`content-list__row ${locked ? 'content-list__row--locked' : ''}`}>
-                      <span className="content-list__icon">{b.icon}</span>
-                      <div className="content-list__info">
-                        <div className="content-list__title">
-                          {b.name}
-                          {isEndgame && <span className="content-list__badge">BOSS</span>}
-                        </div>
-                        <div className="content-list__desc">{b.description}</div>
-                        <div className="content-list__meta">
-                          {getBossRealmLabel(b.minRealmId)} · HP {formatNumber(b.hp)} ·
-                          <span className="meta-stat"><AncientIcon name="flame" size={11} className="anc-icon--power" />{formatNumber(b.power)}</span> · {winChance}%
-                        </div>
-                        <div className="content-list__meta">
-                          <span className="meta-stat"><AncientIcon name="coin" size={11} className="anc-icon--gold" />{formatNumber(b.goldReward)}</span>
-                          <span className="meta-stat"><AncientIcon name="gem" size={11} className="anc-icon--crystal" />{formatNumber(b.crystalReward)}</span>
-                          <span className="meta-stat"><AncientIcon name="jade" size={11} className="anc-icon--jade" />{b.jadeReward}</span>
-                          <span className="meta-stat">{runs}/{BOSS_DAILY_LIMIT}</span>
-                        </div>
-                      </div>
-                      <GameButton
-                        variant="primary"
-                        onClick={() => setBattle({ mode: 'boss', targetId: b.id })}
-                        disabled={locked || runs >= BOSS_DAILY_LIMIT}
-                        style={{ fontSize: 10 }}
-                      >
-                        {locked ? 'Khóa' : 'Đánh'}
-                      </GameButton>
-                    </div>
+                    <ContentRow
+                      key={b.id}
+                      icon={b.icon}
+                      title={b.name}
+                      badge={isEndgame ? 'BOSS' : undefined}
+                      locked={locked}
+                      meta={(
+                        <>
+                          <span className="meta-stat"><AncientIcon name="flame" size={10} className="anc-icon--power" />{formatNumber(b.power)}</span>
+                          <span>·</span>
+                          <span>{winChance}%</span>
+                          <span>·</span>
+                          <span>{runs}/{BOSS_DAILY_LIMIT}</span>
+                          {!locked && (
+                            <>
+                              <span>·</span>
+                              <span className="meta-stat"><AncientIcon name="coin" size={10} className="anc-icon--gold" />{formatNumber(b.goldReward)}</span>
+                              {getDropPreviewItems('boss', { boss: b }).map((drop) => (
+                                <CatalogItemButton
+                                  key={drop.templateId}
+                                  templateId={drop.templateId}
+                                  className="meta-stat catalog-chip-btn"
+                                  title={ITEM_TEMPLATES[drop.templateId]?.name}
+                                >
+                                  <ItemIcon icon={ITEM_TEMPLATES[drop.templateId]?.icon ?? '📦'} className="reward-item-icon" />
+                                </CatalogItemButton>
+                              ))}
+                            </>
+                          )}
+                        </>
+                      )}
+                      actionLabel={locked ? 'Khóa' : exhausted ? 'Hết lượt' : 'Đánh'}
+                      disabled={locked || exhausted}
+                      onAction={() => setBattle({ mode: 'boss', targetId: b.id })}
+                    />
                   );
                 })}
               </div>
-            </>
+
+              {bossesInRealm.length === 0 && (
+                <p className="dungeon-empty">Không có boss ở cảnh giới này.</p>
+              )}
+            </div>
           )}
         </GameBody>
 

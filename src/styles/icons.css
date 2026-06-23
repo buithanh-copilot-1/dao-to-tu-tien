@@ -4,6 +4,10 @@
   display: inline-block;
   vertical-align: middle;
   flex-shrink: 0;
+  /* Mặc định: nét đơn sắc theo currentColor (giữ tương thích chỗ chỉ set color) */
+  --ic-from: currentColor;
+  --ic-mid: currentColor;
+  --ic-to: currentColor;
 }
 
 /* ── Ngọc bội tròn — nút thao tác chính ──────────────────────────── */
@@ -136,12 +140,39 @@
   color: var(--text-muted);
 }
 
-/* ── Màu icon theo loại tài nguyên ──────────────────────────────── */
-.anc-icon--gold { color: var(--gold-light); }
-.anc-icon--crystal { color: var(--jade-light); }
-.anc-icon--jade { color: var(--jade-glow); }
-.anc-icon--power { color: var(--orange-power); }
-.anc-icon--cinnabar { color: var(--cinnabar-light); }
+/* ── Màu icon theo loại tài nguyên (gradient kim loại dập nổi) ───────
+   Mỗi tone đặt 3 chặng sáng → giữa → tối để nét có chiều sâu kim loại.
+   `color` vẫn set để các hiệu ứng dựa currentColor (glow) ăn theo tone. */
+.anc-icon--gold {
+  color: var(--gold-light);
+  --ic-from: #fbeec4;
+  --ic-mid: #d8b669;
+  --ic-to: #9a6f1e;
+}
+.anc-icon--crystal {
+  color: var(--jade-light);
+  --ic-from: #cdeef5;
+  --ic-mid: #7fc4d2;
+  --ic-to: #34707f;
+}
+.anc-icon--jade {
+  color: var(--jade-glow);
+  --ic-from: #b6f2d4;
+  --ic-mid: #6ec9a0;
+  --ic-to: #336b54;
+}
+.anc-icon--power {
+  color: var(--orange-power);
+  --ic-from: #ffdf9b;
+  --ic-mid: #e8a23e;
+  --ic-to: #b85f12;
+}
+.anc-icon--cinnabar {
+  color: var(--cinnabar-light);
+  --ic-from: #f3b0b0;
+  --ic-mid: #d05959;
+  --ic-to: #7d1d1d;
+}
 
 /* Chip chỉ số inline: icon + số (dùng trong meta phó bản, đấu trường…) */
 .meta-stat {
@@ -154,6 +185,66 @@
 .meta-stat + .meta-stat {
   margin-left: 9px;
 }
+
+/* Icon vật phẩm nhỏ dùng trong reward / loot list */
+.reward-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+span.reward-item-icon {
+  font-size: 15px;
+}
+
+img.reward-item-icon {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+}
+
+.item-icon-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  color: var(--text-gold);
+}
+
+.item-icon-glyph__svg {
+  width: 1em;
+  height: 1em;
+  overflow: visible;
+}
+
+.item-icon-glyph--crystal { color: #78d8ff; }
+.item-icon-glyph--herb { color: var(--jade-glow); }
+.item-icon-glyph--ore { color: #aab6c8; }
+.item-icon-glyph--soul { color: #9ed8ff; }
+.item-icon-glyph--ring { color: var(--rarity-epic); }
+.item-icon-glyph--belt { color: var(--rarity-legendary); }
+.item-icon-glyph--treasure { color: var(--rarity-mythic); }
+.item-icon-glyph--box { color: var(--text-gold); }
+.item-icon-glyph--ancient { color: var(--text-gold); }
+.item-icon-glyph--sword { color: var(--gold-light); }
+.item-icon-glyph--shield { color: var(--jade-light); }
+.item-icon-glyph--flame { color: var(--orange-power); }
+.item-icon-glyph--bolt,
+.item-icon-glyph--sparkle { color: var(--orange-glow); }
+.item-icon-glyph--pill { color: var(--rarity-epic); }
+.item-icon-glyph--meditate,
+.item-icon-glyph--swirl,
+.item-icon-glyph--realm { color: var(--jade-glow); }
+.item-icon-glyph--person { color: var(--text-secondary); }
+.item-icon-glyph--mountain { color: var(--jade-light); }
+.item-icon-glyph--pagoda,
+.item-icon-glyph--gate,
+.item-icon-glyph--trophy,
+.item-icon-glyph--gift,
+.item-icon-glyph--coin,
+.item-icon-glyph--unlock { color: var(--text-gold); }
 
 /* Khung icon thực thể (đối thủ, phó bản, nhiệm vụ) — ngọc bội tròn */
 .entity-icon {

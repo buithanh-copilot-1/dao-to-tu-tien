@@ -17,9 +17,13 @@ import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { CultivationAvatar } from '@/components/game/CultivationAvatar';
 import { useGameStore, hasClaimableQuests } from '@/stores/gameStore';
 import { useGameNav } from '@/hooks/useGameNav';
-import { canBreakthrough, isAtPeak } from '@/systems/cultivation';
+import { canBreakthrough, getTribulationInfo, isAtPeak } from '@/systems/cultivation';
 import { getBreakthroughCost, getRealmLabel, getNextRealmLabel } from '@/data/realms';
 import { formatNumber } from '@/utils/format';
+
+function formatRealmStage(label: string): string {
+  return label.replace(' - ', ' · ');
+}
 
 export function HomePage() {
   const player = useGameStore((s) => s.player)!;
@@ -30,10 +34,13 @@ export function HomePage() {
   const { activeNav, navItems, handleNav, handleSideMenu } = useGameNav();
 
   const breakthroughCost = getBreakthroughCost(player.realmId, player.tier);
-  const realmLabel = getRealmLabel(player.realmId, player.tier);
-  const nextRealmLabel = getNextRealmLabel(player.realmId, player.tier);
-  const readyToBreakthrough = canBreakthrough(player);
   const atPeak = isAtPeak(player);
+  const realmLabel = formatRealmStage(getRealmLabel(player.realmId, player.tier));
+  const nextRealmLabel = atPeak
+    ? 'Đỉnh Phong'
+    : formatRealmStage(getNextRealmLabel(player.realmId, player.tier));
+  const readyToBreakthrough = canBreakthrough(player);
+  const tribulationInfo = readyToBreakthrough ? getTribulationInfo(player) : null;
   const claimableQuests = hasClaimableQuests(player);
 
   const rightMenu = RIGHT_MENU_ITEMS.map((item) => ({
@@ -43,83 +50,103 @@ export function HomePage() {
 
   return (
     <GameFrame>
-      <GameScreen>
+      <GameScreen className="game-screen--home">
         <GameHeader><PlayerHeader /></GameHeader>
 
         <SideMenu items={LEFT_MENU_ITEMS} position="left" onItemClick={handleSideMenu} />
         <SideMenu items={rightMenu} position="right" onItemClick={handleSideMenu} />
 
         <GameBody className="home-body">
-          <CultivationAvatar
-            gender={player.gender}
-            element={player.element}
-            cultivating={player.autoCultivate || devFastBreakthrough}
-            realmId={player.realmId}
-          />
+          <div className="home-stage">
+            <CultivationAvatar
+              gender={player.gender}
+              element={player.element}
+              cultivating={player.autoCultivate || devFastBreakthrough}
+              realmId={player.realmId}
+            />
 
-          {import.meta.env.DEV && (
-            <button
-              type="button"
-              onClick={toggleDevFastBreakthrough}
-              className="dev-rune"
-              style={{
-                alignSelf: 'center',
-                marginBottom: 4,
-                color: devFastBreakthrough ? 'var(--jade-glow)' : 'var(--text-muted)',
-                borderColor: devFastBreakthrough ? 'var(--jade-glow)' : 'var(--text-muted)',
-              }}
-            >
-              <AncientIcon name="gourd" size={14} />
-              Luyện đan: {devFastBreakthrough ? 'Đột phá/giây ON' : 'OFF'}
-            </button>
-          )}
+            {import.meta.env.DEV && (
+              <button
+                type="button"
+                onClick={toggleDevFastBreakthrough}
+                className="dev-rune home-stage__dev"
+                style={{
+                  color: devFastBreakthrough ? 'var(--jade-glow)' : 'var(--text-muted)',
+                  borderColor: devFastBreakthrough ? 'var(--jade-glow)' : 'var(--text-muted)',
+                }}
+              >
+                <AncientIcon name="gourd" size={14} />
+                Luyện đan: {devFastBreakthrough ? 'Đột phá/giây ON' : 'OFF'}
+              </button>
+            )}
+          </div>
 
-          <GamePanel title="Đang tu luyện">
+          <GamePanel title="Đang tu luyện" className="cultivation-panel-wrap">
             <div className="cultivation-panel">
-              <div className="cultivation-panel__rate">
-                Tu vi: <span className="cultivation-panel__rate-value">{formatNumber(player.cultivationRate)}/giây</span>
+              <div className="cultivation-panel__stats">
+                <p className="cultivation-panel__rate">
+                  Tu vi:{' '}
+                  <span className="cultivation-panel__rate-value">
+                    {formatNumber(player.cultivationRate)}
+                  </span>
+                  /giây
+                </p>
+                <button type="button" className="cultivation-panel__boost" aria-label="Tăng tốc tu luyện">
+                  <span className="cultivation-panel__boost-icon" aria-hidden="true">
+                    !
+                  </span>
+                  <span className="cultivation-panel__boost-label">Tăng tốc</span>
+                </button>
               </div>
 
               <ProgressBar
+                variant="cultivation"
                 current={player.cultivation}
                 max={atPeak ? player.cultivation || 1 : breakthroughCost}
                 labelLeft={realmLabel}
-                labelRight={atPeak ? 'Đỉnh Phong' : nextRealmLabel}
+                labelRight={nextRealmLabel}
+                displayText={atPeak ? 'Đã đạt đỉnh' : undefined}
               />
+
+              {tribulationInfo && (
+                <div className="cultivation-panel__tribulation">
+                  <AncientIcon name="bolt" size={14} className="anc-icon--power" />
+                  <span>Thiên kiếp: {tribulationInfo.successRate}%</span>
+                  <span>Uy áp {formatNumber(tribulationInfo.difficulty)}</span>
+                </div>
+              )}
 
               <div className="cultivation-panel__actions">
                 <button
                   type="button"
-                  className={`rune-btn ${player.autoCultivate ? '' : 'rune-btn--muted'}`}
+                  className="cultivation-panel__side"
                   onClick={toggleAutoCultivate}
                 >
-                  <span className={`icon-medallion ${player.autoCultivate ? 'icon-medallion--active' : 'icon-medallion--muted'}`}>
-                    <AncientIcon name={player.autoCultivate ? 'cycle' : 'pause'} size={22} />
+                  <span
+                    className={`cultivation-panel__side-icon ${player.autoCultivate ? 'cultivation-panel__side-icon--active' : ''}`}
+                  >
+                    <AncientIcon name={player.autoCultivate ? 'cycle' : 'pause'} size={24} />
                   </span>
-                  <span className="rune-btn__label">
+                  <span className="cultivation-panel__side-label">
                     {player.autoCultivate ? 'Tự động' : 'Tạm dừng'}
                   </span>
                 </button>
 
                 <GameButton
-                  variant="primary"
+                  variant="hex"
                   notify={readyToBreakthrough && !atPeak}
-                  style={{ padding: '12px 40px', fontSize: 16 }}
+                  className={`cultivation-panel__breakthrough ${atPeak ? 'cultivation-panel__breakthrough--peak' : ''}`}
                   onClick={doBreakthrough}
                   disabled={atPeak}
                 >
-                  {atPeak ? 'Đỉnh Phong' : 'Đột phá'}
+                  {atPeak ? 'Đỉnh Phong' : tribulationInfo ? 'Độ kiếp' : 'Đột phá'}
                 </GameButton>
 
-                <button
-                  type="button"
-                  className="rune-btn"
-                  onClick={() => handleSideMenu('secret')}
-                >
-                  <span className="icon-medallion">
-                    <AncientIcon name="gate" size={22} />
+                <button type="button" className="cultivation-panel__side" aria-label="Mảnh Hồn">
+                  <span className="cultivation-panel__side-icon">
+                    <AncientIcon name="soul" size={24} />
                   </span>
-                  <span className="rune-btn__label">Bí Cảnh</span>
+                  <span className="cultivation-panel__side-label">Mảnh Hồn</span>
                 </button>
               </div>
             </div>

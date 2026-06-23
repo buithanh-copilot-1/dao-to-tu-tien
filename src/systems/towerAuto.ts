@@ -6,7 +6,8 @@ import type { Player } from '@/types/game';
 export type AutoTowerStopReason =
   | 'defeat'
   | 'max_floor'
-  | 'blocked';
+  | 'blocked'
+  | 'stopped';
 
 export interface AutoTowerResult {
   cleared: number;

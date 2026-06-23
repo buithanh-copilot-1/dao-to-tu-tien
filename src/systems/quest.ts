@@ -1,5 +1,6 @@
 import type { Player, Quest } from '@/types/game';
 import { createDefaultQuests } from '@/data/quests';
+import { ITEM_TEMPLATES } from '@/data/itemTemplates';
 import { addItemByTemplate } from './inventory';
 
 function getQuestProgress(player: Player, quest: Quest): number {
@@ -52,22 +53,22 @@ export function claimQuestReward(player: Player, questId: string): { player: Pla
     switch (reward.type) {
       case 'crystal':
         updated.crystal += reward.amount ?? 0;
-        rewards.push(`💎 ${reward.amount}`);
+        rewards.push(`Linh thạch ${reward.amount}`);
         break;
       case 'gold':
         updated.gold += reward.amount ?? 0;
-        rewards.push(`🪙 ${reward.amount}`);
+        rewards.push(`Vàng ${reward.amount}`);
         break;
       case 'jade':
         updated.jade += reward.amount ?? 0;
-        rewards.push(`🟢 ${reward.amount}`);
+        rewards.push(`Ngọc ${reward.amount}`);
         break;
       case 'item':
         if (reward.itemId) {
           const result = addItemByTemplate(updated, reward.itemId, 1);
           if (result.error) return { player, error: result.error };
           updated = result.player;
-          rewards.push(`📦 vật phẩm`);
+          rewards.push(`Vật phẩm ${ITEM_TEMPLATES[reward.itemId]?.name ?? 'vật phẩm'}`);
         }
         break;
     }

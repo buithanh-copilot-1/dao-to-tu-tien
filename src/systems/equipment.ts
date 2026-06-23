@@ -1,6 +1,11 @@
 import type { EquipmentMap, Player } from '@/types/game';
 import { calcStats } from '@/utils/stats';
 import { findItem } from './inventory';
+import equipWeapon from '@/assets/items/equip_weapon.png';
+import equipArmor from '@/assets/items/equip_armor.png';
+import equipBoots from '@/assets/items/equip_boots.png';
+import equipBracelet from '@/assets/items/equip_bracelet.png';
+import equipNecklace from '@/assets/items/equip_necklace.png';
 
 export function equipItem(player: Player, itemId: string): { player: Player; error?: string } {
   const item = findItem(player, itemId);
@@ -42,14 +47,14 @@ export function unequipItem(player: Player, slot: keyof EquipmentMap): { player:
 }
 
 export const EQUIP_SLOT_LABELS: Record<keyof EquipmentMap, { label: string; icon: string }> = {
-  weapon: { label: 'Vũ khí', icon: '⚔️' },
-  armor: { label: 'Giáp', icon: '🛡️' },
-  bracer: { label: 'Hộ thủ', icon: '🥊' },
-  boots: { label: 'Giày', icon: '👢' },
-  treasure: { label: 'Pháp bảo', icon: '🔮' },
-  belt: { label: 'Đai lưng', icon: '🎗️' },
-  ring: { label: 'Nhẫn', icon: '💍' },
-  pendant: { label: 'Ngọc bội', icon: '📿' },
+  weapon: { label: 'Vũ khí', icon: equipWeapon },
+  armor: { label: 'Giáp', icon: equipArmor },
+  bracer: { label: 'Hộ thủ', icon: equipBracelet },
+  boots: { label: 'Giày', icon: equipBoots },
+  treasure: { label: 'Pháp bảo', icon: 'item:treasure' },
+  belt: { label: 'Đai lưng', icon: 'item:belt' },
+  ring: { label: 'Nhẫn', icon: 'item:ring' },
+  pendant: { label: 'Ngọc bội', icon: equipNecklace },
 };
 
 export const EQUIP_SLOTS = Object.keys(EQUIP_SLOT_LABELS) as (keyof EquipmentMap)[];

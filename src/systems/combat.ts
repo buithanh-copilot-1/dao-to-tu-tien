@@ -36,7 +36,7 @@ function simulateWave(
   let round = 0;
   const maxRounds = 20;
 
-  log.push({ round: 0, text: `⚔️ Đối đầu ${playerName} vs ${enemyName}`, side: 'system' });
+  log.push({ round: 0, text: `Đối đầu ${playerName} vs ${enemyName}`, side: 'system' });
 
   while (pHp > 0 && eHp > 0 && round < maxRounds) {
     round += 1;
@@ -65,7 +65,7 @@ function simulateWave(
   const win = eHp <= 0 && pHp > 0;
   log.push({
     round,
-    text: win ? `✨ Chiến thắng sau ${round} hiệp!` : `💀 Thất bại sau ${round} hiệp...`,
+    text: win ? `Chiến thắng sau ${round} hiệp!` : `Thất bại sau ${round} hiệp...`,
     side: 'system',
   });
 

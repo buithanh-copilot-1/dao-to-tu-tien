@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   GameFrame,
   GameScreen,
@@ -11,17 +11,23 @@ import {
 } from '@/components';
 import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { BattleScreen } from '@/components/game/BattleScreen';
-import { TowerFloorScreen, TowerPagoda } from '@/components/game/TowerPagoda';
+import {
+  TowerBottomDock,
+  TowerFloorRail,
+  TowerSidePanel,
+  TowerVisual,
+} from '@/components/game/TowerPagoda';
 import { useGameStore } from '@/stores/gameStore';
 import { useGameNav } from '@/hooks/useGameNav';
+import { NPC_LEADERBOARD } from '@/data/leaderboard';
 import {
   TOWER_CHAPTERS,
   TOWER_MAX_FLOOR,
-  getChapterFloors,
   getTowerChapter,
   getTowerFloor,
 } from '@/data/tower';
-import { simulateTowerFloor, type AutoTowerResult } from '@/systems/towerAuto';
+import type { AutoTowerResult } from '@/systems/towerAuto';
+import { runTowerAutoClimbAsync } from '@/systems/towerClimb';
 import { calcCombatPower } from '@/utils/stats';
 import { calcWinChance } from '@/systems/combat';
 import { formatNumber } from '@/utils/format';
@@ -37,18 +43,36 @@ function getAutoBlockReason(
   return canStartBattle('tower', `tower_${nextFloor}`, nextFloor);
 }
 
+function buildTowerRankings(playerName: string, towerBestFloor: number) {
+  const entries = NPC_LEADERBOARD.slice(0, 9).map((npc, i) => ({
+    name: npc.name,
+    score: Math.max(1, TOWER_MAX_FLOOR - i * 48 - 12),
+  }));
+  entries.push({ name: playerName, score: towerBestFloor });
+  entries.sort((a, b) => b.score - a.score);
+  const ranked = entries.map((e, i) => ({ ...e, rank: i + 1 }));
+  const playerRank = ranked.find((e) => e.name === playerName)?.rank ?? ranked.length;
+  const topPlayers = ranked.slice(0, 3).map((e) => ({
+    rank: e.rank,
+    name: e.name,
+    score: e.score,
+  }));
+  return { playerRank, topPlayers };
+}
+
 export function TowerPage() {
   const player = useGameStore((s) => s.player)!;
   const towerBestFloor = useGameStore((s) => s.towerBestFloor);
   const canStartBattle = useGameStore((s) => s.canStartBattle);
   const resolveBattle = useGameStore((s) => s.resolveBattle);
-  const { activeNav, navItems, handleNav } = useGameNav();
+  const { activeNav, navItems, handleNav, goWithFrom } = useGameNav();
 
   const [challengeFloor, setChallengeFloor] = useState<number | null>(null);
   const [visualAuto, setVisualAuto] = useState(false);
   const [fastAutoRunning, setFastAutoRunning] = useState(false);
   const [climbingFloor, setClimbingFloor] = useState<number | null>(null);
   const [autoResult, setAutoResult] = useState<AutoTowerResult | null>(null);
+  const fastAutoStopRef = useRef(false);
 
   const power = calcCombatPower(player);
   const nextFloor = Math.min(towerBestFloor + 1, TOWER_MAX_FLOOR);
@@ -57,17 +81,17 @@ export function TowerPage() {
   const [selectedChapterId, setSelectedChapterId] = useState(currentChapter.id);
   const [selectedFloor, setSelectedFloor] = useState<number>(nextFloor);
 
-  const chapterFloors = useMemo(
-    () => getChapterFloors(selectedChapterId),
-    [selectedChapterId],
-  );
-
-  const chapter = TOWER_CHAPTERS.find((c) => c.id === selectedChapterId)!;
-
   const canAuto = towerBestFloor < TOWER_MAX_FLOOR;
   const autoBlockReason = canAuto
     ? null
     : getAutoBlockReason(towerBestFloor, nextFloor, canStartBattle);
+
+  const { playerRank, topPlayers } = useMemo(
+    () => buildTowerRankings(player.name, towerBestFloor),
+    [player.name, towerBestFloor],
+  );
+
+  const trialPoints = towerBestFloor * 10 + currentChapter.id * 5;
 
   useEffect(() => {
     const ch = getTowerChapter(nextFloor);
@@ -91,6 +115,7 @@ export function TowerPage() {
   };
 
   const selectedData = getTowerFloor(selectedFloor);
+  const visualChapter = getTowerChapter(selectedFloor);
   const winChance = calcWinChance(power, selectedData.enemyPower);
   const canChallenge = selectedFloor === nextFloor && towerBestFloor < TOWER_MAX_FLOOR && !fastAutoRunning;
 
@@ -101,62 +126,26 @@ export function TowerPage() {
     setVisualAuto(false);
     setChallengeFloor(null);
     setFastAutoRunning(true);
+    fastAutoStopRef.current = false;
 
-    const startFloor = useGameStore.getState().towerBestFloor + 1;
-    const startGold = useGameStore.getState().player!.gold;
-    const startCrystal = useGameStore.getState().player!.crystal;
-    const startJade = useGameStore.getState().player!.jade;
-
-    let cleared = 0;
-    let reason: AutoTowerResult['reason'] = 'blocked';
-
-    const wait = () => new Promise<void>((r) => setTimeout(r, FAST_AUTO_DELAY_MS));
-
-    while (true) {
-      const state = useGameStore.getState();
-      const { player: p, towerBestFloor: best } = state;
-      if (!p) {
-        reason = 'blocked';
-        break;
-      }
-      if (best >= TOWER_MAX_FLOOR) {
-        reason = 'max_floor';
-        break;
-      }
-
-      const floor = best + 1;
-      const err = state.canStartBattle('tower', `tower_${floor}`, floor);
-      if (err) {
-        reason = 'blocked';
-        break;
-      }
-
-      const ch = getTowerChapter(floor);
-      setSelectedChapterId(ch.id);
-      setSelectedFloor(floor);
-      setClimbingFloor(floor);
-      await wait();
-
-      const battle = simulateTowerFloor(p, floor);
-      resolveBattle('tower', `tower_${floor}`, battle.win, floor, { silent: true });
-
-      if (!battle.win) {
-        reason = 'defeat';
-        break;
-      }
-      cleared += 1;
-    }
+    const result = await runTowerAutoClimbAsync({
+      getPlayer: () => useGameStore.getState().player,
+      getTowerBestFloor: () => useGameStore.getState().towerBestFloor,
+      canStartFloor: (floor) => useGameStore.getState().canStartBattle('tower', `tower_${floor}`, floor),
+      resolveFloor: (floor, win) => {
+        resolveBattle('tower', `tower_${floor}`, win, floor, { silent: true });
+      },
+      shouldStop: () => fastAutoStopRef.current,
+      onFloor: (floor) => {
+        const ch = getTowerChapter(floor);
+        setSelectedChapterId(ch.id);
+        setSelectedFloor(floor);
+        setClimbingFloor(floor);
+      },
+      delayMs: FAST_AUTO_DELAY_MS,
+    });
 
     const endState = useGameStore.getState();
-    const result: AutoTowerResult = {
-      cleared,
-      fromFloor: startFloor,
-      toFloor: endState.towerBestFloor,
-      reason,
-      goldGained: (endState.player?.gold ?? 0) - startGold,
-      crystalGained: (endState.player?.crystal ?? 0) - startCrystal,
-      jadeGained: (endState.player?.jade ?? 0) - startJade,
-    };
 
     setClimbingFloor(null);
     setFastAutoRunning(false);
@@ -173,6 +162,7 @@ export function TowerPage() {
   };
 
   const handleStopAuto = () => {
+    fastAutoStopRef.current = true;
     setVisualAuto(false);
     setChallengeFloor(null);
   };
@@ -198,70 +188,35 @@ export function TowerPage() {
 
   return (
     <GameFrame>
-      <GameScreen>
+      <GameScreen className="game-screen--tower">
         <GameHeader><PlayerHeader /></GameHeader>
 
-        <GameBody className="tower-body tower-body--pagoda">
-          <PageTitle title="Tháp Thí Luyện" subtitle="VƯỢT TỪNG TẦNG · ĐẠT ĐẠO VÔ CỰC" />
+        <GameBody className="tower-body">
+          <PageTitle title="Tháp Thí Luyện" subtitle="Khiêu chiến tầng cao, nhận thưởng hậu hĩnh" />
 
-          <div className="tower-hud">
-            <div className="tower-hud__item">
-              <span>Đỉnh</span>
-              <strong>{towerBestFloor}/{TOWER_MAX_FLOOR}</strong>
-            </div>
-            <div className="tower-hud__item tower-hud__item--highlight">
-              <span>Tiếp</span>
-              <strong>T.{nextFloor}</strong>
-            </div>
-            <div className="tower-hud__item">
-              <span>Chương</span>
-              <strong>{currentChapter.icon} {currentChapter.id}/10</strong>
-            </div>
-            <div className="tower-hud__item">
-              <span>Lực chiến</span>
-              <strong className="tower-hud__power">{formatNumber(power)}</strong>
-            </div>
-          </div>
-
-          <div className="tower-actions">
-            <button
-              type="button"
-              className="tower-actions__btn tower-actions__btn--fast"
-              disabled={!canAuto || fastAutoRunning || visualAuto}
-              onClick={handleAutoFast}
-            >
-              <AncientIcon name={fastAutoRunning ? 'hourglass' : 'cycle'} size={14} />
-              {fastAutoRunning ? 'Đang vượt...' : 'Vượt nhanh'}
+          <div className="tower-quick-nav">
+            <button type="button" className="tower-quick-nav__btn" onClick={() => goWithFrom('/leaderboard')}>
+              <AncientIcon name="trophy" size={14} /> Xếp hạng
             </button>
-            <button
-              type="button"
-              className="tower-actions__btn tower-actions__btn--visual"
-              disabled={!canAuto || fastAutoRunning || visualAuto}
-              onClick={handleAutoVisual}
-            >
-              <AncientIcon name="play" size={13} /> Tự động xem
+            <button type="button" className="tower-quick-nav__btn" disabled>
+              <AncientIcon name="gift" size={14} /> Sắp ra
             </button>
-            <button
-              type="button"
-              className="tower-actions__btn tower-actions__btn--manual"
-              disabled={!canChallenge}
-              onClick={() => {
-                setVisualAuto(false);
-                setChallengeFloor(nextFloor);
-              }}
-            >
-              <AncientIcon name="sword" size={14} /> Tầng {nextFloor}
+            <button type="button" className="tower-quick-nav__btn" disabled>
+              <AncientIcon name="bag" size={14} /> Sắp ra
             </button>
           </div>
 
           {autoBlockReason && (
-            <p className="tower-actions__hint">{autoBlockReason}</p>
+            <p className="tower-hint">{autoBlockReason}</p>
           )}
 
           {fastAutoRunning && climbingFloor !== null && (
             <div className="tower-fast-overlay">
               <div className="tower-fast-overlay__spinner" />
               <p className="tower-fast-overlay__text">Đang vượt tầng <strong>{climbingFloor}</strong>...</p>
+              <button type="button" className="tower-fast-overlay__stop" onClick={handleStopAuto}>
+                Dừng
+              </button>
             </div>
           )}
 
@@ -286,6 +241,19 @@ export function TowerPage() {
                   {autoResult.reason === 'defeat' && (
                     <p className="tower-result__warn">Dừng tại tầng {autoResult.toFloor + 1} — thua trận</p>
                   )}
+                  {autoResult.reason === 'stopped' && (
+                    <p className="tower-result__warn">Đã dừng thủ công — đang ở tầng {autoResult.toFloor}</p>
+                  )}
+                </>
+              ) : autoResult.reason === 'stopped' ? (
+                <>
+                  <p className="tower-result__title">Đã dừng vượt nhanh</p>
+                  {autoResult.cleared > 0 && (
+                    <p className="tower-result__meta">
+                      Vượt {autoResult.cleared} tầng · Tầng {autoResult.fromFloor} → {autoResult.toFloor}
+                    </p>
+                  )}
+                  <p className="tower-result__warn">Đang ở tầng {autoResult.toFloor}</p>
                 </>
               ) : (
                 <p className="tower-result__title">{autoBlockReason ?? 'Không vượt được tầng nào'}</p>
@@ -304,60 +272,52 @@ export function TowerPage() {
             </div>
           )}
 
-          <div className="tower-chapter-strip">
-            {TOWER_CHAPTERS.map((ch) => {
-              const active = ch.id === selectedChapterId;
-              const inProgress = towerBestFloor >= ch.startFloor - 1 && towerBestFloor < ch.endFloor;
-              return (
-                <button
-                  key={ch.id}
-                  type="button"
-                  title={ch.name}
-                  disabled={fastAutoRunning}
-                  className={`tower-chapter-pip ${active ? 'tower-chapter-pip--active' : ''} ${inProgress ? 'tower-chapter-pip--progress' : ''} ${towerBestFloor >= ch.endFloor ? 'tower-chapter-pip--done' : ''}`}
-                  onClick={() => handleChapterChange(ch.id)}
-                >
-                  <span>{ch.icon}</span>
-                  <small>{ch.id}</small>
-                </button>
-              );
-            })}
-          </div>
-
-          <p className="tower-chapter-label">
-            {chapter.icon} {chapter.name}
-            <span> · Tầng {chapter.startFloor}–{chapter.endFloor}</span>
-          </p>
-
-          <div className="tower-scene">
-            <TowerPagoda
-              floors={chapterFloors}
+          <div className="tower-stage">
+            <TowerFloorRail
               towerBestFloor={towerBestFloor}
               nextFloor={nextFloor}
               selectedFloor={selectedFloor}
               climbingFloor={climbingFloor}
-              onSelectFloor={(f) => !fastAutoRunning && setSelectedFloor(f)}
-              getFloorData={getTowerFloor}
+              disabled={fastAutoRunning}
+              onSelectFloor={(f) => setSelectedFloor(f)}
             />
 
-            <TowerFloorScreen
-              floor={selectedFloor}
-              data={selectedData}
-              cleared={selectedFloor <= towerBestFloor}
-              isCurrent={selectedFloor === nextFloor}
-              winChance={winChance}
-              canChallenge={canChallenge}
-              canAuto={canAuto && !fastAutoRunning}
-              visualAutoRunning={visualAuto}
-              onChallenge={() => {
-                setVisualAuto(false);
-                setChallengeFloor(selectedFloor);
-              }}
-              onAutoFast={handleAutoFast}
-              onAutoVisual={handleAutoVisual}
-              onStopAuto={handleStopAuto}
+            <TowerVisual
+              currentFloor={nextFloor}
+              recommendedPower={getTowerFloor(nextFloor).enemyPower}
+              chapter={visualChapter}
+            />
+
+            <TowerSidePanel
+              playerRank={playerRank}
+              trialPoints={trialPoints}
+              towerBestFloor={towerBestFloor}
+              chapters={TOWER_CHAPTERS}
+              selectedChapterId={selectedChapterId}
+              disabled={fastAutoRunning}
+              onChapterChange={handleChapterChange}
+              topPlayers={topPlayers}
             />
           </div>
+
+          <TowerBottomDock
+            floor={selectedFloor}
+            data={selectedData}
+            cleared={selectedFloor <= towerBestFloor}
+            isCurrent={selectedFloor === nextFloor}
+            winChance={winChance}
+            canChallenge={canChallenge}
+            canAuto={canAuto && !fastAutoRunning}
+            visualAutoRunning={visualAuto}
+            fastAutoRunning={fastAutoRunning}
+            onChallenge={() => {
+              setVisualAuto(false);
+              setChallengeFloor(selectedFloor);
+            }}
+            onAutoFast={handleAutoFast}
+            onAutoVisual={handleAutoVisual}
+            onStopAuto={handleStopAuto}
+          />
         </GameBody>
 
         <GameFooter>

@@ -1,5 +1,6 @@
 import type { ReactNode, ButtonHTMLAttributes } from 'react';
 import { NotifyDot } from './NotifyDot';
+import { ItemIcon } from './ItemIcon';
 
 type ButtonVariant = 'primary' | 'secondary' | 'light' | 'claim' | 'go' | 'banner' | 'hex';
 
@@ -26,7 +27,7 @@ export function GameButton({
       type="button"
       {...props}
     >
-      {icon && <span className="game-btn__icon">{icon}</span>}
+      {icon && <ItemIcon icon={icon} className="game-btn__icon" />}
       {children}
       {notify && <NotifyDot className="game-btn__badge" size="sm" />}
     </button>

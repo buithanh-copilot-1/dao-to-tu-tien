@@ -18,6 +18,8 @@
   --gold-dark: #8b6914;
   --gold-gradient: linear-gradient(180deg, #e8d4a8 0%, #c9a86c 45%, #8b6914 100%);
   --gold-border: linear-gradient(135deg, #e8d4a8, #8b6914, #e8d4a8);
+  --star-gold: #e8c070;
+  --bag-bg: #1a1f2c;
 
   /* Cinnabar — chu sa */
   --cinnabar: #a83232;
@@ -44,12 +46,12 @@
   --red-alert: var(--cinnabar-light);
 
   /* Rarity */
-  --rarity-common: #9a8f7a;
-  --rarity-uncommon: var(--jade-light);
-  --rarity-rare: #5a7a9a;
-  --rarity-epic: #7a5a9a;
-  --rarity-legendary: #c97a30;
-  --rarity-mythic: var(--cinnabar);
+  --rarity-common: #e8e2d4;
+  --rarity-uncommon: #4ea3ff;
+  --rarity-rare: #5ad66f;
+  --rarity-epic: #f0c84a;
+  --rarity-legendary: #f08a28;
+  --rarity-mythic: #e54848;
 
   /* Text */
   --text-primary: #f0e8d8;
@@ -65,7 +67,7 @@
 
   /* Spacing */
   --header-height: 72px;
-  --bottom-nav-height: 76px;
+  --bottom-nav-height: 68px;
   --safe-padding: 12px;
 
   /* Effects */
@@ -76,6 +78,15 @@
     inset 0 -1px 0 rgba(0, 0, 0, 0.3),
     0 4px 20px rgba(0, 0, 0, 0.5);
   --shadow-inset-paper: inset 0 0 30px rgba(240, 228, 204, 0.03);
+
+  /* Scrollbar */
+  --scroll-size: 7px;
+  --scroll-track: rgba(8, 6, 4, 0.52);
+  --scroll-track-border: rgba(201, 168, 108, 0.12);
+  --scroll-thumb: rgba(201, 168, 108, 0.62);
+  --scroll-thumb-hover: rgba(232, 212, 168, 0.86);
+  --scroll-thumb-gradient: linear-gradient(180deg, #f0deb2 0%, #c9a86c 44%, #7a5718 100%);
+  --scroll-thumb-jade: linear-gradient(180deg, #b6f2d4 0%, #5a9a7a 50%, #2a4a3d 100%);
 
   /* Border radius — ít bo tròn, vuông cổ */
   --radius-sm: 2px;
