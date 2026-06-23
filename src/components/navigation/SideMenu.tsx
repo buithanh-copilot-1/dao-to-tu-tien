@@ -15,6 +15,8 @@ export interface SideMenuItem {
 interface SideMenuProps {
   items: SideMenuItem[];
   position: 'left' | 'right';
+  collapsed?: boolean;
+  onToggle?: () => void;
   onItemClick?: (id: string) => void;
 }
 
@@ -26,15 +28,28 @@ const TONE_CLASS: Record<MenuIconTone, string> = {
   cinnabar: 'anc-icon--cinnabar',
 };
 
-export function SideMenu({ items, position, onItemClick }: SideMenuProps) {
+export function SideMenu({ items, position, collapsed = false, onToggle, onItemClick }: SideMenuProps) {
+  const menuLabel = position === 'left' ? 'trái' : 'phải';
+  const toggleIcon = collapsed ? (position === 'left' ? '»' : '«') : position === 'left' ? '«' : '»';
+
   return (
-    <div className={`side-menu side-menu--${position}`}>
+    <div className={`side-menu side-menu--${position} ${collapsed ? 'side-menu--collapsed' : ''}`}>
+      <button
+        type="button"
+        className="side-menu__toggle"
+        onClick={onToggle}
+        aria-label={`${collapsed ? 'Mở' : 'Thu gọn'} menu ${menuLabel}`}
+        aria-expanded={!collapsed}
+      >
+        <span className="side-menu__toggle-icon" aria-hidden="true">{toggleIcon}</span>
+      </button>
       {items.map((item) => (
         <button
           key={item.id}
           className="side-menu__item"
           onClick={() => onItemClick?.(item.id)}
           type="button"
+          aria-label={item.label}
         >
           <div className={`side-menu__icon-wrap ${item.tone ? `side-menu__icon-wrap--${item.tone}` : ''}`}>
             <AncientIcon

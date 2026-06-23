@@ -111,10 +111,12 @@
   gap: 10px;
   z-index: 10;
   padding: 4px;
+  width: 64px;
   max-height: calc(100% - var(--header-height) - var(--bottom-nav-height) - 18px);
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(110, 201, 160, 0.48) transparent;
+  transition: width 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
 }
 
 .side-menu::-webkit-scrollbar {
@@ -134,12 +136,49 @@
 
 .side-menu--left { left: 4px; top: calc(var(--header-height) + 4px); }
 .side-menu--right { right: 4px; top: calc(var(--header-height) + 4px); }
+.side-menu--collapsed { width: 52px; gap: 8px; }
+
+.side-menu__toggle {
+  width: 28px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  align-self: center;
+  border: 1px solid rgba(201, 168, 108, 0.42);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(18, 24, 38, 0.92), rgba(10, 14, 22, 0.96));
+  color: var(--text-gold);
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(232, 212, 168, 0.1),
+    0 2px 6px rgba(0, 0, 0, 0.32);
+  transition: transform 0.15s ease, filter 0.2s ease, border-color 0.2s ease;
+}
+
+.side-menu__toggle:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  border-color: rgba(232, 212, 168, 0.58);
+}
+
+.side-menu__toggle-icon {
+  display: block;
+  font-family: var(--font-title);
+  font-size: 14px;
+  line-height: 1;
+}
 
 .side-menu__item {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 3px;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
   cursor: pointer;
   transition: transform 0.15s;
 }
@@ -220,19 +259,37 @@
   color: var(--text-gold);
   text-align: center;
   max-width: 52px;
+  max-height: 28px;
   line-height: 1.2;
   letter-spacing: 0.5px;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+  transition: opacity 0.2s ease, transform 0.2s ease, max-height 0.25s ease;
 }
 
 .side-menu__timer {
   font-size: 8px;
   color: var(--jade-glow);
   font-weight: 600;
+  max-height: 18px;
+  overflow: hidden;
+  transition: opacity 0.2s ease, transform 0.2s ease, max-height 0.25s ease;
 }
 
 .side-menu__notify {
   position: absolute;
   top: -3px;
   right: -3px;
+}
+
+.side-menu--collapsed .side-menu__item {
+  gap: 0;
+}
+
+.side-menu--collapsed .side-menu__label,
+.side-menu--collapsed .side-menu__timer {
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
 }
