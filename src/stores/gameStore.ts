@@ -8,8 +8,11 @@ import { BOSSES, DUNGEONS } from '@/data/dungeons';
 import { createNewPlayer } from '@/systems/player';
 import {
   attemptBreakthrough,
+  canBreakthrough,
   forceBreakthrough,
+  getTribulationInfo,
   isAtPeak,
+  isRealmBreakthrough,
   tickCultivation,
   type TribulationInfo,
 } from '@/systems/cultivation';
@@ -87,6 +90,7 @@ interface GameStore extends GameSave {
   breakthroughMessage: string | null;
   breakthroughPowerDelta: number | null;
   breakthroughTribulation: BreakthroughTribulationNotice | null;
+  tribulationScene: TribulationInfo | null;
   toast: GameToast | null;
   lastBattleLoot: BattleLoot | null;
   createCharacter: (name: string, gender: Gender, element: ElementType) => void;
@@ -94,6 +98,7 @@ interface GameStore extends GameSave {
   toggleAutoCultivate: () => void;
   toggleDevFastBreakthrough: () => void;
   doBreakthrough: () => void;
+  finishTribulationScene: () => void;
   clearBreakthroughMessage: () => void;
   clearToast: () => void;
   showToast: (message: string, options?: { variant?: ToastVariant; powerDelta?: number | null }) => void;
@@ -175,7 +180,50 @@ function withPowerToast(before: Player, after: Player, message: string, extra?: 
 
 export const useGameStore = create<GameStore>()(
   persist(
-    (set, get) => ({
+    (set, get) => {
+      const resolveBreakthrough = () => {
+        const { player } = get();
+        if (!player) return;
+
+        const before = player;
+        const result = attemptBreakthrough(player);
+        if (!result.success) {
+          const after = result.player ? syncQuestProgress(result.player) : undefined;
+          const delta = after ? calcPowerDelta(before, after) : 0;
+          set({
+            ...(after ? { player: after } : {}),
+            breakthroughMessage: result.reason,
+            breakthroughPowerDelta: delta !== 0 ? delta : null,
+            breakthroughTribulation: result.tribulation
+              ? {
+                  success: false,
+                  message: result.reason,
+                  info: result.tribulation,
+                  powerDelta: delta !== 0 ? delta : null,
+                }
+              : null,
+          });
+          return;
+        }
+
+        const after = syncQuestProgress(result.player);
+        const delta = calcPowerDelta(before, after);
+        set({
+          player: after,
+          breakthroughMessage: result.message,
+          breakthroughPowerDelta: delta !== 0 ? delta : null,
+          breakthroughTribulation: result.tribulation
+            ? {
+                success: true,
+                message: result.message,
+                info: result.tribulation,
+                powerDelta: delta !== 0 ? delta : null,
+              }
+            : null,
+        });
+      };
+
+      return {
       ...initialSave,
       dailyCounters: { ...EMPTY_COUNTERS },
       _hydrated: false,
@@ -184,6 +232,7 @@ export const useGameStore = create<GameStore>()(
       breakthroughMessage: null,
       breakthroughPowerDelta: null,
       breakthroughTribulation: null,
+      tribulationScene: null,
       toast: null,
       lastBattleLoot: null,
 
@@ -197,6 +246,7 @@ export const useGameStore = create<GameStore>()(
           breakthroughMessage: null,
           breakthroughPowerDelta: null,
           breakthroughTribulation: null,
+          tribulationScene: null,
           toast: null,
           lastBattleLoot: null,
           lastDailyResetAt: Date.now(),
@@ -277,42 +327,21 @@ export const useGameStore = create<GameStore>()(
         const { player } = get();
         if (!player) return;
 
-        const before = player;
-        const result = attemptBreakthrough(player);
-        if (!result.success) {
-          const after = result.player ? syncQuestProgress(result.player) : undefined;
-          const delta = after ? calcPowerDelta(before, after) : 0;
-          set({
-            ...(after ? { player: after } : {}),
-            breakthroughMessage: result.reason,
-            breakthroughPowerDelta: delta !== 0 ? delta : null,
-            breakthroughTribulation: result.tribulation
-              ? {
-                  success: false,
-                  message: result.reason,
-                  info: result.tribulation,
-                  powerDelta: delta !== 0 ? delta : null,
-                }
-              : null,
-          });
-          return;
+        if (isRealmBreakthrough(player) && canBreakthrough(player)) {
+          const info = getTribulationInfo(player);
+          if (info) {
+            set({ tribulationScene: info });
+            return;
+          }
         }
 
-        const after = syncQuestProgress(result.player);
-        const delta = calcPowerDelta(before, after);
-        set({
-          player: after,
-          breakthroughMessage: result.message,
-          breakthroughPowerDelta: delta !== 0 ? delta : null,
-          breakthroughTribulation: result.tribulation
-            ? {
-                success: true,
-                message: result.message,
-                info: result.tribulation,
-                powerDelta: delta !== 0 ? delta : null,
-              }
-            : null,
-        });
+        resolveBreakthrough();
+      },
+
+      finishTribulationScene: () => {
+        if (!get().tribulationScene) return;
+        set({ tribulationScene: null });
+        resolveBreakthrough();
       },
 
       clearBreakthroughMessage: () => set({
@@ -904,9 +933,11 @@ export const useGameStore = create<GameStore>()(
           breakthroughMessage: null,
           breakthroughPowerDelta: null,
           breakthroughTribulation: null,
+          tribulationScene: null,
           toast: null,
         }),
-    }),
+      };
+    },
     {
       name: 'dao-to-tu-tien-save',
       partialize: (state) => ({
