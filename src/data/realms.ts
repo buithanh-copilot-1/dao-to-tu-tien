@@ -40,12 +40,16 @@ export function getMaxRealmId(): number {
 
 /**
  * Hệ số sức mạnh theo cảnh giới + bậc.
- * - Mỗi cảnh giới ~4x (chênh lệch tuyệt đối càng cao càng lớn)
+ * - Mỗi cảnh giới ~8x (chênh lệch tuyệt đối càng cao càng lớn)
  * - Mỗi bậc trong cảnh ~28%
  * - Gia tốc bổ sung khi cảnh giới cao (realmId lớn)
+ *
+ * REALM_GROWTH phải > TIER_GROWTH^(maxTier-1) (~7.2 với maxTier=9), nếu không
+ * đột phá vượt cảnh giới (reset bậc về 1) sẽ làm lực chiến giảm so với lúc
+ * vừa đạt bậc tối đa của cảnh giới cũ.
  */
 export function getRealmPowerScale(realmId: number, tier: number): number {
-  const REALM_GROWTH = 4.0;
+  const REALM_GROWTH = 8.0;
   const TIER_GROWTH = 1.28;
   const realmFactor = Math.pow(REALM_GROWTH, realmId);
   const tierFactor = Math.pow(TIER_GROWTH, Math.max(tier - 1, 0));
