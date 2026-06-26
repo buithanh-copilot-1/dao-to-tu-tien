@@ -17,12 +17,6 @@ import { useSideMenuBack } from '@/hooks/useSideMenuBack';
 import { formatNumber } from '@/utils/format';
 import { MARKET_ENTRIES, getTemplateName, getTemplateIcon, type Currency } from '@/data/market';
 
-const CURRENCY_ICON: Record<Currency, 'coin' | 'gem' | 'jade'> = {
-  gold: 'coin',
-  crystal: 'gem',
-  jade: 'jade',
-};
-
 const CURRENCY_TONE: Record<Currency, string> = {
   gold: 'anc-icon--gold',
   crystal: 'anc-icon--crystal',

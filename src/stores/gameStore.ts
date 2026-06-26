@@ -927,15 +927,16 @@ export const useGameStore = create<GameStore>()(
       devAddResources: () => {
         let p = get().player;
         if (!p) return;
+
         p = {
           ...p,
           gold: p.gold + 1000000,
           crystal: p.crystal + 100000,
           jade: p.jade + 10000,
-          exp: p.exp + 500000,
           cultivation: p.cultivation + 500000,
         };
-        const itemsToAdd = [
+
+        for (const tid of [
           'crystal_shard',
           'ore_mithril',
           'herb_lingzhi',
@@ -944,13 +945,13 @@ export const useGameStore = create<GameStore>()(
           'pill_spirit',
           'pill_break',
           'scroll_skill',
-        ];
-        for (const tid of itemsToAdd) {
+        ]) {
           const res = addItemByTemplate(p, tid, 10000);
           if (!res.error) {
             p = res.player;
           }
         }
+
         set({
           player: p,
           ...setToast('Đã thêm 1M Vàng và 10K mọi nguyên liệu nâng cấp!', { variant: 'success' }),
