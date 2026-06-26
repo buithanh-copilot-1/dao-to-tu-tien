@@ -232,6 +232,21 @@ img.item-slot__icon {
   background: rgba(0, 0, 0, 0.2);
 }
 
+.inv-equipped {
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid rgba(201, 168, 108, 0.15);
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.inv-equipped__label {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-title);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+}
+
 .inv-bag__scroll {
   flex: 1;
   min-height: 0;
