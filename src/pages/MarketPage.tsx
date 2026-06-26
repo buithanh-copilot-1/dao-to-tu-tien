@@ -7,7 +7,6 @@ import {
   BottomNav,
   PageHead,
   GameButton,
-  AncientIcon,
   ItemIcon,
   CatalogItemButton,
 } from '@/components';
@@ -63,8 +62,7 @@ export function MarketPage() {
                   >
                     <div style={{ fontSize: 12, color: 'var(--text-gold)' }}>{getTemplateName(e.templateId)}</div>
                     <div className="meta-stat" style={{ fontSize: 11, color: afford ? 'var(--text-secondary)' : 'var(--red-alert)' }}>
-                      <AncientIcon name={CURRENCY_ICON[e.currency]} size={13} className={CURRENCY_TONE[e.currency]} />
-                      {formatNumber(e.price)}
+                      <span className={CURRENCY_TONE[e.currency]}>{formatNumber(e.price)}</span>
                     </div>
                   </CatalogItemButton>
                   <GameButton variant="primary" style={{ fontSize: 11 }} disabled={!afford} onClick={() => buyMarketItem(e.id, 1)}>
