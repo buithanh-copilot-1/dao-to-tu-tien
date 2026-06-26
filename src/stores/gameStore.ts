@@ -917,11 +917,6 @@ export const useGameStore = create<GameStore>()(
         const { player } = store;
         if (!player) return false;
         
-        const hasEnough = (player.inventory.find(i => i.templateId === templateId)?.quantity || 0) >= count;
-        // Wait, countByTemplate is better. I'll import it or just manually count.
-        // I will use removeByTemplate but first check if they have enough.
-        
-        // Actually, just loop and count:
         const total = player.inventory.filter(i => i.templateId === templateId).reduce((s, i) => s + i.quantity, 0);
         if (total < count) return false;
 
@@ -938,7 +933,6 @@ export const useGameStore = create<GameStore>()(
           gold: p.gold + 1000000,
           crystal: p.crystal + 100000,
           jade: p.jade + 10000,
-          exp: p.exp + 500000,
           cultivation: p.cultivation + 500000,
         };
         const itemsToAdd = [
