@@ -90,6 +90,12 @@
   -webkit-text-fill-color: transparent;
   color: var(--gold-light);
   filter: drop-shadow(0 0 14px rgba(232, 212, 168, 0.35)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9));
+  animation: titleGlow 4s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+  0%, 100% { filter: drop-shadow(0 0 14px rgba(232, 212, 168, 0.35)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9)); }
+  50% { filter: drop-shadow(0 0 22px rgba(232, 212, 168, 0.55)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9)); }
 }
 
 .page-title__subtitle {

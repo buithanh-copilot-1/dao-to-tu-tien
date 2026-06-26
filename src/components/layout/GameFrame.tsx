@@ -31,7 +31,13 @@ interface GameScreenProps {
 export function GameScreen({ children, className = '' }: GameScreenProps) {
   return (
     <div className={`game-screen ${className}`}>
+      <div className="game-screen__stars" aria-hidden />
       <div className="game-screen__mist" aria-hidden />
+      <div className="game-screen__motes" aria-hidden>
+        {Array.from({ length: 8 }, (_, i) => (
+          <span key={i} className="qi-mote" />
+        ))}
+      </div>
       <div className="game-screen__content">{children}</div>
     </div>
   );
