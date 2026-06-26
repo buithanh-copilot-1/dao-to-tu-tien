@@ -36,6 +36,8 @@ import { useRedirectBack } from '@/hooks/useRedirectBack';
 import type { RedirectLocationState } from '@/hooks/useRedirectBack';
 
 import { filterInventory, countUsedSlots, isItemEquipped } from '@/systems/inventory';
+import { EQUIP_SLOTS } from '@/systems/equipment';
+import { getItemByEquipSlot } from '@/utils/stats';
 
 
 
@@ -134,6 +136,17 @@ export function InventoryPage() {
 
   };
 
+  const equippedItems = EQUIP_SLOTS.map((slot) => {
+    const item = getItemByEquipSlot(player, slot);
+    if (!item) return { empty: true as const };
+    return {
+      icon: item.icon,
+      rarity: item.rarity,
+      enhance: item.enhance,
+      onClick: () => setSelectedItemId(item.id),
+    };
+  });
+
 
 
   return (
@@ -167,6 +180,16 @@ export function InventoryPage() {
               <AncientIcon name="bag" size={14} className="anc-icon--gold" />
 
               <span>Càn Khôn Túi</span>
+
+            </div>
+
+
+
+            <div className="inv-equipped">
+
+              <span className="inv-equipped__label">Đang trang bị</span>
+
+              <ItemGrid items={equippedItems} columns={6} />
 
             </div>
 
@@ -240,11 +263,13 @@ export function InventoryPage() {
 
               disabled
 
+              title="Kho — Sắp ra mắt"
+
             >
 
               <AncientIcon name="pagoda" size={16} className="anc-icon--gold" />
 
-              <span>Sắp ra</span>
+              <span>Kho</span>
 
             </button>
 
