@@ -20,6 +20,7 @@ import './styles/cultivation.css';
 import './styles/battle.css';
 import './styles/dungeon.css';
 import './styles/tower.css';
+import './styles/tribulation.css';
 import './styles/toast.css';
 import './styles/settings.css';
 import './styles/spiritRoot.css';

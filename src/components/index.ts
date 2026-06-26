@@ -1,4 +1,6 @@
 export { GameFrame, GameScreen, GameHeader, GameBody, GameFooter } from './layout/GameFrame';
+export * from './game/TribulationResultModal';
+export * from './game/TribulationModal';
 export { TopHeader } from './header/TopHeader';
 export { PlayerInfo, PlayerAvatar } from './header/PlayerInfo';
 export { CurrencyBar, CurrencyItem, type CurrencyType } from './header/CurrencyBar';

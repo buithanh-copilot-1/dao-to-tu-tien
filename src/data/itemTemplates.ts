@@ -34,7 +34,7 @@ export const ITEM_TEMPLATES: Record<string, ItemTemplate> = {
   treasure_mirror: { id: 'treasure_mirror', name: 'Huyền Minh Kính', icon: 'item:treasure', category: 'equipment', rarity: 'mythic', slot: 'treasure', stats: { spirit: 80, attack: 500 }, sellPrice: 60000, description: 'Pháp bảo huyền minh, phản chấn linh lực đối thủ.' },
   pill_qi: { id: 'pill_qi', name: 'Tụ Khí Đan', icon: potionExp, category: 'pill', rarity: 'uncommon', sellPrice: 100, description: 'Đan dược tụ linh khí, hấp thụ tăng tu vi nhanh chóng.' },
   pill_spirit: { id: 'pill_spirit', name: 'Ngưng Thần Đan', icon: potionSpirit, category: 'pill', rarity: 'rare', sellPrice: 500, description: 'Đan ngưng thần, củng cố thần thức và tu vi.' },
-  pill_break: { id: 'pill_break', name: 'Đột Phá Đan', icon: potionHp, category: 'pill', rarity: 'epic', sellPrice: 2000, description: 'Đan hỗ trợ đột phá cảnh giới, tích lũy tu vi đáng kể.' },
+  pill_break: { id: 'pill_break', name: 'Đột Phá Đan', icon: potionHp, category: 'pill', rarity: 'epic', sellPrice: 2000, description: 'Đan hỗ trợ độ kiếp. Sử dụng trong lúc chuẩn bị độ kiếp để tăng 10% tỷ lệ thành công.' },
   crystal_shard: { id: 'crystal_shard', name: 'Linh Thạch Mảnh', icon: 'item:crystal', category: 'material', rarity: 'common', sellPrice: 10, description: 'Mảnh linh thạch, dùng cường hóa trang bị và luyện khí.' },
   herb_lingzhi: { id: 'herb_lingzhi', name: 'Linh Chi', icon: 'item:herb', category: 'material', rarity: 'uncommon', sellPrice: 50, description: 'Thảo dược linh khí, nguyên liệu luyện đan cơ bản.' },
   ore_mithril: { id: 'ore_mithril', name: 'Huyền Thiết', icon: 'item:ore', category: 'material', rarity: 'rare', sellPrice: 200, description: 'Khoáng thạch huyền thiết, dùng luyện khí và cường hóa.' },

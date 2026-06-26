@@ -1,0 +1,144 @@
+.tribulation-anim {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+  color: var(--text-base);
+  font-family: var(--font-game);
+}
+
+.tribulation-anim__clouds {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background: radial-gradient(circle at 50% -20%, #2a2a35 0%, transparent 70%);
+  opacity: 0;
+  animation: cloudsGather 2s forwards ease-in-out;
+}
+
+@keyframes cloudsGather {
+  0% { opacity: 0; transform: scale(1.1); }
+  100% { opacity: 0.8; transform: scale(1); }
+}
+
+.tribulation-anim__lightning {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background: #fff;
+  box-shadow: 0 0 20px 5px #0ff, 0 0 40px 10px #0ff;
+  opacity: 0;
+  transform: translateX(-50%) rotate(5deg);
+  transform-origin: top;
+  filter: blur(1px);
+}
+
+.tribulation-anim__lightning--strike {
+  animation: lightningStrike 0.5s ease-out;
+}
+
+@keyframes lightningStrike {
+  0% { opacity: 0; }
+  10% { opacity: 1; width: 10px; }
+  20% { opacity: 0; }
+  30% { opacity: 0.8; width: 5px; }
+  40% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.tribulation-anim__flash {
+  position: absolute;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tribulation-anim__flash--active {
+  animation: screenFlash 0.5s ease-out;
+}
+
+@keyframes screenFlash {
+  0% { opacity: 0; }
+  10% { opacity: 0.8; }
+  100% { opacity: 0; }
+}
+
+.tribulation-anim__content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+}
+
+.tribulation-anim__title {
+  font-size: 24px;
+  color: var(--danger-base);
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: fadeIn 1s 0.5s forwards;
+}
+
+.tribulation-anim__status {
+  font-size: 16px;
+  color: var(--text-gold);
+  min-height: 24px;
+}
+
+.tribulation-anim__shake {
+  animation: screenShake 0.5s ease-in-out;
+}
+
+@keyframes screenShake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(5px, 5px) rotate(1deg); }
+  50% { transform: translate(-5px, -5px) rotate(-1deg); }
+  75% { transform: translate(-5px, 5px) rotate(1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.tribulation-anim__avatar {
+  position: relative;
+  z-index: 5;
+  margin: 0 auto 40px auto;
+  width: 120px;
+  height: 120px;
+  animation: floatAvatar 3s ease-in-out infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tribulation-anim__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.3));
+}
+
+@keyframes floatAvatar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.tribulation-anim__prep-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 30px;
+  align-items: center;
+}

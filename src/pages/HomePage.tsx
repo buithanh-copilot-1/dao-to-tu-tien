@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   GameFrame,
   GameScreen,
@@ -12,6 +13,7 @@ import {
   GameButton,
   ProgressBar,
   AncientIcon,
+  TribulationModal,
 } from '@/components';
 import { PlayerHeader } from '@/components/game/PlayerHeader';
 import { CultivationAvatar } from '@/components/game/CultivationAvatar';
@@ -26,6 +28,7 @@ function formatRealmStage(label: string): string {
 }
 
 export function HomePage() {
+  const [isTribulating, setIsTribulating] = useState(false);
   const player = useGameStore((s) => s.player)!;
   const toggleAutoCultivate = useGameStore((s) => s.toggleAutoCultivate);
   const devFastBreakthrough = useGameStore((s) => s.devFastBreakthrough);
@@ -48,8 +51,30 @@ export function HomePage() {
     notify: item.id === 'events' ? claimableQuests : item.notify,
   }));
 
+  const handleBreakthroughClick = () => {
+    if (tribulationInfo) {
+      setIsTribulating(true);
+    } else {
+      doBreakthrough();
+    }
+  };
+
   return (
-    <GameFrame>
+    <>
+      {isTribulating && tribulationInfo && (
+        <TribulationModal 
+          info={tribulationInfo}
+          onComplete={(bonusRate) => {
+            setIsTribulating(false);
+            doBreakthrough(bonusRate);
+          }}
+          onSkip={(bonusRate) => {
+            setIsTribulating(false);
+            doBreakthrough(bonusRate);
+          }}
+        />
+      )}
+      <GameFrame>
       <GameScreen className="game-screen--home">
         <GameHeader><PlayerHeader /></GameHeader>
 
@@ -136,7 +161,7 @@ export function HomePage() {
                   variant="hex"
                   notify={readyToBreakthrough && !atPeak}
                   className={`cultivation-panel__breakthrough ${atPeak ? 'cultivation-panel__breakthrough--peak' : ''}`}
-                  onClick={doBreakthrough}
+                  onClick={handleBreakthroughClick}
                   disabled={atPeak}
                 >
                   {atPeak ? 'Đỉnh Phong' : tribulationInfo ? 'Độ kiếp' : 'Đột phá'}
@@ -158,5 +183,6 @@ export function HomePage() {
         </GameFooter>
       </GameScreen>
     </GameFrame>
+    </>
   );
 }

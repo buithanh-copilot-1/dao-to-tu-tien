@@ -1,5 +1,6 @@
 import type { GameItem, ItemCategory, Player } from '@/types/game';
 import { createItem } from '@/data/itemTemplates';
+import { addCultivation } from '@/systems/cultivation';
 import { RARITY_META, RARITY_SORT_WEIGHT } from '@/data/rarity';
 
 export function countUsedSlots(player: Player): number {
@@ -171,17 +172,16 @@ export function usePill(player: Player, itemId: string): { player: Player; error
       message = 'Hấp thụ Ngưng Thần Đan, tu vi +5,000';
       break;
     case 'pill_break':
-      cultivationGain = 2000;
-      message = 'Hấp thụ Đột Phá Đan, tu vi +2,000';
-      break;
+      return { player, error: 'Đột Phá Đan chỉ có thể dùng khi chuẩn bị Độ Kiếp!' };
     default:
       cultivationGain = 500;
       message = 'Hấp thụ đan dược, tu vi +500';
   }
 
   const updated = removeItem(player, itemId, 1);
+  const newPlayer = addCultivation(updated, cultivationGain);
   return {
-    player: { ...updated, cultivation: updated.cultivation + cultivationGain },
+    player: newPlayer,
     message,
   };
 }

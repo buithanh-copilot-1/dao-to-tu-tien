@@ -1,5 +1,6 @@
 import type { OfflineRewards, Player } from '@/types/game';
 import { getBreakthroughCost } from '@/data/realms';
+import { addCultivation } from '@/systems/cultivation';
 
 const MAX_OFFLINE_MS = 12 * 60 * 60 * 1000;
 const MIN_OFFLINE_MS = 60_000;
@@ -24,12 +25,11 @@ export function calcOfflineRewards(player: Player, now = Date.now()): OfflineRew
 }
 
 export function applyOfflineRewards(player: Player, rewards: OfflineRewards): Player {
-  const cost = getBreakthroughCost(player.realmId, player.tier);
+  const p = addCultivation(player, rewards.cultivation);
   return {
-    ...player,
-    cultivation: Math.min(player.cultivation + rewards.cultivation, cost),
-    crystal: player.crystal + rewards.crystal,
-    silver: player.silver + rewards.silver,
+    ...p,
+    crystal: p.crystal + rewards.crystal,
+    silver: p.silver + rewards.silver,
     lastOnlineAt: Date.now(),
   };
 }

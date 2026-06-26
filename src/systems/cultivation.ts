@@ -21,6 +21,13 @@ function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
+export function addCultivation(player: Player, amount: number): Player {
+  return {
+    ...player,
+    cultivation: player.cultivation + amount,
+  };
+}
+
 export function refreshCultivationRate(player: Player, bonus = 1): Player {
   return {
     ...player,
@@ -31,13 +38,12 @@ export function refreshCultivationRate(player: Player, bonus = 1): Player {
 export function tickCultivation(player: Player, deltaMs: number, bonus = 1): Player {
   const rate = getCultivationRate(player.realmId, player.tier, player.element, bonus);
   const gained = (rate * deltaMs) / 1000;
-  const cost = getBreakthroughCost(player.realmId, player.tier);
-  const newCultivation = Math.min(player.cultivation + gained, cost);
+  
+  let newPlayer = addCultivation(player, gained);
+  newPlayer = refreshCultivationRate(newPlayer, bonus);
 
   return {
-    ...player,
-    cultivation: newCultivation,
-    cultivationRate: rate,
+    ...newPlayer,
     totalPlaySeconds: player.totalPlaySeconds + deltaMs / 1000,
     lastOnlineAt: Date.now(),
   };
@@ -100,7 +106,7 @@ export function getTribulationInfo(player: Player): TribulationInfo | null {
   };
 }
 
-function rollTribulation(player: Player): { passed: true; info: TribulationInfo } | { passed: false; info: TribulationInfo; player: Player } {
+function rollTribulation(player: Player, bonusRate: number = 0): { passed: true; info: TribulationInfo } | { passed: false; info: TribulationInfo; player: Player } {
   const info = getTribulationInfo(player);
   if (!info) {
     return {
@@ -116,7 +122,8 @@ function rollTribulation(player: Player): { passed: true; info: TribulationInfo 
     };
   }
 
-  if (Math.random() * 100 < info.successRate) {
+  const finalRate = Math.min(100, info.successRate + bonusRate);
+  if (Math.random() * 100 < finalRate) {
     return { passed: true, info };
   }
 
@@ -138,7 +145,7 @@ export function fillCultivationForBreakthrough(player: Player): Player {
   return { ...player, cultivation: cost };
 }
 
-export function attemptBreakthrough(player: Player): BreakthroughResult {
+export function attemptBreakthrough(player: Player, bonusRate: number = 0): BreakthroughResult {
   if (isAtPeak(player)) {
     return { success: false, reason: 'Đã đạt đỉnh phong' };
   }
@@ -157,7 +164,7 @@ export function attemptBreakthrough(player: Player): BreakthroughResult {
   if (player.tier < realm.maxTier) {
     newTier += 1;
   } else if (player.realmId < getMaxRealmId()) {
-    const tribulation = rollTribulation(player);
+    const tribulation = rollTribulation(player, bonusRate);
     if (!tribulation.passed) {
       return {
         success: false,
@@ -178,7 +185,7 @@ export function attemptBreakthrough(player: Player): BreakthroughResult {
     ...player,
     realmId: newRealmId,
     tier: newTier,
-    cultivation: 0,
+    cultivation: player.cultivation - getBreakthroughCost(player.realmId, player.tier),
     breakthroughCount: player.breakthroughCount + 1,
   };
 

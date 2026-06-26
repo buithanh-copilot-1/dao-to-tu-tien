@@ -16,6 +16,7 @@ import {
 import { applyOfflineRewards, calcOfflineRewards } from '@/systems/offline';
 import {
   expandCapacity,
+  removeByTemplate,
   sellItem as sellItemSystem,
   sortInventory as sortInventorySystem,
   toggleLockItem,
@@ -94,7 +95,8 @@ interface GameStore extends GameSave {
   tick: (deltaMs: number) => void;
   toggleAutoCultivate: () => void;
   toggleDevFastBreakthrough: () => void;
-  doBreakthrough: () => void;
+  doBreakthrough: (bonusRate?: number) => void;
+  consumeItemByTemplate: (templateId: string, count: number) => boolean;
   clearBreakthroughMessage: () => void;
   clearToast: () => void;
   showToast: (message: string, options?: { variant?: ToastVariant; powerDelta?: number | null }) => void;
@@ -275,12 +277,13 @@ export const useGameStore = create<GameStore>()(
         set({ player: { ...player, autoCultivate: !player.autoCultivate } });
       },
 
-      doBreakthrough: () => {
-        const { player } = get();
+      doBreakthrough: (bonusRate: number = 0) => {
+        const store = get();
+        const { player } = store;
         if (!player) return;
 
         const before = player;
-        const result = attemptBreakthrough(player);
+        const result = attemptBreakthrough(player, bonusRate);
         if (!result.success) {
           const after = result.player ? syncQuestProgress(result.player) : undefined;
           const delta = after ? calcPowerDelta(before, after) : 0;
@@ -909,6 +912,24 @@ export const useGameStore = create<GameStore>()(
           toast: null,
         }),
 
+      consumeItemByTemplate: (templateId: string, count: number) => {
+        const store = get();
+        const { player } = store;
+        if (!player) return false;
+        
+        const hasEnough = (player.inventory.find(i => i.templateId === templateId)?.quantity || 0) >= count;
+        // Wait, countByTemplate is better. I'll import it or just manually count.
+        // I will use removeByTemplate but first check if they have enough.
+        
+        // Actually, just loop and count:
+        const total = player.inventory.filter(i => i.templateId === templateId).reduce((s, i) => s + i.quantity, 0);
+        if (total < count) return false;
+
+        const updated = removeByTemplate(player, templateId, count);
+        set({ player: updated });
+        return true;
+      },
+
       devAddResources: () => {
         let p = get().player;
         if (!p) return;
@@ -918,6 +939,7 @@ export const useGameStore = create<GameStore>()(
           crystal: p.crystal + 100000,
           jade: p.jade + 10000,
           exp: p.exp + 500000,
+          cultivation: p.cultivation + 500000,
         };
         const itemsToAdd = [
           'crystal_shard',
