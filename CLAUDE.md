@@ -45,10 +45,10 @@ Player level = `realmId` (0..12, the `REALMS` table) × `tier` (1..maxTier withi
 
 ### Battle modes
 
-`canStartBattle(mode, targetId, towerFloor?)` validates (realm requirement, daily limits in `dailyCounters`) and returns an error string or `null`; `resolveBattle(...)` applies rewards and increments counters. Modes: `dungeon`, `boss`, `arena`, `tower`. Combat outcome is probabilistic (`systems/combat.ts` `simulateBattle` / `simulateFullBattle`) based on relative combat power. The tower additionally supports `autoClimbTower()` which loops `simulateTowerFloor` + `resolveBattle` until defeat or max floor.
+`canStartBattle(mode, targetId, towerFloor?)` validates (realm requirement, daily limits in `dailyCounters`) and returns an error string or `null`; `resolveBattle(...)` applies rewards and increments counters. Modes: `dungeon`, `boss`, `arena`, `tower`. Combat outcome is probabilistic (`systems/combat.ts` `simulateBattle` / `simulateFullBattle`) based on relative combat power. The tower additionally supports `autoClimbTower()` which loops `simulateTowerFloor` +
 
 ## Conventions
 
 - Keep new game logic in `systems/` as pure functions; the store only orchestrates and sets state. Don't put rule logic in components or in the store body.
 - User-visible strings are Vietnamese — match existing tone (e.g. toast/error messages returned from systems).
-- Styling is plain CSS files in `src/styles/`, each imported once in `src/main.tsx`, using CSS custom properties (design tokens) from `src/styles/tokens.css`. Inline `style={{...}}` is used freely for one-offs.
+- Styling is plain CSS files in `src/styles/`, each imported once in `src/main.tsx`, using CSS custom properties (design tokens) from `src/styles/tokens.css`. Inline `style={{...}}` is used freely for dynamic/one-off values.
