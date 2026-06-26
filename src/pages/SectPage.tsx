@@ -36,7 +36,7 @@ function BonusList({ stats }: { stats: Partial<PlayerStats> }) {
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px', marginTop: 4 }}>
       {keys.map((k) => (
-        <span key={k} className="meta-stat" style={{ fontSize: 11, color: 'var(--green-stat)' }}>
+        <span key={k} className="meta-stat" style={{ fontSize: 11, color: 'var(--green-stat)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
           <AncientIcon name={STAT_META[k].icon} size={13} className="anc-icon--jade" />
           {STAT_META[k].label} +{formatNumber(stats[k] ?? 0)}
         </span>
@@ -61,104 +61,134 @@ export function SectPage() {
       <GameScreen>
         <GameHeader><PlayerHeader /></GameHeader>
 
-        <GameBody>
+        <GameBody className="sect-body">
           <PageHead title="Tông Môn" showOrnament onBack={goBack} />
 
           {sect && sectState ? (
             <>
-              <GamePanel title={sect.name}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span className="entity-icon">
-                    <AncientIcon name={sect.icon} size={26} className="anc-icon--gold" />
-                  </span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 12, color: 'var(--text-gold)' }}>
-                      {getSectRankName(sectState.rank)} · Hệ {ELEMENT_LABEL[sect.element]}
-                    </div>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{sect.description}</div>
-                  </div>
+              {/* Pagoda Gate Panel */}
+              <section className={`sect-gate-panel element-${sect.element}`}>
+                <h2 className="sect-header-name">{sect.name}</h2>
+                <div className="sect-rank-tag">{getSectRankName(sectState.rank)}</div>
+                
+                <div className="sect-gate-illustration">
+                  <div className="sect-gate-glow" />
+                  <svg className="sect-gate-svg" viewBox="0 0 24 24" style={{ color: `var(--border-${sect.element})` }}>
+                    <path d="M3,6.5 L21,6.5 L21,9 L3,9 L3,6.5 Z M4.5,9.5 L19.5,9.5 L17,21 L7,21 L4.5,9.5 Z M8,12 L8,17 L10,17 L10,12 L8,12 Z M14,12 L14,17 L16,17 L16,12 L14,12 Z" />
+                  </svg>
+                  <div className="sect-gate-mist" />
+                </div>
+
+                <div style={{ fontSize: 10, color: 'var(--text-muted)', textAlign: 'center', maxWidth: '85%', lineHeight: 1.4, margin: '4px 0 10px' }}>
+                  "{sect.description}"
                 </div>
 
                 {(() => {
                   const nextReq = getNextRankReq(sectState.rank);
                   return (
-                    <div style={{ marginTop: 10 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: 'var(--text-secondary)', marginBottom: 4 }}>
+                    <div className="sect-progress-container">
+                      <div className="sect-progress-labels">
                         <span>Cống hiến: {formatNumber(sectState.contribution)}</span>
-                        <span>{nextReq !== null ? `Lên bậc: ${formatNumber(nextReq)}` : 'Đã đạt đỉnh'}</span>
+                        <span>{nextReq !== null ? `Cần lên bậc: ${formatNumber(nextReq)}` : 'Đỉnh Phong'}</span>
                       </div>
                       <ProgressBar
                         current={sectState.contribution}
                         max={nextReq != null ? nextReq : Math.max(sectState.contribution, 1)}
-                        displayText={nextReq === null ? 'Tối đa' : undefined}
+                        displayText={nextReq === null ? 'Tối Đa' : undefined}
                       />
                     </div>
                   );
                 })()}
-              </GamePanel>
+              </section>
 
-              <GamePanel title="Phúc lợi tông môn">
-                <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>Chỉ số cộng thêm hiện tại:</div>
+              {/* Sect Buffs Panel */}
+              <GamePanel title="Phúc Lợi Tông Môn">
+                <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 6 }}>
+                  Chỉ số thuộc tính gia tăng hiện tại:
+                </div>
                 <BonusList stats={getSectStatBonus(sectState.id, sectState.rank)} />
               </GamePanel>
 
-              <GamePanel title="Cống hiến">
-                <div style={{ fontSize: 10, color: 'var(--text-muted)', marginBottom: 8 }}>
-                  Dùng vàng cống hiến cho tông môn để thăng chức vị, nhận thêm phúc lợi.
-                </div>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                  {[100, 1000, 10000].map((amt) => (
-                    <GameButton
-                      key={amt}
-                      variant="secondary"
-                      style={{ fontSize: 11 }}
-                      disabled={player.gold < amt}
-                      onClick={() => donateSect(amt)}
-                    >
-                      <AncientIcon name="coin" size={12} className="anc-icon--gold" /> {formatNumber(amt)}
-                    </GameButton>
-                  ))}
-                </div>
-                <div style={{ marginTop: 12, textAlign: 'right' }}>
-                  <GameButton variant="secondary" style={{ fontSize: 10, color: 'var(--text-muted)' }} onClick={leaveSect}>
-                    Thoái xuất tông môn
-                  </GameButton>
+              {/* Donation & Actions Panel */}
+              <GamePanel title="Tông Môn Thiết Sự">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div className="sect-action-row">
+                    <div className="sect-action-info">
+                      <span className="sect-action-title">Cống Hiến Vàng</span>
+                      <span className="sect-action-desc">Đóng góp vàng vào ngân khố tông môn để nhận cống hiến.</span>
+                    </div>
+                    <div className="sect-action-btn-group">
+                      {[100, 1000, 10000].map((amt) => (
+                        <GameButton
+                          key={amt}
+                          variant="secondary"
+                          style={{ fontSize: 10, minWidth: '65px', padding: '4px 6px' }}
+                          disabled={player.gold < amt}
+                          onClick={() => donateSect(amt)}
+                        >
+                          <AncientIcon name="coin" size={11} className="anc-icon--gold" /> {formatNumber(amt)}
+                        </GameButton>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="sect-leave-btn-container">
+                    <button className="sect-leave-btn" onClick={leaveSect}>
+                      Thoái Xuất Tông Môn
+                    </button>
+                  </div>
                 </div>
               </GamePanel>
             </>
           ) : (
             <>
-              <GamePanel title="Chọn tông môn bái nhập">
-                <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>
-                  Gia nhập tông môn cùng linh căn để cộng hưởng phúc lợi mạnh nhất. Mỗi lúc chỉ ở một tông môn.
+              {/* Recruitment List Title */}
+              <GamePanel title="Bái Kiến Sơn Môn">
+                <div style={{ fontSize: 10, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                  Đạo hữu hãy lựa chọn bái nhập một đại tông môn tu tiên. Gia nhập môn phái cùng linh căn với bản thân sẽ nhận được phúc lợi cộng hưởng cao nhất!
                 </div>
               </GamePanel>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {/* Recruitment List */}
+              <div className="sect-recruit-list">
                 {SECTS.map((s) => {
                   const matched = s.element === player.element;
                   return (
-                    <div key={s.id} className="list-row" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 6 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span className="entity-icon entity-icon--sm">
-                          <AncientIcon name={s.icon} size={20} className="anc-icon--gold" />
+                    <div 
+                      key={s.id} 
+                      className={`sect-recruit-card element-${s.element} ${matched ? 'matched' : ''}`}
+                      style={matched ? { color: `var(--border-${s.element})` } : undefined}
+                    >
+                      <div className="sect-recruit-card-header">
+                        <span className="sect-card-title">
+                          <span className="sect-card-icon">
+                            <AncientIcon name={s.icon} size={18} className={`anc-icon--${s.element === 'metal' ? 'gold' : s.element === 'wood' || s.element === 'water' ? 'jade' : 'silver'}`} />
+                          </span>
+                          {s.name}
                         </span>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 12, color: 'var(--text-gold)' }}>
-                            {s.name} {matched && <span style={{ color: 'var(--green-stat)', fontSize: 9 }}>· hợp linh căn</span>}
-                          </div>
-                          <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>Hệ {ELEMENT_LABEL[s.element]} — {s.description}</div>
-                        </div>
+                        <span className={`sect-element-badge ${s.element}`}>
+                          Hệ {ELEMENT_LABEL[s.element]}
+                        </span>
                       </div>
-                      <BonusList stats={s.bonusPerRank} />
-                      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      
+                      <p className="sect-card-description">{s.description}</p>
+                      
+                      <div className="sect-card-buffs">
+                        <div style={{ fontSize: 9, fontWeight: 'bold', color: 'var(--text-secondary)', marginBottom: 2 }}>Phúc Lợi Mỗi Chức Vị:</div>
+                        <BonusList stats={s.bonusPerRank} />
+                      </div>
+
+                      <div className="sect-card-footer">
+                        <span className="sect-join-cost">
+                          Phí bái kiến: <AncientIcon name="coin" size={12} className="anc-icon--gold" /> {formatNumber(s.joinCost)}
+                        </span>
                         <GameButton
-                          variant="primary"
-                          style={{ fontSize: 11 }}
+                          variant={matched ? 'primary' : 'secondary'}
+                          style={{ fontSize: 10, padding: '4px 12px' }}
                           disabled={player.gold < s.joinCost}
                           onClick={() => joinSect(s.id)}
                         >
-                          Bái nhập · <AncientIcon name="coin" size={11} className="anc-icon--gold" /> {formatNumber(s.joinCost)}
+                          Bái Nhập
                         </GameButton>
                       </div>
                     </div>

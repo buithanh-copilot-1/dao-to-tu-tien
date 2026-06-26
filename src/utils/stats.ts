@@ -1,4 +1,4 @@
-import type { EquipmentMap, GameItem, Player, PlayerStats } from '@/types/game';
+import type { ElementType, EquipmentMap, GameItem, Player, PlayerStats } from '@/types/game';
 import type { AncientIconName } from '@/components/common/AncientIcon';
 import { getEnhanceMultiplier, scaleItemStats } from '@/data/enhancement';
 import { getBreakthroughCost, getRealmGapMultiplier, getRealmPowerScale } from '@/data/realms';
@@ -86,11 +86,22 @@ export function calcStats(player: Player): PlayerStats {
     comprehension: Math.floor(8 + player.tier * 2 + player.realmId * 4),
   };
 
-  const elem = ELEMENT_STATS[player.element];
-  if (elem) {
-    const elemScale = getSpiritRootStatMultiplier(player.spiritRootLevel ?? 1);
-    for (const k of Object.keys(elem) as (keyof PlayerStats)[]) {
-      base[k] += Math.floor((elem[k] ?? 0) * elemScale);
+  const spiritRoots = player.spiritRoots || {
+    metal: player.element === 'metal' ? (player.spiritRootLevel ?? 1) : 1,
+    wood: player.element === 'wood' ? (player.spiritRootLevel ?? 1) : 1,
+    water: player.element === 'water' ? (player.spiritRootLevel ?? 1) : 1,
+    fire: player.element === 'fire' ? (player.spiritRootLevel ?? 1) : 1,
+    earth: player.element === 'earth' ? (player.spiritRootLevel ?? 1) : 1,
+  };
+
+  for (const el of ['metal', 'wood', 'water', 'fire', 'earth'] as ElementType[]) {
+    const elem = ELEMENT_STATS[el];
+    if (elem) {
+      const lvl = spiritRoots[el] ?? 1;
+      const elemScale = getSpiritRootStatMultiplier(lvl);
+      for (const k of Object.keys(elem) as (keyof PlayerStats)[]) {
+        base[k] += Math.floor((elem[k] ?? 0) * elemScale);
+      }
     }
   }
 

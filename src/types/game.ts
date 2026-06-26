@@ -111,6 +111,8 @@ export interface Player {
   ascensionCount?: number;
   /** Cấp linh căn (1–10), tăng chỉ số ngũ hành */
   spiritRootLevel?: number;
+  /** Cấp độ linh căn của 5 ngũ hành (metal, wood, water, fire, earth) */
+  spiritRoots?: Record<ElementType, number>;
   cultivation: number;
   cultivationRate: number;
   autoCultivate: boolean;

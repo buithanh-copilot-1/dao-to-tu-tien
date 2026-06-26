@@ -1,0 +1,181 @@
+/* Arena (Đấu Pháp Đài) Screen CSS */
+
+.arena-body {
+  padding: 0 var(--safe-padding) 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.arena-info-panel {
+  background: rgba(20, 16, 12, 0.85);
+  border: 1px solid rgba(201, 168, 108, 0.25);
+  border-radius: 6px;
+  padding: 12px 14px;
+  box-shadow: var(--shadow-panel);
+}
+
+.arena-info-grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+}
+
+.arena-info-power {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.arena-info-power strong {
+  color: var(--orange-power);
+  font-family: var(--font-display);
+}
+
+.arena-info-turns {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.arena-info-turns strong {
+  color: var(--text-gold);
+}
+
+/* Opponent Cards list */
+.arena-opponents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.arena-opponent-card {
+  background: linear-gradient(135deg, rgba(24, 18, 14, 0.9) 0%, rgba(15, 12, 10, 0.88) 100%);
+  border: 1.5px solid rgba(201, 168, 108, 0.18);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Lệnh Bài corner designs */
+.arena-opponent-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-top: 1.5px solid var(--gold-primary);
+  border-left: 1.5px solid var(--gold-primary);
+  pointer-events: none;
+}
+
+.arena-opponent-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-bottom: 1.5px solid var(--gold-primary);
+  border-right: 1.5px solid var(--gold-primary);
+  pointer-events: none;
+}
+
+.arena-opponent-card:hover {
+  transform: scale(1.01);
+  border-color: rgba(201, 168, 108, 0.35);
+  box-shadow: var(--shadow-gold), 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Opponent Avatar Circle */
+.arena-opponent-avatar-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(201, 168, 108, 0.25);
+  background: radial-gradient(circle, rgba(42, 58, 92, 0.2) 0%, rgba(10, 8, 6, 0.8) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.8);
+  flex-shrink: 0;
+}
+
+.arena-opponent-avatar-img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+}
+
+.arena-opponent-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.arena-opponent-name {
+  font-family: var(--font-title);
+  font-size: 13.5px;
+  font-weight: bold;
+  color: var(--text-gold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.arena-opponent-realm {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.arena-opponent-power-win {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.arena-opp-power {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--orange-power);
+  font-weight: bold;
+}
+
+.arena-opp-win {
+  font-size: 9.5px;
+  font-weight: bold;
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+}
+
+.arena-opp-win.high {
+  color: var(--green-stat);
+  background: rgba(90, 214, 111, 0.08);
+}
+
+.arena-opp-win.medium {
+  color: var(--orange-glow);
+  background: rgba(232, 192, 112, 0.08);
+}
+
+.arena-opp-win.low {
+  color: var(--red-alert);
+  background: rgba(229, 72, 72, 0.08);
+}
+
+.arena-challenge-btn {
+  flex-shrink: 0;
+}

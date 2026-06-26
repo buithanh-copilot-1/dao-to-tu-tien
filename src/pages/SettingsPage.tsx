@@ -57,6 +57,7 @@ export function SettingsPage() {
   const settings = useGameStore((s) => s.settings);
   const updateSettings = useGameStore((s) => s.updateSettings);
   const resetSettings = useGameStore((s) => s.resetSettings);
+  const devAddResources = useGameStore((s) => s.devAddResources);
   const { activeNav, navItems, handleNav } = useGameNav();
   const { goBack } = useRedirectBack('/home');
 
@@ -163,6 +164,18 @@ export function SettingsPage() {
                 disabled={JSON.stringify(settings) === JSON.stringify(DEFAULT_GAME_SETTINGS)}
               >
                 Khôi phục mặc định
+              </GameButton>
+            </div>
+          </GamePanel>
+
+          <GamePanel title="Developer Tools">
+            <div className="settings-data" style={{ marginTop: 8 }}>
+              <GameButton
+                variant="primary"
+                fullWidth
+                onClick={devAddResources}
+              >
+                + 1M Vàng, 100K Linh Thạch...
               </GameButton>
             </div>
           </GamePanel>

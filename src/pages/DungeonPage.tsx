@@ -46,6 +46,7 @@ interface ContentRowProps {
   locked?: boolean;
   featured?: boolean;
   onAction: () => void;
+  className?: string;
 }
 
 function ContentRow({
@@ -58,9 +59,10 @@ function ContentRow({
   locked,
   featured,
   onAction,
+  className,
 }: ContentRowProps) {
   return (
-    <div className={`content-row ${locked ? 'content-row--locked' : ''} ${featured ? 'content-row--featured' : ''}`}>
+    <div className={`content-row ${locked ? 'content-row--locked' : ''} ${featured ? 'content-row--featured' : ''} ${className ?? ''}`}>
       <ItemIcon icon={icon} className="content-row__icon" />
       <div className="content-row__body">
         <div className="content-row__title">
@@ -179,7 +181,7 @@ export function DungeonPage() {
                             <CatalogItemButton
                               key={drop.templateId}
                               templateId={drop.templateId}
-                              className="meta-stat catalog-chip-btn"
+                              className="meta-stat item-drop-btn"
                               title={ITEM_TEMPLATES[drop.templateId]?.name}
                             >
                               <ItemIcon icon={ITEM_TEMPLATES[drop.templateId]?.icon ?? '📦'} className="reward-item-icon" />
@@ -311,6 +313,7 @@ export function DungeonPage() {
                       title={b.name}
                       badge={isEndgame ? 'BOSS' : undefined}
                       locked={locked}
+                      className={`boss-row ${isEndgame ? 'boss-row--heavy' : ''}`}
                       meta={(
                         <>
                           <span className="meta-stat"><AncientIcon name="flame" size={10} className="anc-icon--power" />{formatNumber(b.power)}</span>
@@ -326,7 +329,7 @@ export function DungeonPage() {
                                 <CatalogItemButton
                                   key={drop.templateId}
                                   templateId={drop.templateId}
-                                  className="meta-stat catalog-chip-btn"
+                                  className="meta-stat item-drop-btn"
                                   title={ITEM_TEMPLATES[drop.templateId]?.name}
                                 >
                                   <ItemIcon icon={ITEM_TEMPLATES[drop.templateId]?.icon ?? '📦'} className="reward-item-icon" />

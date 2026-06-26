@@ -1,0 +1,305 @@
+/* Alchemy Page CSS */
+
+.alchemy-body {
+  padding: 0 var(--safe-padding) 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Cauldron Panel */
+.alchemy-cauldron-panel {
+  background: radial-gradient(circle at 50% 20%, rgba(201, 168, 108, 0.08), rgba(12, 10, 16, 0.95) 80%);
+  border: 2px solid rgba(201, 168, 108, 0.2);
+  border-radius: 12px;
+  padding: 30px 12px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  box-shadow:
+    inset 0 0 40px rgba(0,0,0,0.9),
+    0 8px 16px rgba(0,0,0,0.6);
+  overflow: hidden;
+}
+
+/* Header Text placed inside */
+.alchemy-cauldron-title {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: var(--gold-light);
+  font-weight: bold;
+  letter-spacing: 4px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+  z-index: 5;
+}
+
+/* The pedestal platform */
+.alchemy-cauldron-platform {
+  width: 160px;
+  height: 160px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.alchemy-cauldron-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Spinning Rune Ring */
+.alchemy-cauldron-rune-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px dashed rgba(201, 168, 108, 0.4);
+  animation: rune-spin 20s linear infinite;
+  pointer-events: none;
+}
+.alchemy-cauldron-rune-ring::before,
+.alchemy-cauldron-rune-ring::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1px dotted rgba(201, 168, 108, 0.2);
+}
+
+.alchemy-cauldron-panel.cooking .alchemy-cauldron-rune-ring {
+  animation: rune-spin 4s linear infinite;
+  border-color: rgba(229, 72, 72, 0.6);
+  box-shadow: 0 0 20px rgba(229, 72, 72, 0.4);
+}
+.alchemy-cauldron-panel.cooking .alchemy-cauldron-rune-ring::before {
+  border-color: rgba(229, 72, 72, 0.4);
+  animation: rune-spin 2s linear infinite reverse;
+}
+
+@keyframes rune-spin {
+  100% { transform: rotate(360deg); }
+}
+
+.alchemy-cauldron-glow {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(229, 72, 72, 0.15) 0%, rgba(229, 72, 72, 0) 65%);
+  z-index: 1;
+  transition: all 0.3s;
+}
+
+.alchemy-cauldron-panel.cooking .alchemy-cauldron-glow {
+  animation: alchemy-fire-pulse 1s infinite alternate;
+  background: radial-gradient(circle, rgba(229, 72, 72, 0.35) 0%, rgba(229, 72, 72, 0) 75%);
+}
+
+@keyframes alchemy-fire-pulse {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+.alchemy-cauldron-svg {
+  width: 110px;
+  height: 110px;
+  fill: var(--gold-light);
+  filter:
+    drop-shadow(0 15px 15px rgba(0,0,0,0.9))
+    drop-shadow(0 0 10px rgba(201,168,108,0.4));
+  z-index: 3;
+  transition: transform 0.2s, filter 0.3s;
+}
+
+.alchemy-cauldron-panel.cooking .alchemy-cauldron-svg {
+  animation: alchemy-cauldron-shake 0.18s infinite;
+  filter:
+    drop-shadow(0 15px 15px rgba(0,0,0,0.9))
+    drop-shadow(0 0 15px rgba(229,72,72,0.6));
+}
+
+@keyframes alchemy-cauldron-shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -1px) rotate(-1deg); }
+  20% { transform: translate(-2px, 0px) rotate(1deg); }
+  30% { transform: translate(0px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-2px, 1px) rotate(0deg); }
+  70% { transform: translate(2px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(2px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -1px) rotate(-1deg); }
+}
+
+.alchemy-cauldron-fire {
+  position: absolute;
+  bottom: 0px;
+  font-size: 32px;
+  opacity: 0.15;
+  z-index: 2;
+  transition: all 0.3s;
+}
+
+.alchemy-cauldron-panel.cooking .alchemy-cauldron-fire {
+  opacity: 1;
+  transform: scale(1.4);
+  animation: alchemy-fire-flicker 0.3s infinite alternate;
+}
+
+@keyframes alchemy-fire-flicker {
+  0% { transform: scale(1.3) translateY(2px); }
+  100% { transform: scale(1.5) translateY(-4px); filter: hue-rotate(15deg) brightness(1.2); }
+}
+
+.alchemy-progress-bar-wrap {
+  width: 90%;
+  height: 18px;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid rgba(201, 168, 108, 0.4);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+}
+
+.alchemy-progress-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #8a2a2a 0%, #e54848 50%, #f7d260 100%);
+  box-shadow: 0 0 12px rgba(229, 72, 72, 0.6);
+  transition: width 0.1s linear;
+}
+
+.alchemy-progress-text {
+  font-size: 10px;
+  color: var(--text-primary);
+  font-weight: bold;
+  z-index: 4;
+  letter-spacing: 2px;
+  text-shadow: 0 1px 3px rgba(0,0,0,1);
+}
+
+/* Recipes Panel */
+.alchemy-recipes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.alchemy-recipe-row {
+  background: rgba(20, 16, 12, 0.8);
+  border: 1px solid rgba(201, 168, 108, 0.2);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  transition: border-color 0.2s;
+}
+
+.alchemy-recipe-row:hover {
+  border-color: rgba(201, 168, 108, 0.4);
+}
+
+.alchemy-recipe-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alchemy-pill-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  background: rgba(10,8,6,0.6);
+  border: 1.5px solid var(--gold-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 10px rgba(201,168,108,0.2);
+  position: relative;
+}
+
+.alchemy-pill-icon-wrap img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.alchemy-pill-details {
+  flex: 1;
+}
+
+.alchemy-pill-name {
+  font-size: 12px;
+  color: var(--text-gold);
+  font-weight: bold;
+}
+
+.alchemy-pill-desc {
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+/* Ingredients Wrap */
+.alchemy-ingredients-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  border-top: 1px dashed rgba(201,168,108,0.15);
+  padding-top: 6px;
+}
+
+.alchemy-ing-chip {
+  background: rgba(10, 8, 6, 0.5);
+  border: 1px solid rgba(201, 168, 108, 0.2);
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary);
+}
+
+.alchemy-ing-chip.ok {
+  color: var(--green-stat);
+  border-color: rgba(90, 214, 111, 0.3);
+}
+
+.alchemy-ing-chip.fail {
+  color: var(--red-alert);
+  border-color: rgba(229, 72, 72, 0.3);
+}
+
+.alchemy-ing-chip img {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
+}
+
+.alchemy-craft-action {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2px;
+}

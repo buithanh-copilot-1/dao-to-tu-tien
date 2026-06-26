@@ -1,0 +1,215 @@
+/* Technique (Công Pháp) Screen CSS */
+
+.technique-body {
+  padding: 0 var(--safe-padding) 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Crystal Balance Header Panel */
+.technique-balance-panel {
+  background: rgba(20, 16, 12, 0.85);
+  border: 1px solid rgba(201, 168, 108, 0.25);
+  border-radius: 6px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-panel);
+}
+
+.technique-balance-title {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: bold;
+}
+
+.technique-balance-value {
+  font-size: 14px;
+  color: var(--text-gold);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-shadow: 0 0 8px rgba(232, 212, 168, 0.25);
+}
+
+/* Scroll Card Layout representing ancient bamboo/silk scrolls */
+.technique-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.technique-scroll-card {
+  background: linear-gradient(135deg, rgba(28, 22, 17, 0.95) 0%, rgba(20, 16, 12, 0.92) 100%);
+  border: 1px solid rgba(201, 168, 108, 0.2);
+  border-radius: 6px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s ease;
+}
+
+/* Scroll Rods on Left and Right (Scroll Aesthetic) */
+.technique-scroll-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background: linear-gradient(90deg, #5c4524 0%, #c9a86c 50%, #5c4524 100%);
+  border-right: 1px solid rgba(0,0,0,0.4);
+}
+
+.technique-scroll-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 4px;
+  background: linear-gradient(90deg, #5c4524 0%, #c9a86c 50%, #5c4524 100%);
+  border-left: 1px solid rgba(0,0,0,0.4);
+}
+
+.technique-scroll-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(201, 168, 108, 0.45);
+  box-shadow: 0 6px 14px rgba(201, 168, 108, 0.15), 0 6px 15px rgba(0, 0, 0, 0.6);
+}
+
+.technique-scroll-card.learned {
+  border-color: rgba(201, 168, 108, 0.3);
+}
+
+.technique-scroll-card.maxed {
+  border-color: rgba(90, 214, 111, 0.45);
+  box-shadow: 0 0 10px rgba(90, 214, 111, 0.15);
+}
+
+/* Header within card */
+.technique-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 6px;
+}
+
+.technique-icon-container {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(201, 168, 108, 0.25);
+  background: rgba(10, 8, 6, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
+  flex-shrink: 0;
+}
+
+.technique-scroll-card.learned .technique-icon-container {
+  border-color: var(--gold-primary);
+  box-shadow: inset 0 0 8px rgba(201, 168, 108, 0.25), 0 0 10px rgba(201, 168, 108, 0.15);
+  color: var(--gold-light);
+}
+
+.technique-info-meta {
+  flex: 1;
+}
+
+.technique-name-tag {
+  font-family: var(--font-title);
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--text-gold);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.technique-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* Badges for status */
+.technique-level-badge {
+  font-size: 8px;
+  font-weight: bold;
+  padding: 1.5px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+}
+
+.technique-level-badge.unlearned {
+  background: rgba(122, 110, 94, 0.15);
+  border: 1px solid var(--text-muted);
+  color: var(--text-muted);
+}
+
+.technique-level-badge.learned {
+  background: rgba(201, 168, 108, 0.15);
+  border: 1px solid var(--gold-primary);
+  color: var(--text-primary);
+}
+
+.technique-level-badge.maxed {
+  background: rgba(90, 214, 111, 0.15);
+  border: 1px solid var(--green-stat);
+  color: var(--green-stat);
+}
+
+/* Stats Modifier Preview area */
+.technique-stats-wrap {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(201, 168, 108, 0.1);
+  border-radius: 4px;
+  padding: 8px;
+  margin-left: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.technique-stats-title {
+  font-size: 9px;
+  color: var(--text-secondary);
+  font-weight: bold;
+  border-bottom: 1px dashed rgba(201, 168, 108, 0.15);
+  padding-bottom: 3px;
+  margin-bottom: 2px;
+}
+
+.technique-stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+}
+
+/* Simple leveling bar */
+.technique-level-bar {
+  margin-left: 6px;
+  margin-top: 2px;
+}
+
+/* Footer of the card for upgrades */
+.technique-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-top: 1px dashed rgba(201, 168, 108, 0.15);
+  padding-top: 10px;
+  margin-left: 6px;
+}

@@ -22,6 +22,11 @@ import './styles/dungeon.css';
 import './styles/tower.css';
 import './styles/toast.css';
 import './styles/settings.css';
+import './styles/spiritRoot.css';
+import './styles/alchemy.css';
+import './styles/sect.css';
+import './styles/technique.css';
+import './styles/arena.css';
 
 const SAVE_KEY = 'dao-to-tu-tien-save';
 if (new URLSearchParams(window.location.search).get('clear-save') === '1') {

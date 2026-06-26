@@ -7,7 +7,6 @@ import {
   GameFooter,
   BottomNav,
   PageHead,
-  GamePanel,
   GameButton,
   AncientIcon,
   ItemIcon,
@@ -37,42 +36,64 @@ export function ArenaPage() {
       <GameScreen>
         <GameHeader><PlayerHeader /></GameHeader>
 
-        <GameBody>
+        <GameBody className="arena-body">
           <PageHead title="Đấu Pháp Đài" showOrnament onBack={goBack} />
 
-          <GamePanel title="Thông tin">
-            <div style={{ fontSize: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span className="meta-stat">
-                <AncientIcon name="flame" size={13} className="anc-icon--power" /> Lực chiến:
-                <strong style={{ color: 'var(--orange-power)' }}>{formatNumber(power)}</strong>
+          {/* Info Status Panel */}
+          <section className="arena-info-panel">
+            <div className="arena-info-grid">
+              <span className="arena-info-power">
+                <AncientIcon name="flame" size={14} className="anc-icon--power" /> 
+                Lực chiến: <strong>{formatNumber(power)}</strong>
               </span>
-              <span>Lượt còn: <strong style={{ color: 'var(--text-gold)' }}>{remaining}/{ARENA_DAILY_LIMIT}</strong></span>
+              <span className="arena-info-turns">
+                Lượt còn lại: <strong>{remaining}/{ARENA_DAILY_LIMIT}</strong>
+              </span>
             </div>
-          </GamePanel>
+          </section>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
+          {/* Opponents List */}
+          <div className="arena-opponents-list">
             {ARENA_OPPONENTS.map((opp) => {
               const winChance = calcWinChance(power, opp.power);
+              
+              let winClass: 'high' | 'medium' | 'low' = 'low';
+              if (winChance >= 75) winClass = 'high';
+              else if (winChance >= 40) winClass = 'medium';
+
               return (
-                <div key={opp.id} className="list-row">
-                  <span className="entity-icon">
-                    <ItemIcon icon={opp.icon} className="reward-item-icon" />
-                  </span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 12, color: 'var(--text-gold)' }}>{opp.name}</div>
-                    <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>{opp.realm}</div>
-                    <div style={{ fontSize: 10, color: 'var(--orange-power)' }} className="meta-stat">
-                      <AncientIcon name="flame" size={11} className="anc-icon--power" /> {formatNumber(opp.power)} · Thắng {winChance}%
+                <div key={opp.id} className="arena-opponent-card">
+                  {/* Opponent Avatar */}
+                  <div className="arena-opponent-avatar-wrap">
+                    <ItemIcon icon={opp.icon} className="arena-opponent-avatar-img" />
+                  </div>
+
+                  {/* Opponent Info Details */}
+                  <div className="arena-opponent-details">
+                    <div className="arena-opponent-name">{opp.name}</div>
+                    <div className="arena-opponent-realm">{opp.realm}</div>
+                    <div className="arena-opponent-power-win">
+                      <span className="arena-opp-power">
+                        <AncientIcon name="flame" size={11} className="anc-icon--power" /> 
+                        {formatNumber(opp.power)}
+                      </span>
+                      <span className={`arena-opp-win ${winClass}`}>
+                        Thắng {winChance}%
+                      </span>
                     </div>
                   </div>
-                  <GameButton
-                    variant="primary"
-                    onClick={() => setOpponentId(opp.id)}
-                    disabled={remaining <= 0}
-                    style={{ fontSize: 10 }}
-                  >
-                    Khiêu chiến
-                  </GameButton>
+
+                  {/* Action Button */}
+                  <div className="arena-challenge-btn">
+                    <GameButton
+                      variant="primary"
+                      onClick={() => setOpponentId(opp.id)}
+                      disabled={remaining <= 0}
+                      style={{ fontSize: 10, padding: '4px 10px' }}
+                    >
+                      Khiêu chiến
+                    </GameButton>
+                  </div>
                 </div>
               );
             })}

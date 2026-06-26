@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đạo Tổ Tu Tiên - Preview Tông Môn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;600&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink-deep: #0a0806;
+            --ink-mid: #14100c;
+            --ink-light: #1e1812;
+            --gold-primary: #c9a86c;
+            --gold-light: #e8d4a8;
+            --gold-dark: #8b6914;
+            --text-primary: #f0e8d8;
+            --text-secondary: #b8a890;
+            --text-gold: var(--gold-light);
+            --text-muted: #7a6e5e;
+            --jade-glow: #6ec9a0;
+            --red-alert: #e54848;
+            --green-stat: #5ad66f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: #030202;
+            color: var(--text-primary);
+            font-family: 'Noto Serif SC', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* H5 Game Screen Wrapper */
+        .game-frame {
+            width: 375px;
+            height: 812px;
+            background: radial-gradient(circle at center, #101216 0%, #060709 100%);
+            border: 4px solid var(--gold-primary);
+            border-radius: 12px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 35px rgba(201, 168, 108, 0.25);
+            overflow: hidden;
+        }
+
+        .ambient-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><radialGradient id="g1" cx="30%" cy="30%" r="50%"><stop offset="0%" stop-color="rgba(201, 168, 108, 0.04)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient></defs><rect width="100%" height="100%" fill="url(#g1)"/></svg>');
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Header */
+        .game-header {
+            height: 60px;
+            border-bottom: 1px solid rgba(201, 168, 108, 0.2);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 8, 6, 0.9);
+            backdrop-filter: blur(4px);
+            z-index: 10;
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-text {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 18px;
+            color: var(--text-gold);
+        }
+
+        .resources {
+            display: flex;
+            gap: 6px;
+            font-size: 10px;
+        }
+
+        .resource-item {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(201, 168, 108, 0.3);
+            border-radius: 4px;
+            padding: 3px 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .resource-val {
+            color: var(--text-primary);
+            font-weight: bold;
+        }
+
+        .page-head {
+            text-align: center;
+            padding: 10px 0;
+            z-index: 10;
+            position: relative;
+        }
+
+        .page-title {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 22px;
+            color: var(--text-gold);
+            letter-spacing: 2px;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            overflow-y: auto;
+            z-index: 5;
+        }
+
+        /* State 1: Sect Recruitment List */
+        .recruitment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sect-recruit-card {
+            background: rgba(20, 16, 12, 0.85);
+            border: 1px solid rgba(201, 168, 108, 0.2);
+            border-radius: 6px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .recruit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sect-name-tag {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-gold);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .element-badge {
+            font-size: 8px;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .elem-fire { background: rgba(229, 72, 72, 0.2); border: 1px solid #e54848; color: #e54848; }
+        .elem-metal { background: rgba(240, 200, 74, 0.2); border: 1px solid #f0c84a; color: #f0c84a; }
+        .elem-water { background: rgba(78, 163, 255, 0.2); border: 1px solid #4ea3ff; color: #4ea3ff; }
+
+        .sect-desc {
+            font-size: 9px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .sect-buffs {
+            font-size: 9px;
+            color: var(--green-stat);
+            background: rgba(90, 214, 111, 0.05);
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+
+        .recruit-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4px;
+            border-top: 1px dashed rgba(201,168,108,0.15);
+            padding-top: 6px;
+        }
+
+        .join-cost {
+            font-size: 9px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .join-btn {
+            background: linear-gradient(180deg, #e8d4a8 0%, #c9a86c 50%, #8b6914 100%);
+            border: 1px solid #e8d4a8;
+            color: #2a1810;
+            border-radius: 4px;
+            padding: 4px 12px;
+            font-size: 9px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* State 2: Sect Dashboard */
+        .sect-dashboard {
+            display: none; /* Toggled by JS */
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .sect-info-panel {
+            background: rgba(20, 16, 12, 0.85);
+            border: 1px solid rgba(201, 168, 108, 0.25);
+            border-radius: 6px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .sect-avatar-container {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 8px 0;
+        }
+
+        .gate-svg {
+            width: 80px;
+            height: 80px;
+            fill: var(--gold-primary);
+            filter: drop-shadow(0 0 10px rgba(201,168,108,0.3));
+        }
+
+        .active-sect-name {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 18px;
+            color: var(--text-gold);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        }
+
+        .active-rank-name {
+            font-size: 11px;
+            background: rgba(201, 168, 108, 0.15);
+            border: 1.5px solid var(--gold-primary);
+            border-radius: 4px;
+            padding: 2px 8px;
+            color: var(--text-primary);
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        .contrib-progress-wrap {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .contrib-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 8px;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(0,0,0,0.5);
+            border: 1.5px solid rgba(201,168,108,0.25);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #8b6914 0%, #c9a86c 100%);
+            box-shadow: 0 0 8px rgba(201,168,108,0.4);
+            transition: width 0.3s;
+        }
+
+        /* Action Panel */
+        .actions-panel {
+            background: rgba(20, 16, 12, 0.85);
+            border: 1px solid rgba(201, 168, 108, 0.25);
+            border-radius: 6px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 8, 6, 0.6);
+            border: 1px solid rgba(201,168,108,0.15);
+            border-radius: 4px;
+            padding: 8px;
+        }
+
+        .action-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .action-title {
+            font-size: 11px;
+            color: var(--text-primary);
+            font-weight: bold;
+        }
+
+        .action-desc {
+            font-size: 8px;
+            color: var(--text-muted);
+        }
+
+        .action-btn-small {
+            background: linear-gradient(180deg, #e8d4a8 0%, #c9a86c 50%, #8b6914 100%);
+            border: 1px solid #e8d4a8;
+            color: #2a1810;
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 9px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .leave-sect-btn {
+            background: transparent;
+            border: 1px solid var(--red-alert);
+            color: var(--red-alert);
+            border-radius: 4px;
+            padding: 6px 0;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .leave-sect-btn:hover {
+            background: rgba(229, 72, 72, 0.1);
+        }
+
+        /* H5 Navigation */
+        .game-footer {
+            height: 55px;
+            border-top: 1px solid rgba(201, 168, 108, 0.2);
+            background: rgba(10, 8, 6, 0.96);
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            z-index: 10;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            gap: 2px;
+            border-right: 1px solid rgba(201, 168, 108, 0.05);
+        }
+
+        .nav-item:last-child {
+            border-right: none;
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            opacity: 0.6;
+        }
+
+        .nav-item.active {
+            color: var(--text-gold);
+            background: rgba(201, 168, 108, 0.05);
+        }
+
+        .nav-item.active .nav-icon {
+            opacity: 1;
+            filter: drop-shadow(0 0 5px rgba(232, 212, 168, 0.5));
+        }
+
+        .nav-item.active .nav-label {
+            font-weight: bold;
+            color: var(--text-gold);
+        }
+
+        /* Toast Popup Overlay */
+        .toast-overlay {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(15, 10, 8, 0.96);
+            border: 1.5px solid var(--gold-primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(201,168,108,0.3);
+            border-radius: 6px;
+            padding: 12px 20px;
+            z-index: 100;
+            width: 250px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast-overlay.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        .toast-title {
+            color: var(--jade-glow);
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .toast-body {
+            font-size: 10px;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Target Frame Simulator -->
+    <div class="game-frame">
+        <div class="ambient-bg"></div>
+
+        <!-- Header -->
+        <header class="game-header">
+            <div class="logo-wrap">
+                <span class="logo-text">Đạo Tổ Tu Tiên</span>
+            </div>
+            <div class="resources">
+                <div class="resource-item" title="Vàng">
+                    <span>🪙</span>
+                    <span class="resource-val" id="gold-val">12.36 Vạn</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Head -->
+        <div class="page-head">
+            <h2 class="page-title">Tông Môn</h2>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            
+            <!-- STATE 1: Sect recruitment (Shown when player has no sect) -->
+            <div class="recruitment-list" id="recruitment-list">
+                <!-- Liệt Hỏa Tông -->
+                <div class="sect-recruit-card">
+                    <div class="recruit-header">
+                        <span class="sect-name-tag">🔥 Liệt Hỏa Tông</span>
+                        <span class="element-badge elem-fire">HỎA</span>
+                    </div>
+                    <p class="sect-desc">Hỏa diễm thiêu thiên, công kích bạo liệt cực hạn. Hỏa cốt đệ tử tu luyện đệ nhất linh tông.</p>
+                    <div class="sect-buffs">✨ Phúc lợi: Tăng +90 Công Kích, +8 Thân Pháp mỗi bậc chức vị.</div>
+                    <div class="recruit-footer">
+                        <span class="join-cost">Phí bái kiến: 🪙 1,000</span>
+                        <button class="join-btn" onclick="joinSect('Liệt Hỏa Tông', '🔥')">Bái Nhập</button>
+                    </div>
+                </div>
+
+                <!-- Kim Kiếm Môn -->
+                <div class="sect-recruit-card">
+                    <div class="recruit-header">
+                        <span class="sect-name-tag">⚔️ Kim Kiếm Môn</span>
+                        <span class="element-badge elem-metal">KIM</span>
+                    </div>
+                    <p class="sect-desc">Lấy kiếm khí sắc bén để ngộ thiên đạo, nhất sinh cô độc nhất kiếm chém quỷ thần.</p>
+                    <div class="sect-buffs">✨ Phúc lợi: Tăng +60 Công Kích, +6 Thân Pháp mỗi bậc chức vị.</div>
+                    <div class="recruit-footer">
+                        <span class="join-cost">Phí bái kiến: 🪙 1,000</span>
+                        <button class="join-btn" onclick="joinSect('Kim Kiếm Môn', '⚔️')">Bái Nhập</button>
+                    </div>
+                </div>
+
+                <!-- Huyền Thủy Cung -->
+                <div class="sect-recruit-card">
+                    <div class="recruit-header">
+                        <span class="sect-name-tag">🌀 Huyền Thủy Cung</span>
+                        <span class="element-badge elem-water">THỦY</span>
+                    </div>
+                    <p class="sect-desc">Thủy nhu khắc cương, ngưng luyện linh khí hải triều để hộ mệnh đan điền.</p>
+                    <div class="sect-buffs">✨ Phúc lợi: Tăng +26 Thần Thức, +10 Thân Pháp mỗi bậc chức vị.</div>
+                    <div class="recruit-footer">
+                        <span class="join-cost">Phí bái kiến: 🪙 1,000</span>
+                        <button class="join-btn" onclick="joinSect('Huyền Thủy Cung', '🌀')">Bái Nhập</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATE 2: Sect Dashboard (Shown when player has joined a sect) -->
+            <div class="sect-dashboard" id="sect-dashboard">
+                <!-- Info Panel -->
+                <div class="sect-info-panel">
+                    <span class="active-sect-name" id="active-sect-name">Liệt Hỏa Tông</span>
+                    <div class="sect-avatar-container">
+                        <!-- Temple Gate SVG -->
+                        <svg class="gate-svg" viewBox="0 0 24 24">
+                            <path d="M3,6.5 L21,6.5 L21,9 L3,9 L3,6.5 Z M4.5,9.5 L19.5,9.5 L17,21 L7,21 L4.5,9.5 Z M8,12 L8,17 L10,17 L10,12 L8,12 Z M14,12 L14,17 L16,17 L16,12 L14,12 Z" />
+                        </svg>
+                    </div>
+                    <span class="active-rank-name" id="active-rank-name">Ngoại Môn Đệ Tử</span>
+                    
+                    <div class="contrib-progress-wrap">
+                        <div class="contrib-label">
+                            <span>Cống hiến phái:</span>
+                            <span id="contrib-qty-text">0 / 500</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="contrib-fill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions List -->
+                <div class="actions-panel">
+                    <!-- Quyên góp vàng -->
+                    <div class="action-row">
+                        <div class="action-info">
+                            <span class="action-title">Cống Hiến Vàng</span>
+                            <span class="action-desc">Đóng góp 1,000 vàng vào kho tông môn.</span>
+                        </div>
+                        <button class="action-btn-small" onclick="donate(1000, 100)">🪙 1,000</button>
+                    </div>
+
+                    <!-- Tàng kinh các -->
+                    <div class="action-row">
+                        <div class="action-info">
+                            <span class="action-title">Luyện tập Tông môn</span>
+                            <span class="action-desc">Tham gia dọn dẹp núi phái hoặc tuần tra ngọn lửa.</span>
+                        </div>
+                        <button class="action-btn-small" onclick="doTask()">Bắt đầu</button>
+                    </div>
+                </div>
+
+                <button class="leave-sect-btn" onclick="leaveSect()">Thoái xuất tông môn</button>
+            </div>
+        </div>
+
+        <!-- Toast Overlay -->
+        <div class="toast-overlay" id="toast-overlay">
+            <div class="toast-title" id="toast-title">Cống Hiến Thành Công</div>
+            <div class="toast-body" id="toast-body">Nhận +100 cống hiến phái!</div>
+        </div>
+
+        <!-- Footer Navigation -->
+        <footer class="game-footer">
+            <a href="#" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Nhân Vật</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">⛩️</span>
+                <span class="nav-label">Cảnh Giới</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">📜</span>
+                <span class="nav-label">Công Pháp</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🏺</span>
+                <span class="nav-label">Đan Dược</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🧘</span>
+                <span class="nav-label">Linh Căn</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span class="nav-label">Tiên Hữu</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">🏰</span>
+                <span class="nav-label">Tông Môn</span>
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        // State
+        let gold = 123600; // 12.36 Vạn
+        let currentSect = null;
+        let contribution = 0;
+
+        const ranks = [
+            { name: 'Ngoại Môn Đệ Tử', req: 0 },
+            { name: 'Nội Môn Đệ Tử', req: 500 },
+            { name: 'Thân Truyền Đệ Tử', req: 2000 },
+            { name: 'Chân Truyền Đệ Tử', req: 6000 },
+            { name: 'Trưởng Lão', req: 15000 }
+        ];
+
+        function formatVal(val) {
+            if (val >= 1e4) {
+                return (val / 1e4).toFixed(2) + " Vạn";
+            }
+            return val.toLocaleString('vi-VN');
+        }
+
+        function updateUI() {
+            document.getElementById('gold-val').innerText = formatVal(gold);
+
+            if (currentSect) {
+                document.getElementById('recruitment-list').style.display = 'none';
+                document.getElementById('sect-dashboard').style.display = 'flex';
+                
+                document.getElementById('active-sect-name').innerText = currentSect;
+                
+                // Calculate current rank
+                let activeRank = ranks[0];
+                let nextRank = ranks[1];
+                for (let i = 0; i < ranks.length; i++) {
+                    if (contribution >= ranks[i].req) {
+                        activeRank = ranks[i];
+                        nextRank = ranks[i + 1] || null;
+                    }
+                }
+
+                document.getElementById('active-rank-name').innerText = activeRank.name;
+
+                if (nextRank) {
+                    document.getElementById('contrib-qty-text').innerText = `${contribution} / ${nextRank.req}`;
+                    const fillPercent = Math.min((contribution / nextRank.req) * 100, 100);
+                    document.getElementById('contrib-fill').style.width = fillPercent + "%";
+                } else {
+                    document.getElementById('contrib-qty-text').innerText = `${contribution} (Đỉnh Phong)`;
+                    document.getElementById('contrib-fill').style.width = "100%";
+                }
+            } else {
+                document.getElementById('recruitment-list').style.display = 'flex';
+                document.getElementById('sect-dashboard').style.display = 'none';
+            }
+        }
+
+        function joinSect(sectName, icon) {
+            if (gold < 1000) {
+                showToast("Thất bại", "Không đủ Vàng để bái nhập môn phái!", "#e54848");
+                return;
+            }
+            gold -= 1000;
+            currentSect = icon + " " + sectName;
+            contribution = 0;
+            updateUI();
+            showToast("Bái Nhập Thành Công", `Chào mừng đạo hữu bái kiến ${sectName}!`, "#6ec9a0");
+        }
+
+        function leaveSect() {
+            currentSect = null;
+            contribution = 0;
+            updateUI();
+            showToast("Thoái Xuất Tông Môn", "Đã rời khỏi môn phái. Tổn thất toàn bộ điểm cống hiến!", "#e54848");
+        }
+
+        function donate(amount, contribReward) {
+            if (gold < amount) {
+                showToast("Thất bại", "Không đủ Vàng để quyên góp!", "#e54848");
+                return;
+            }
+            gold -= amount;
+            contribution += contribReward;
+            
+            const beforeRank = getRankName(contribution - contribReward);
+            const afterRank = getRankName(contribution);
+
+            updateUI();
+            
+            if (beforeRank !== afterRank) {
+                showToast(
+                    "Thăng Chức Vị",
+                    `Chúc mừng! Cống hiến đầy đủ giúp đạo hữu thăng lên [${afterRank}]!`,
+                    "#e8d4a8"
+                );
+            } else {
+                showToast("Cống Hiến Thành Công", `Nhận +${contribReward} cống hiến phái!`, "#6ec9a0");
+            }
+        }
+
+        function getRankName(cnt) {
+            let activeRank = ranks[0].name;
+            for (let i = 0; i < ranks.length; i++) {
+                if (cnt >= ranks[i].req) activeRank = ranks[i].name;
+            }
+            return activeRank;
+        }
+
+        function doTask() {
+            contribution += 20;
+            const beforeRank = getRankName(contribution - 20);
+            const afterRank = getRankName(contribution);
+
+            updateUI();
+
+            if (beforeRank !== afterRank) {
+                showToast(
+                    "Thăng Chức Vị",
+                    `Chúc mừng! Cống hiến đầy đủ giúp đạo hữu thăng lên [${afterRank}]!`,
+                    "#e8d4a8"
+                );
+            } else {
+                showToast("Tuần Tra Hoàn Thành", "Đã tuần tra núi phái. Nhận +20 cống hiến!", "#6ec9a0");
+            }
+        }
+
+        function showToast(title, body, titleColor) {
+            const toast = document.getElementById('toast-overlay');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-title').style.color = titleColor;
+            document.getElementById('toast-body').innerText = body;
+
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // Init
+        updateUI();
+    </script>
+</body>
+</html>

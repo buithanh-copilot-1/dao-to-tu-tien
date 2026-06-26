@@ -1,4 +1,4 @@
-export const SPIRIT_ROOT_MAX = 10;
+export const SPIRIT_ROOT_MAX = 100;
 
 export function getSpiritRootUpgradeCost(level: number): { gold: number; crystal: number } {
   return {

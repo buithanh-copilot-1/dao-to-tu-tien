@@ -60,7 +60,7 @@ interface AncientIconProps {
 // Nét tô bằng gradient của nhóm cha (<g>), nên không set `stroke` ở đây.
 const S = {
   fill: 'none',
-  strokeWidth: 1.6,
+  strokeWidth: 2.2,
   strokeLinecap: 'round' as const,
   strokeLinejoin: 'round' as const,
 };

@@ -81,10 +81,10 @@
   flex-direction: column;
   overflow: hidden;
   background:
-    radial-gradient(ellipse 95% 46% at 50% -6%, rgba(96, 156, 196, 0.20) 0%, transparent 58%),
-    radial-gradient(ellipse 70% 40% at 50% 110%, rgba(201, 168, 108, 0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 150% 95% at 50% 48%, transparent 52%, rgba(0, 0, 0, 0.55) 100%),
-    linear-gradient(180deg, #0c1019 0%, #0a0c12 44%, #070608 100%);
+    radial-gradient(ellipse 95% 46% at 50% -6%, rgba(120, 180, 220, 0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 40% at 50% 110%, rgba(220, 190, 130, 0.15) 0%, transparent 65%),
+    radial-gradient(ellipse 150% 95% at 50% 48%, transparent 52%, rgba(10, 8, 14, 0.6) 100%),
+    linear-gradient(180deg, #141824 0%, #10121a 44%, #0c0b11 100%);
 }
 
 .game-screen__mist {
@@ -92,11 +92,11 @@
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.5;
+  opacity: 0.65;
   background:
     url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse at 30% 20%, rgba(240, 228, 204, 0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 80%, rgba(61, 107, 90, 0.05) 0%, transparent 45%);
+    radial-gradient(ellipse at 30% 20%, rgba(240, 228, 204, 0.06) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 80%, rgba(70, 130, 110, 0.08) 0%, transparent 50%);
 }
 
 .game-screen__content {

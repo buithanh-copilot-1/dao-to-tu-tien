@@ -20,6 +20,7 @@ import {
   sortInventory as sortInventorySystem,
   toggleLockItem,
   usePill,
+  addItemByTemplate,
 } from '@/systems/inventory';
 import { equipItem as equipItemSystem, unequipItem as unequipItemSystem } from '@/systems/equipment';
 import { enhanceItem as enhanceItemSystem } from '@/systems/enhancement';
@@ -112,7 +113,7 @@ interface GameStore extends GameSave {
   expandInventory: () => void;
   toggleItemLock: (itemId: string) => void;
   enhanceItem: (itemId: string) => void;
-  upgradeSpiritRoot: () => void;
+  upgradeSpiritRoot: (element?: ElementType) => void;
   claimQuest: (questId: string) => void;
   claimActivityMilestone: (points: number) => void;
   joinSect: (sectId: string) => void;
@@ -139,6 +140,7 @@ interface GameStore extends GameSave {
   ) => void;
   autoClimbTower: (options?: { silent?: boolean }) => AutoTowerResult;
   resetGame: () => void;
+  devAddResources: () => void;
 }
 
 const initialSave: GameSave = {
@@ -474,11 +476,11 @@ export const useGameStore = create<GameStore>()(
         );
       },
 
-      upgradeSpiritRoot: () => {
+      upgradeSpiritRoot: (element) => {
         const { player } = get();
         if (!player) return;
         const before = player;
-        const result = upgradeSpiritRootSystem(player);
+        const result = upgradeSpiritRootSystem(player, element);
         if (result.error) { set(setToast(result.error, { variant: 'error' })); return; }
         set(withPowerToast(before, syncQuestProgress(result.player), result.message));
       },
@@ -906,6 +908,38 @@ export const useGameStore = create<GameStore>()(
           breakthroughTribulation: null,
           toast: null,
         }),
+
+      devAddResources: () => {
+        let p = get().player;
+        if (!p) return;
+        p = {
+          ...p,
+          gold: p.gold + 1000000,
+          crystal: p.crystal + 100000,
+          jade: p.jade + 10000,
+          exp: p.exp + 500000,
+        };
+        const itemsToAdd = [
+          'crystal_shard',
+          'ore_mithril',
+          'herb_lingzhi',
+          'soul_shard',
+          'pill_qi',
+          'pill_spirit',
+          'pill_break',
+          'scroll_skill',
+        ];
+        for (const tid of itemsToAdd) {
+          const res = addItemByTemplate(p, tid, 10000);
+          if (!res.error) {
+            p = res.player;
+          }
+        }
+        set({
+          player: p,
+          ...setToast('Đã thêm 1M Vàng và 10K mọi nguyên liệu nâng cấp!', { variant: 'success' }),
+        });
+      },
     }),
     {
       name: 'dao-to-tu-tien-save',

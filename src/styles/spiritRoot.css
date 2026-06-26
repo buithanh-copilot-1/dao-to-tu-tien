@@ -1,0 +1,405 @@
+/* Spirit Root Screen CSS */
+
+.spirit-root-body {
+  padding: 0 var(--safe-padding) 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Central Diagram Area */
+.spirit-root-diagram {
+  background: rgba(20, 16, 12, 0.85);
+  border: 1px solid rgba(201, 168, 108, 0.25);
+  border-radius: 6px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  box-shadow: var(--shadow-panel);
+}
+
+.spirit-root-badge-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.spirit-root-quality {
+  background: linear-gradient(180deg, #4a3060 0%, #2d1a40 100%);
+  border: 1px solid rgba(168, 110, 201, 0.5);
+  border-radius: 20px;
+  padding: 3px 14px;
+  font-size: 11px;
+  color: #d8b4f8;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(168, 110, 201, 0.3);
+  margin-bottom: 4px;
+  text-shadow: 0 0 4px rgba(168, 110, 201, 0.6);
+}
+
+.spirit-root-desc {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Circular Map Layout */
+.spirit-root-map {
+  width: 220px;
+  height: 220px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.spirit-root-rune-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: rotate(0deg);
+  animation: spin-rune 60s linear infinite;
+  pointer-events: none;
+  opacity: 0.25;
+}
+
+@keyframes spin-rune {
+  100% { transform: rotate(360deg); }
+}
+
+/* Meditating Cultivator In Center */
+.spirit-root-cultivator {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+}
+
+.spirit-root-aura {
+  position: absolute;
+  width: 105px;
+  height: 105px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232, 212, 168, 0.22) 0%, rgba(232, 212, 168, 0) 70%);
+  animation: pulse-aura 3s ease-in-out infinite;
+}
+
+@keyframes pulse-aura {
+  0%, 100% { transform: scale(0.92); opacity: 0.6; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+.spirit-root-silhouette {
+  width: 76px;
+  height: 76px;
+  fill: var(--gold-light);
+  filter: drop-shadow(0 0 8px rgba(232, 212, 168, 0.45));
+  opacity: 0.85;
+}
+
+/* Element Node buttons */
+.spirit-root-node {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(10, 8, 6, 0.95);
+  border: 1.5px solid var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+.spirit-root-node:hover {
+  transform: scale(1.08);
+}
+
+.spirit-root-node.active {
+  transform: scale(1.15);
+}
+
+/* Trigonometrical positions */
+.node-pos-metal { top: 0px; left: 50%; transform: translateX(-50%); }
+.node-pos-wood { top: 65px; left: 0px; }
+.node-pos-water { top: 65px; right: 0px; }
+.node-pos-fire { bottom: 8px; left: 28px; }
+.node-pos-earth { bottom: 8px; right: 28px; }
+
+/* Active element glows */
+.spirit-root-node.active-metal { border-color: #f0c84a; box-shadow: var(--glow-metal); background: var(--bg-metal); }
+.spirit-root-node.active-wood { border-color: #5ad66f; box-shadow: var(--glow-wood); background: var(--bg-wood); }
+.spirit-root-node.active-water { border-color: #4ea3ff; box-shadow: var(--glow-water); background: var(--bg-water); }
+.spirit-root-node.active-fire { border-color: #e54848; box-shadow: var(--glow-fire); background: var(--bg-fire); }
+.spirit-root-node.active-earth { border-color: #d4a04a; box-shadow: var(--glow-earth); background: var(--bg-earth); }
+
+.spirit-root-node-name {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--text-secondary);
+}
+
+.spirit-root-node.active .spirit-root-node-name {
+  color: #fff;
+  text-shadow: 0 0 3px currentColor;
+}
+
+.spirit-root-node-level {
+  font-size: 8px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.spirit-root-node.active .spirit-root-node-level {
+  color: var(--text-primary);
+}
+
+/* Stats Summary Panel */
+.spirit-root-stats-panel {
+  background: rgba(20, 16, 12, 0.85);
+  border: 1px solid rgba(201, 168, 108, 0.25);
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: var(--shadow-panel);
+}
+
+.spirit-root-stats-title {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: bold;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(201, 168, 108, 0.15);
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+
+.spirit-root-stats-content {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 12px;
+}
+
+.spirit-root-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+}
+
+.spirit-root-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+}
+
+.spirit-root-stat-label {
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.spirit-root-stat-val {
+  color: #6ec9a0;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(110, 201, 160, 0.2);
+}
+
+/* Passive Buff Card */
+.spirit-root-buff-card {
+  background: linear-gradient(135deg, rgba(74, 48, 96, 0.35) 0%, rgba(45, 26, 64, 0.35) 100%);
+  border: 1px solid rgba(168, 110, 201, 0.4);
+  border-radius: 4px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.spirit-root-buff-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  font-weight: bold;
+  color: #d8b4f8;
+  border-bottom: 1px solid rgba(168, 110, 201, 0.20);
+  padding-bottom: 2px;
+  margin-bottom: 4px;
+}
+
+.spirit-root-buff-badge {
+  background: #2a4a3d;
+  border: 1px solid #3d6b5a;
+  color: #6ec9a0;
+  font-size: 7px;
+  padding: 0px 4px;
+  border-radius: 2px;
+}
+
+.spirit-root-buff-badge.inactive {
+  background: #2b221b;
+  border: 1px solid #7a6e5e;
+  color: var(--text-muted);
+}
+
+.spirit-root-buff-list {
+  list-style: none;
+  font-size: 8px;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spirit-root-buff-list li::before {
+  content: "• ";
+  color: #d8b4f8;
+}
+
+.spirit-root-buff-req {
+  font-size: 7px;
+  color: #a87ac9;
+  margin-top: 4px;
+  text-align: center;
+}
+
+/* Bottom Action Panels */
+.spirit-root-actions {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 8px;
+}
+
+.spirit-root-action-box {
+  background: rgba(20, 16, 12, 0.9);
+  border: 1px solid rgba(201, 168, 108, 0.25);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 124px;
+  box-shadow: var(--shadow-panel);
+}
+
+.spirit-root-action-title {
+  font-size: 10px;
+  color: var(--text-gold);
+  font-weight: bold;
+  border-bottom: 1px solid rgba(201, 168, 108, 0.15);
+  padding-bottom: 3px;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.spirit-root-upgrade-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 9px;
+  color: var(--text-secondary);
+}
+
+.spirit-root-preview-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.spirit-root-preview-val {
+  color: var(--text-primary);
+}
+
+.spirit-root-preview-arrow {
+  color: var(--text-muted);
+  margin: 0 3px;
+}
+
+.spirit-root-preview-next {
+  color: #6ec9a0;
+  font-weight: bold;
+}
+
+.spirit-root-cost-row {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.spirit-root-cost-val {
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.spirit-root-cost-val.ok {
+  color: var(--green-stat);
+}
+
+.spirit-root-cost-val.fail {
+  color: var(--red-alert);
+}
+
+/* Awakening Layout */
+.spirit-root-awaken-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 4px;
+}
+
+.spirit-root-awaken-icon-wrap {
+  position: relative;
+  width: 30px;
+  height: 30px;
+}
+
+.spirit-root-awaken-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 1.5px dashed var(--gold-primary);
+  border-radius: 50%;
+  animation: spin-rune 15s linear infinite;
+}
+
+.spirit-root-awaken-icon {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+}
+
+.spirit-root-awaken-desc {
+  font-size: 8px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}

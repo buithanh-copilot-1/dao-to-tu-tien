@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đạo Tổ Tu Tiên - Bản Vẽ Thiết Kế Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;600&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #050403;
+            color: #f0e8d8;
+            font-family: 'Noto Serif SC', serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background-image: radial-gradient(circle at center, #14100c 0%, #030202 100%);
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid #c9a86c;
+            border-radius: 8px;
+            padding: 30px;
+            background: rgba(10, 8, 6, 0.9);
+            box-shadow: 0 0 30px rgba(201, 168, 108, 0.15);
+        }
+
+        h1 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 42px;
+            color: #e8d4a8;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(232, 212, 168, 0.3);
+        }
+
+        .subtitle {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 18px;
+            color: #c9a86c;
+            letter-spacing: 4px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        .description {
+            font-size: 13px;
+            color: #b8a890;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            text-align: justify;
+        }
+
+        .preview-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .preview-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(30, 24, 18, 0.6);
+            border: 1px solid rgba(201, 168, 108, 0.25);
+            border-radius: 6px;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s;
+        }
+
+        .preview-item:hover {
+            border-color: #e8d4a8;
+            background: rgba(201, 168, 108, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(201, 168, 108, 0.1);
+        }
+
+        .item-details {
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icon {
+            font-size: 28px;
+            width: 48px;
+            height: 48px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed #c9a86c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #e8d4a8;
+            font-family: 'ZCOOL XiaoWei', serif;
+        }
+
+        .desc {
+            font-size: 11px;
+            color: #7a6e5e;
+        }
+
+        .arrow {
+            font-size: 20px;
+            color: #c9a86c;
+            transition: transform 0.3s;
+        }
+
+        .preview-item:hover .arrow {
+            transform: translateX(4px);
+            color: #e8d4a8;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 10px;
+            color: #5a4f42;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Đạo Tổ Tu Tiên</h1>
+        <div class="subtitle">Bản Vẽ Thiết Kế Preview</div>
+
+        <p class="description">
+            Chào mừng đạo hữu đến với danh sách giao diện kiểm thử của game <strong>Đạo Tổ Tu Tiên</strong>. 
+            Các liên kết dưới đây dẫn tới các màn hình H5 thiết kế động (với đầy đủ hiệu ứng CSS và JS mô phỏng logic game) 
+            được đặc tả chi tiết từ mẫu vẽ gốc trong thư mục <code>art_design/</code>. Hãy nhấp vào từng liên kết dưới đây để xem trước:
+        </p>
+
+        <div class="preview-list">
+            <!-- Linh Căn -->
+            <a href="screen_linh_can.html" class="preview-item">
+                <div class="item-details">
+                    <div class="icon">🧘</div>
+                    <div class="title-text">
+                        <span class="title">Sơ Đồ Ngũ Hành - Linh Căn</span>
+                        <span class="desc">Tĩnh tọa thiền định, chọn & nâng cấp 5 lõi thuộc tính</span>
+                    </div>
+                </div>
+                <div class="arrow">➔</div>
+            </a>
+
+            <!-- Luyện Đan -->
+            <a href="screen_dan_duoc.html" class="preview-item">
+                <div class="item-details">
+                    <div class="icon">🏺</div>
+                    <div class="title-text">
+                        <span class="title">Lò Luyện Đan - Đan Dược</span>
+                        <span class="desc">Lửa hỏa diễm nấu linh thảo, đếm ngược thời gian nhận đan</span>
+                    </div>
+                </div>
+                <div class="arrow">➔</div>
+            </a>
+
+            <!-- Tông Môn -->
+            <a href="screen_tong_mon.html" class="preview-item">
+                <div class="item-details">
+                    <div class="icon">🏰</div>
+                    <div class="title-text">
+                        <span class="title">Sơn Môn Tiên Cảnh - Tông Môn</span>
+                        <span class="desc">Bái nhập phái, cống hiến thăng vị, làm nhiệm vụ</span>
+                    </div>
+                </div>
+                <div class="arrow">➔</div>
+            </a>
+        </div>
+
+        <footer>
+            THIẾT KẾ & PHÁT TRIỂN H5 TIÊN HIỆP GAME RPG @ 2026
+        </footer>
+    </div>
+
+</body>
+</html>

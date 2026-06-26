@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đạo Tổ Tu Tiên - Preview Linh Căn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;600&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink-deep: #0a0806;
+            --ink-mid: #14100c;
+            --ink-light: #1e1812;
+            --gold-primary: #c9a86c;
+            --gold-light: #e8d4a8;
+            --gold-dark: #8b6914;
+            --text-primary: #f0e8d8;
+            --text-secondary: #b8a890;
+            --text-gold: var(--gold-light);
+            --text-muted: #7a6e5e;
+            
+            /* Elements Glow */
+            --glow-metal: 0 0 15px #f0c84a;
+            --glow-wood: 0 0 15px #5ad66f;
+            --glow-water: 0 0 15px #4ea3ff;
+            --glow-fire: 0 0 15px #e54848;
+            --glow-earth: 0 0 15px #d4a04a;
+            
+            --bg-metal: #2d2613;
+            --bg-wood: #132d16;
+            --bg-water: #132338;
+            --bg-fire: #341212;
+            --bg-earth: #2a1f12;
+
+            --border-color-metal: #f0c84a;
+            --border-color-wood: #5ad66f;
+            --border-color-water: #4ea3ff;
+            --border-color-fire: #e54848;
+            --border-color-earth: #d4a04a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: #030202;
+            color: var(--text-primary);
+            font-family: 'Noto Serif SC', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* H5 Game Screen Wrapper */
+        .game-frame {
+            width: 375px;
+            height: 812px;
+            background: radial-gradient(circle at center, #0f1624 0%, #05070a 100%);
+            border: 4px solid var(--gold-primary);
+            border-radius: 12px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 35px rgba(201, 168, 108, 0.25);
+            overflow: hidden;
+        }
+
+        /* Ambient Nebula Background */
+        .ambient-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><radialGradient id="g1" cx="30%" cy="30%" r="50%"><stop offset="0%" stop-color="rgba(78, 163, 255, 0.08)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient><radialGradient id="g2" cx="70%" cy="60%" r="60%"><stop offset="0%" stop-color="rgba(229, 72, 72, 0.06)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient></defs><rect width="100%" height="100%" fill="url(#g1)"/><rect width="100%" height="100%" fill="url(#g2)"/></svg>');
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Bottom Mountains Silhouette */
+        .mountain-silhouette {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(to top, rgba(10, 8, 6, 1) 40%, rgba(10, 8, 6, 0) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Header Navigation */
+        .game-header {
+            height: 60px;
+            border-bottom: 1px solid rgba(201, 168, 108, 0.2);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 8, 6, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 10;
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo-text {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 18px;
+            color: var(--text-gold);
+            text-shadow: 0 0 8px rgba(232, 212, 168, 0.4);
+        }
+
+        .logo-tag {
+            font-size: 8px;
+            background: #a83232;
+            color: #fff;
+            padding: 1px 3px;
+            border-radius: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .resources {
+            display: flex;
+            gap: 6px;
+            font-size: 10px;
+        }
+
+        .resource-item {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(201, 168, 108, 0.3);
+            border-radius: 4px;
+            padding: 3px 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .resource-val {
+            color: var(--text-primary);
+            font-weight: bold;
+        }
+
+        /* Page Head */
+        .page-head {
+            text-align: center;
+            padding: 10px 0;
+            z-index: 10;
+            position: relative;
+        }
+
+        .page-title {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 22px;
+            color: var(--text-gold);
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-btn {
+            font-size: 11px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 1px solid var(--gold-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-gold);
+            cursor: pointer;
+        }
+
+        /* Central Diagram Area */
+        .diagram-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 5;
+            padding-top: 10px;
+        }
+
+        .realm-badge {
+            position: absolute;
+            top: 5px;
+            left: 12px;
+            border: 1px solid rgba(201, 168, 108, 0.4);
+            background: rgba(20, 16, 12, 0.85);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 9px;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-secondary);
+        }
+        
+        .realm-badge span {
+            color: var(--text-gold);
+            font-weight: bold;
+        }
+
+        .quality-badge {
+            background: linear-gradient(180deg, #4a3060 0%, #2d1a40 100%);
+            border: 1px solid rgba(168, 110, 201, 0.5);
+            border-radius: 20px;
+            padding: 3px 12px;
+            font-size: 11px;
+            color: #d8b4f8;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(168, 110, 201, 0.3);
+            margin-bottom: 4px;
+        }
+
+        .quality-desc {
+            font-size: 9px;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        /* Circular Five Elements Map */
+        .circle-map {
+            width: 230px;
+            height: 230px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* SVG Rune Ring */
+        .rune-ring-svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform: rotate(0deg);
+            animation: spin 60s linear infinite;
+            pointer-events: none;
+            opacity: 0.25;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Meditating Cultivator In Center */
+        .cultivator-wrapper {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3;
+        }
+
+        .cultivator-aura {
+            position: absolute;
+            width: 115px;
+            height: 115px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(232, 212, 168, 0.2) 0%, rgba(232, 212, 168, 0) 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(0.92); opacity: 0.6; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+
+        .cultivator-silhouette {
+            width: 90px;
+            height: 90px;
+            fill: var(--gold-light);
+            filter: drop-shadow(0 0 10px rgba(232, 212, 168, 0.5));
+            opacity: 0.85;
+        }
+
+        /* Element Node buttons */
+        .element-node {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(10, 8, 6, 0.95);
+            border: 2px solid var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 5;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .element-node:hover {
+            transform: scale(1.1);
+        }
+
+        .element-node.active {
+            transform: scale(1.15);
+        }
+
+        /* Trig Positioning */
+        .node-metal { top: 0px; left: 50%; transform: translateX(-50%); }
+        .node-wood { top: 68px; left: 0px; }
+        .node-water { top: 68px; right: 0px; }
+        .node-fire { bottom: 8px; left: 30px; }
+        .node-earth { bottom: 8px; right: 30px; }
+
+        /* Element Colors when active */
+        .node-metal.active { border-color: var(--border-color-metal); box-shadow: var(--glow-metal); background: var(--bg-metal); }
+        .node-wood.active { border-color: var(--border-color-wood); box-shadow: var(--glow-wood); background: var(--bg-wood); }
+        .node-water.active { border-color: var(--border-color-water); box-shadow: var(--glow-water); background: var(--bg-water); }
+        .node-fire.active { border-color: var(--border-color-fire); box-shadow: var(--glow-fire); background: var(--bg-fire); }
+        .node-earth.active { border-color: var(--border-color-earth); box-shadow: var(--glow-earth); background: var(--bg-earth); }
+
+        .node-name {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--text-secondary);
+            margin-bottom: 1px;
+            transition: color 0.3s;
+        }
+        
+        .active .node-name {
+            color: #fff;
+            text-shadow: 0 0 4px currentColor;
+        }
+
+        .node-level {
+            font-size: 8px;
+            color: var(--text-muted);
+        }
+        .active .node-level {
+            color: var(--text-primary);
+        }
+
+        /* Stats & Buff Panel */
+        .stats-panel {
+            margin: 12px;
+            background: rgba(20, 16, 12, 0.85);
+            border: 1px solid rgba(201, 168, 108, 0.25);
+            border-radius: 6px;
+            padding: 8px 12px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: var(--shadow-panel);
+        }
+
+        .panel-title {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(201, 168, 108, 0.15);
+            padding-bottom: 4px;
+            margin-bottom: 4px;
+        }
+
+        .stats-content {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 12px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-val {
+            color: #6ec9a0;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(110, 201, 160, 0.2);
+        }
+
+        /* Buff Card */
+        .buff-card {
+            background: linear-gradient(135deg, rgba(74, 48, 96, 0.3) 0%, rgba(45, 26, 64, 0.3) 100%);
+            border: 1px solid rgba(168, 110, 201, 0.4);
+            border-radius: 4px;
+            padding: 6px 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .buff-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            font-weight: bold;
+            color: #d8b4f8;
+            border-bottom: 1px solid rgba(168, 110, 201, 0.20);
+            padding-bottom: 2px;
+            margin-bottom: 4px;
+        }
+
+        .buff-badge {
+            background: #2a4a3d;
+            border: 1px solid #3d6b5a;
+            color: #6ec9a0;
+            font-size: 7px;
+            padding: 0px 4px;
+            border-radius: 2px;
+        }
+
+        .buff-list {
+            list-style: none;
+            font-size: 8px;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .buff-list li::before {
+            content: "• ";
+            color: #d8b4f8;
+        }
+
+        .buff-req {
+            font-size: 7px;
+            color: #a87ac9;
+            margin-top: 4px;
+            text-align: center;
+        }
+
+        /* Bottom Upgrade Cards */
+        .bottom-panels {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 8px;
+            margin: 0 12px 16px;
+            z-index: 10;
+        }
+
+        .action-box {
+            background: rgba(20, 16, 12, 0.9);
+            border: 1px solid rgba(201, 168, 108, 0.25);
+            border-radius: 6px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 120px;
+            box-shadow: var(--shadow-panel);
+        }
+
+        .action-title {
+            font-size: 10px;
+            color: var(--text-gold);
+            font-weight: bold;
+            border-bottom: 1px solid rgba(201, 168, 108, 0.15);
+            padding-bottom: 3px;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .upgrade-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 9px;
+            color: var(--text-secondary);
+        }
+
+        .preview-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .preview-val {
+            color: var(--text-primary);
+        }
+
+        .preview-arrow {
+            color: var(--text-muted);
+        }
+
+        .preview-next {
+            color: #6ec9a0;
+            font-weight: bold;
+        }
+
+        .cost-row {
+            font-size: 9px;
+            color: var(--text-muted);
+            text-align: center;
+            margin: 6px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .cost-icon {
+            color: #4ea3ff;
+        }
+
+        /* Glowing Hex/Gold Buttons */
+        .action-btn {
+            background: linear-gradient(180deg, #e8d4a8 0%, #c9a86c 50%, #8b6914 100%);
+            border: 1px solid #e8d4a8;
+            color: #2a1810;
+            border-radius: 4px;
+            padding: 6px 0;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            transition: all 0.2s;
+            box-shadow: 0 0 10px rgba(201, 168, 108, 0.3);
+            text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(180deg, #fff 0%, #e8d4a8 50%, #c9a86c 100%);
+            box-shadow: 0 0 15px rgba(201, 168, 108, 0.6);
+        }
+
+        .action-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Awakening Section */
+        .awaken-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            gap: 4px;
+        }
+
+        .awaken-icon-wrap {
+            position: relative;
+            width: 32px;
+            height: 32px;
+        }
+
+        .awaken-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px dashed var(--gold-primary);
+            border-radius: 50%;
+            animation: spin 15s linear infinite;
+        }
+
+        .awaken-icon-img {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .awaken-desc {
+            font-size: 8px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        /* Footer H5 Navigation */
+        .game-footer {
+            height: 55px;
+            border-top: 1px solid rgba(201, 168, 108, 0.2);
+            background: rgba(10, 8, 6, 0.96);
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            z-index: 10;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            gap: 2px;
+            border-right: 1px solid rgba(201, 168, 108, 0.05);
+            position: relative;
+        }
+
+        .nav-item:last-child {
+            border-right: none;
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            transition: transform 0.2s;
+            opacity: 0.6;
+        }
+
+        .nav-item.active {
+            color: var(--text-gold);
+            background: rgba(201, 168, 108, 0.05);
+        }
+
+        .nav-item.active .nav-icon {
+            opacity: 1;
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 5px rgba(232, 212, 168, 0.5));
+        }
+
+        .nav-item.active .nav-label {
+            font-weight: bold;
+            color: var(--text-gold);
+        }
+
+        .notify-badge {
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            width: 6px;
+            height: 6px;
+            background: #c94a4a;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #c94a4a;
+        }
+
+        /* Toast Popup Overlay */
+        .toast-overlay {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(15, 10, 8, 0.95);
+            border: 1.5px solid var(--gold-primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(201,168,108,0.3);
+            border-radius: 6px;
+            padding: 12px 20px;
+            z-index: 100;
+            width: 250px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .toast-overlay.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        .toast-title {
+            color: #6ec9a0;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .toast-body {
+            font-size: 10px;
+            color: var(--text-primary);
+        }
+
+        .toast-power {
+            font-size: 11px;
+            color: #f08a28;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Target Frame Simulator -->
+    <div class="game-frame">
+        <div class="ambient-bg"></div>
+        <div class="mountain-silhouette"></div>
+
+        <!-- Header -->
+        <header class="game-header">
+            <div class="logo-wrap">
+                <span class="logo-text">Đạo Tổ Tu Tiên</span>
+                <span class="logo-tag">Tiên Luyện</span>
+            </div>
+            <div class="resources">
+                <div class="resource-item" title="Lực chiến">
+                    <span>🔥</span>
+                    <span class="resource-val" id="total-power-val">256.8 Ức</span>
+                </div>
+                <div class="resource-item" title="Linh Thạch">
+                    <span>💎</span>
+                    <span class="resource-val" id="crystal-val">9.88 Ức</span>
+                </div>
+                <div class="resource-item" title="Vàng">
+                    <span>🪙</span>
+                    <span class="resource-val">12.36 Vạn</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Head -->
+        <div class="page-head">
+            <h2 class="page-title">Linh Căn <div class="info-btn">?</div></h2>
+        </div>
+
+        <!-- Main Cultivator Circle Area -->
+        <div class="diagram-container">
+            <div class="realm-badge">
+                Cảnh giới:
+                <span>Độ Kiếp Kỳ - B9</span>
+            </div>
+
+            <div class="quality-badge">Thiên Linh Căn</div>
+            <div class="quality-desc">Hiếm bậc Thiên – Trời ban linh căn, vô cùng hiếm có</div>
+
+            <!-- Circle Map -->
+            <div class="circle-map">
+                <!-- SVG Connecting Runes Ring -->
+                <svg class="rune-ring-svg" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="43" fill="none" stroke="#c9a86c" stroke-width="0.8" stroke-dasharray="1.5, 4.5" />
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="#c9a86c" stroke-width="0.4" opacity="0.5" />
+                    <path d="M 50,7 A 43,43 0 1,1 49.9,7" fill="none" stroke="rgba(201, 168, 108, 0.4)" stroke-width="1.2" stroke-dasharray="20 40 10 30" />
+                </svg>
+
+                <!-- Center Meditating Cultivator -->
+                <div class="cultivator-wrapper">
+                    <div class="cultivator-aura"></div>
+                    <svg class="cultivator-silhouette" viewBox="0 0 24 24">
+                        <!-- Abstract meditation figure -->
+                        <path d="M12,4A2.5,2.5,0,1,0,9.5,6.5,2.5,2.5,0,0,0,12,4ZM12,10c-2.4,0-6.1,1.2-6.5,3.6-.3,1.8,1.4,3,3,3.4C10.1,17.4,11.3,18,12,18s1.9-.6,3.5-1c1.6-.4,3.3-1.6,3-3.4C18.1,11.2,14.4,10,12,10Zm-3.5,9H15.5A1.5,1.5,0,0,0,17,17.5a1.5,1.5,0,0,0-1.5-1.5H8.5A1.5,1.5,0,0,0,7,17.5,1.5,1.5,0,0,0,8.5,19Z" />
+                    </svg>
+                </div>
+
+                <!-- 5 Element Nodes -->
+                <div class="element-node node-metal active" onclick="selectNode('metal', this)">
+                    <span class="node-name" style="color: #f0c84a;">Kim</span>
+                    <span class="node-level" id="level-metal">Lv.85</span>
+                </div>
+                <div class="element-node node-wood" onclick="selectNode('wood', this)">
+                    <span class="node-name" style="color: #5ad66f;">Mộc</span>
+                    <span class="node-level" id="level-wood">Lv.82</span>
+                </div>
+                <div class="element-node node-water" onclick="selectNode('water', this)">
+                    <span class="node-name" style="color: #4ea3ff;">Thủy</span>
+                    <span class="node-level" id="level-water">Lv.87</span>
+                </div>
+                <div class="element-node node-fire" onclick="selectNode('fire', this)">
+                    <span class="node-name" style="color: #e54848;">Hỏa</span>
+                    <span class="node-level" id="level-fire">Lv.84</span>
+                </div>
+                <div class="element-node node-earth" onclick="selectNode('earth', this)">
+                    <span class="node-name" style="color: #d4a04a;">Thổ</span>
+                    <span class="node-level" id="level-earth">Lv.83</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Summary Panel -->
+        <section class="stats-panel">
+            <h3 class="panel-title">TỔNG THUỘC TÍNH LINH CĂN</h3>
+            <div class="stats-content">
+                <!-- Left: Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-row">
+                        <span class="stat-label">❤️ Khí Huyết:</span>
+                        <span class="stat-val" id="stat-hp">+256,800</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">⚔️ Công Kích:</span>
+                        <span class="stat-val" id="stat-atk">+12,840</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">🛡️ Phòng Ngự:</span>
+                        <span class="stat-val" id="stat-def">+9,870</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">⚡ Thân Pháp:</span>
+                        <span class="stat-val" id="stat-speed">+1,560</span>
+                    </div>
+                </div>
+
+                <!-- Right: Passive Buff Card -->
+                <div class="buff-card">
+                    <div class="buff-head">
+                        <span>Thiên Linh Căn</span>
+                        <span class="buff-badge">Đã kích hoạt</span>
+                    </div>
+                    <ul class="buff-list">
+                        <li>Thuộc tính +20%</li>
+                        <li>Tốc độ tu luyện +30%</li>
+                        <li>Tỉ lệ bạo kích +15%</li>
+                    </ul>
+                    <div class="buff-req">Ngũ Hành đạt Lv.80</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Upgrades and Awakening Panels -->
+        <section class="bottom-panels">
+            <!-- Box 1: Upgrade node -->
+            <div class="action-box">
+                <h4 class="action-title" id="upgrade-box-title">Tăng cấp Linh Căn (Kim)</h4>
+                <div class="upgrade-preview">
+                    <div class="preview-row">
+                        <span>Cấp độ:</span>
+                        <span class="preview-val"><span id="box-lvl-cur">85</span> <span class="preview-arrow">➔</span> <span class="preview-next" id="box-lvl-next">86</span></span>
+                    </div>
+                    <div class="preview-row">
+                        <span id="box-stat-label">Công Kích:</span>
+                        <span class="preview-val"><span id="box-stat-cur">+1,277</span> <span class="preview-arrow">➔</span> <span class="preview-next" id="box-stat-next">+1,290</span></span>
+                    </div>
+                </div>
+                <div class="cost-row">
+                    <span>Tiêu hao:</span>
+                    <span class="cost-icon">💎</span>
+                    <span id="upgrade-cost-val" style="color:#4ea3ff; font-weight:bold;">1,850 Vạn</span>
+                </div>
+                <button class="action-btn" onclick="performUpgrade()">Tăng cấp</button>
+            </div>
+
+            <!-- Box 2: Awaken node -->
+            <div class="action-box">
+                <h4 class="action-title">Thức tỉnh Linh Căn</h4>
+                <div class="awaken-content">
+                    <div class="awaken-icon-wrap">
+                        <div class="awaken-ring"></div>
+                        <div class="awaken-icon-img">☯️</div>
+                    </div>
+                    <div class="awaken-desc">Nâng giới hạn cấp tối đa lên cấp 100.</div>
+                </div>
+                <button class="action-btn" style="filter: hue-rotate(50deg);" onclick="performAwaken()">Thức tỉnh</button>
+            </div>
+        </section>
+
+        <!-- Toast Notification Overlay -->
+        <div class="toast-overlay" id="toast-overlay">
+            <div class="toast-title" id="toast-title">Luyện Chế Thành Công</div>
+            <div class="toast-body" id="toast-body">Linh căn Kim đột phá tăng cấp!</div>
+            <div class="toast-power" id="toast-power">+1,280 Lực Chiến</div>
+        </div>
+
+        <!-- Footer Navigation -->
+        <footer class="game-footer">
+            <a href="#" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Nhân Vật</span>
+                <div class="notify-badge"></div>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">⛩️</span>
+                <span class="nav-label">Cảnh Giới</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">📜</span>
+                <span class="nav-label">Công Pháp</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🏺</span>
+                <span class="nav-label">Pháp Bảo</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">🧘</span>
+                <span class="nav-label">Linh Căn</span>
+                <div class="notify-badge"></div>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">👥</span>
+                <span class="nav-label">Tiên Hữu</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🏰</span>
+                <span class="nav-label">Tông Môn</span>
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        // State
+        let currentElement = 'metal';
+        let crystal = 9.88e8; // 9.88 Ức
+        let totalPower = 256800000; // 256.8 Triệu
+
+        const elementsData = {
+            metal: { name: 'Kim', level: 85, color: '#f0c84a', statLabel: 'Công Kích', baseStat: 15, statWeight: 15 },
+            wood: { name: 'Mộc', level: 82, color: '#5ad66f', statLabel: 'Khí Huyết', baseStat: 120, statWeight: 110 },
+            water: { name: 'Thủy', level: 87, color: '#4ea3ff', statLabel: 'Thân Pháp', baseStat: 8, statWeight: 8 },
+            fire: { name: 'Hỏa', level: 84, color: '#e54848', statLabel: 'Công Kích', baseStat: 18, statWeight: 18 },
+            earth: { name: 'Thổ', level: 83, color: '#d4a04a', statLabel: 'Phòng Ngự', baseStat: 12, statWeight: 12 }
+        };
+
+        function selectNode(elemKey, nodeEl) {
+            // Remove active classes
+            document.querySelectorAll('.element-node').forEach(n => n.classList.remove('active'));
+            // Add active class
+            nodeEl.classList.add('active');
+            
+            currentElement = elemKey;
+            updateUpgradeBox();
+        }
+
+        function formatVal(val) {
+            if (val >= 1e8) {
+                return (val / 1e8).toFixed(2) + " Ức";
+            } else if (val >= 1e4) {
+                return (val / 1e4).toFixed(0) + " Vạn";
+            }
+            return val.toLocaleString('vi-VN');
+        }
+
+        function updateUpgradeBox() {
+            const data = elementsData[currentElement];
+            
+            // Update box title
+            document.getElementById('upgrade-box-title').innerText = `Tăng cấp Linh Căn (${data.name})`;
+            document.getElementById('box-lvl-cur').innerText = data.level;
+            document.getElementById('box-lvl-next').innerText = data.level + 1;
+            
+            // Calculate mock stats
+            const curStat = Math.floor(data.baseStat * data.level * 1.5);
+            const nextStat = Math.floor(data.baseStat * (data.level + 1) * 1.5);
+            
+            document.getElementById('box-stat-label').innerText = data.statLabel + ":";
+            document.getElementById('box-stat-cur').innerText = "+" + curStat.toLocaleString();
+            document.getElementById('box-stat-next').innerText = "+" + nextStat.toLocaleString();
+            
+            // Calculate cost
+            const cost = Math.floor(150000 + data.level * data.level * 250);
+            document.getElementById('upgrade-cost-val').innerText = formatVal(cost);
+        }
+
+        function recalculateAllStats() {
+            // HP
+            let hp = 100000;
+            // ATK
+            let atk = 5000;
+            // DEF
+            let def = 3000;
+            // Speed
+            let speed = 600;
+
+            // Add stats from elements
+            hp += Math.floor(elementsData.wood.level * elementsData.wood.baseStat * 1.5 + elementsData.earth.level * 80);
+            atk += Math.floor(elementsData.metal.level * elementsData.metal.baseStat * 1.5 + elementsData.fire.level * elementsData.fire.baseStat * 1.5);
+            def += Math.floor(elementsData.earth.level * elementsData.earth.baseStat * 1.5 + elementsData.metal.level * 12);
+            speed += Math.floor(elementsData.water.level * elementsData.water.baseStat * 1.5 + elementsData.fire.level * 5);
+
+            document.getElementById('stat-hp').innerText = "+" + hp.toLocaleString();
+            document.getElementById('stat-atk').innerText = "+" + atk.toLocaleString();
+            document.getElementById('stat-def').innerText = "+" + def.toLocaleString();
+            document.getElementById('stat-speed').innerText = "+" + speed.toLocaleString();
+
+            // Calculate power
+            totalPower = Math.floor(hp * 0.5 + atk * 3 + def * 2 + speed * 5);
+            document.getElementById('total-power-val').innerText = (totalPower / 10000000).toFixed(1) + " Ức";
+        }
+
+        function performUpgrade() {
+            const data = elementsData[currentElement];
+            const cost = Math.floor(150000 + data.level * data.level * 250);
+
+            if (crystal < cost) {
+                showToast("Thất Bại", "Không đủ Linh Thạch để nâng cấp Linh Căn!", "+0 Lực Chiến", "#a83232");
+                return;
+            }
+
+            // Deduct crystal
+            crystal -= cost;
+            document.getElementById('crystal-val').innerText = (crystal / 1e8).toFixed(2) + " Ức";
+
+            // Level up
+            data.level += 1;
+            document.getElementById(`level-${currentElement}`).innerText = "Lv." + data.level;
+
+            // Recalculate everything
+            const powerBefore = totalPower;
+            recalculateAllStats();
+            const powerDelta = totalPower - powerBefore;
+
+            updateUpgradeBox();
+
+            // Show Toast Success
+            showToast(
+                "Đột Phá Thành Công",
+                `Lõi Linh Căn [${data.name}] đột phá đạt cấp ${data.level}!`,
+                `+${powerDelta.toLocaleString()} Lực Chiến`,
+                "#6ec9a0"
+            );
+        }
+
+        function performAwaken() {
+            showToast(
+                "Thức Tỉnh Thành Công",
+                `Đã nâng giới hạn cấp tối đa Linh Căn ngũ hành lên cấp 100!`,
+                `+32,500 Lực Chiến`,
+                "#e8d4a8"
+            );
+            totalPower += 32500;
+            document.getElementById('total-power-val').innerText = (totalPower / 10000000).toFixed(1) + " Ức";
+        }
+
+        function showToast(title, body, power, titleColor) {
+            const toast = document.getElementById('toast-overlay');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-title').style.color = titleColor;
+            document.getElementById('toast-body').innerText = body;
+            document.getElementById('toast-power').innerText = power;
+
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // Init
+        updateUpgradeBox();
+        recalculateAllStats();
+    </script>
+</body>
+</html>

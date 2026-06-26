@@ -1,11 +1,11 @@
 /* Game Panel — cuộn giấy cổ */
 .game-panel {
   position: relative;
-  background:
-    linear-gradient(180deg, rgba(34, 27, 20, 0.97) 0%, rgba(13, 10, 8, 0.98) 100%);
+  flex-shrink: 0;
+  background: linear-gradient(180deg, var(--bg-panel-light) 0%, var(--bg-panel) 100%);
   border: 1px solid rgba(201, 168, 108, 0.5);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-panel), 0 0 0 1px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-panel), 0 0 0 1px rgba(0, 0, 0, 0.3);
   overflow: hidden;
 }
 

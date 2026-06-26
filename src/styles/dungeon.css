@@ -263,3 +263,94 @@
 .boss-realm-chips__item--locked {
   opacity: 0.55;
 }
+
+/* Animated Mist Drift Filter */
+.dungeon-body {
+  position: relative;
+  overflow: hidden;
+  padding: 0 var(--safe-padding) 16px;
+}
+
+.dungeon-body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><defs><filter id="f"><feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" result="noise"/><feColorMatrix type="matrix" values="1 0 0 0 1  0 1 0 0 1  0 0 1 0 1  0 0 0 0.08 0"/></filter></defs><rect width="100%" height="100%" filter="url(#f)"/></svg>') repeat;
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 1;
+  animation: dungeon-mist-drift 32s infinite linear;
+}
+
+@keyframes dungeon-mist-drift {
+  0% { background-position: 0 0; }
+  100% { background-position: 1000px 500px; }
+}
+
+/* Reward Item Chip Styles */
+.reward-item-icon {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+}
+
+.item-drop-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border-radius: 4px;
+  background: rgba(10, 8, 6, 0.7);
+  border: 1px solid rgba(201, 168, 108, 0.25);
+  transition: all 0.2s;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
+  cursor: pointer;
+}
+
+.item-drop-btn:hover {
+  border-color: var(--gold-primary);
+  background: rgba(20, 16, 12, 0.9);
+  transform: scale(1.08);
+}
+
+/* Boss Custom Rows */
+.content-row.boss-row {
+  border-color: rgba(229, 72, 72, 0.22);
+  background: linear-gradient(90deg, rgba(229, 72, 72, 0.08) 0%, rgba(14, 10, 8, 0.75) 100%);
+  transition: all 0.25s ease;
+}
+
+.content-row.boss-row:hover {
+  border-color: rgba(229, 72, 72, 0.55);
+  box-shadow: 0 0 8px rgba(229, 72, 72, 0.2);
+  transform: translateY(-1px);
+}
+
+.content-row.boss-row--heavy {
+  border-color: rgba(229, 72, 72, 0.45);
+  background: linear-gradient(90deg, rgba(229, 72, 72, 0.15) 0%, rgba(14, 10, 8, 0.8) 100%);
+}
+
+.content-row.boss-row--heavy::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(229, 72, 72, 0.2);
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+  animation: boss-pulse-border 2s infinite alternate;
+}
+
+@keyframes boss-pulse-border {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.8; }
+}
+

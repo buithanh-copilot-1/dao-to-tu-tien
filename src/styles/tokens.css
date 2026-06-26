@@ -1,25 +1,25 @@
 :root {
   /* Ink & paper — cổ phong */
-  --ink-deep: #0a0806;
-  --ink-mid: #14100c;
-  --ink-light: #1e1812;
+  --ink-deep: #111016;
+  --ink-mid: #1c1a24;
+  --ink-light: #282532;
   --paper: #f0e4cc;
-  --paper-tint: rgba(240, 228, 204, 0.06);
-  --paper-warm: rgba(200, 170, 120, 0.12);
+  --paper-tint: rgba(240, 228, 204, 0.08);
+  --paper-warm: rgba(200, 170, 120, 0.15);
 
   --bg-deep: var(--ink-deep);
-  --bg-panel: rgba(20, 16, 12, 0.92);
-  --bg-panel-light: rgba(30, 24, 18, 0.95);
-  --bg-overlay: rgba(8, 6, 4, 0.88);
+  --bg-panel: rgba(28, 26, 36, 0.88);
+  --bg-panel-light: rgba(40, 36, 48, 0.9);
+  --bg-overlay: rgba(12, 10, 16, 0.85);
 
   /* Bronze & gold — đồng kim */
-  --gold-primary: #c9a86c;
-  --gold-light: #e8d4a8;
-  --gold-dark: #8b6914;
-  --gold-gradient: linear-gradient(180deg, #e8d4a8 0%, #c9a86c 45%, #8b6914 100%);
-  --gold-border: linear-gradient(135deg, #e8d4a8, #8b6914, #e8d4a8);
-  --star-gold: #e8c070;
-  --bag-bg: #1a1f2c;
+  --gold-primary: #d4b57a;
+  --gold-light: #f5e3ba;
+  --gold-dark: #9e7b26;
+  --gold-gradient: linear-gradient(180deg, #f5e3ba 0%, #d4b57a 45%, #9e7b26 100%);
+  --gold-border: linear-gradient(135deg, #f5e3ba, #9e7b26, #f5e3ba);
+  --star-gold: #f5d482;
+  --bag-bg: #1f2230;
 
   /* Cinnabar — chu sa */
   --cinnabar: #a83232;
@@ -52,6 +52,25 @@
   --rarity-epic: #f0c84a;
   --rarity-legendary: #f08a28;
   --rarity-mythic: #e54848;
+
+  /* Elements */
+  --glow-metal: 0 0 15px #f0c84a;
+  --glow-wood: 0 0 15px #5ad66f;
+  --glow-water: 0 0 15px #4ea3ff;
+  --glow-fire: 0 0 15px #e54848;
+  --glow-earth: 0 0 15px #d4a04a;
+
+  --bg-metal: #2d2613;
+  --bg-wood: #132d16;
+  --bg-water: #132338;
+  --bg-fire: #341212;
+  --bg-earth: #2a1f12;
+
+  --border-metal: #f0c84a;
+  --border-wood: #5ad66f;
+  --border-water: #4ea3ff;
+  --border-fire: #e54848;
+  --border-earth: #d4a04a;
 
   /* Text */
   --text-primary: #f0e8d8;

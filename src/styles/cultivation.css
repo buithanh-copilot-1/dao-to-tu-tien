@@ -47,10 +47,17 @@
 .game-screen--home .side-menu {
   top: calc(var(--header-height) + 2px);
   bottom: calc(var(--bottom-nav-height) + var(--home-panel-space));
-  justify-content: space-evenly;
-  gap: clamp(3px, 0.7dvh, 8px);
-  overflow: hidden;
+  justify-content: flex-start;
+  gap: clamp(4px, 1.2dvh, 10px);
+  padding-block: 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
   max-height: none;
+  scrollbar-width: none;
+}
+
+.game-screen--home .side-menu::-webkit-scrollbar {
+  display: none;
 }
 
 .game-screen--home .side-menu__icon-wrap {
