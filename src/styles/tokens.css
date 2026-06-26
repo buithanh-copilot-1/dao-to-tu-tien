@@ -98,4 +98,15 @@
   --frame-border: 2px;
   --frame-color: var(--gold-primary);
   --frame-inner: 1px solid rgba(201, 168, 108, 0.25);
+
+  /* Night sky — đêm tu luyện */
+  --sky-1: #060912;
+  --sky-2: #0b1220;
+  --sky-3: #0d1118;
+  --sky-4: #0a0c12;
+  --sky-5: #040404;
+  --moon-glow: rgba(210, 222, 245, 0.22);
+  --star-color: #f4f8ff;
+  --qi-mote: rgba(120, 210, 170, 0.65);
+  --qi-mote-gold: rgba(232, 212, 168, 0.6);
 }

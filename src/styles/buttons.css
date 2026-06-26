@@ -165,12 +165,32 @@
   pointer-events: none;
 }
 
+.game-btn--hex:not(:disabled) {
+  animation: hexPulse 2.4s ease-in-out infinite;
+}
+
 .game-btn--hex:hover:not(:disabled) {
+  animation-play-state: paused;
   background: linear-gradient(180deg, #fff8dc 0%, #f8de8e 34%, #e0b24d 68%, #b88324 100%);
   box-shadow:
     0 0 26px rgba(255, 230, 166, 0.55),
     0 6px 14px rgba(0, 0, 0, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+@keyframes hexPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 18px rgba(232, 212, 168, 0.38),
+      0 4px 12px rgba(0, 0, 0, 0.48),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(255, 230, 166, 0.62),
+      0 4px 12px rgba(0, 0, 0, 0.48),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  }
 }
 
 .game-btn--full {

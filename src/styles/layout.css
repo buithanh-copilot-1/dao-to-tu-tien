@@ -5,7 +5,7 @@
   max-width: 430px;
   height: 100%;
   margin: 0 auto;
-  background: var(--ink-deep);
+  background: linear-gradient(180deg, var(--sky-1) 0%, var(--ink-deep) 55%, #000 100%);
   overflow: hidden;
 }
 
@@ -65,6 +65,7 @@
   font-size: 8px;
   color: var(--gold-primary);
   line-height: 1;
+  filter: drop-shadow(0 0 3px rgba(201, 168, 108, 0.55));
 }
 
 .game-frame__corner--tl::after { bottom: -2px; right: -2px; }
@@ -72,7 +73,7 @@
 .game-frame__corner--bl::after { top: -2px; right: -2px; }
 .game-frame__corner--br::after { top: -2px; left: -2px; }
 
-/* Game screen — nền mực tàu + sương mù */
+/* Game screen — nền trời đêm tu luyện + sương mù + sao */
 .game-screen {
   position: relative;
   width: 100%;
@@ -81,10 +82,39 @@
   flex-direction: column;
   overflow: hidden;
   background:
+    radial-gradient(ellipse 55% 26% at 50% 0%, var(--moon-glow) 0%, transparent 65%),
     radial-gradient(ellipse 95% 46% at 50% -6%, rgba(96, 156, 196, 0.20) 0%, transparent 58%),
     radial-gradient(ellipse 70% 40% at 50% 110%, rgba(201, 168, 108, 0.10) 0%, transparent 60%),
-    radial-gradient(ellipse 150% 95% at 50% 48%, transparent 52%, rgba(0, 0, 0, 0.55) 100%),
-    linear-gradient(180deg, #0c1019 0%, #0a0c12 44%, #070608 100%);
+    radial-gradient(ellipse 150% 95% at 50% 48%, transparent 50%, rgba(0, 0, 0, 0.6) 100%),
+    linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 22%, var(--sky-3) 46%, var(--sky-4) 70%, var(--sky-5) 100%);
+}
+
+.game-screen__stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.65;
+  background-image:
+    radial-gradient(1.4px 1.4px at 8% 12%, var(--star-color), transparent 60%),
+    radial-gradient(1px 1px at 22% 32%, var(--star-color), transparent 60%),
+    radial-gradient(1.6px 1.6px at 36% 6%, var(--star-color), transparent 60%),
+    radial-gradient(1px 1px at 48% 46%, var(--star-color), transparent 60%),
+    radial-gradient(1.2px 1.2px at 61% 18%, var(--star-color), transparent 60%),
+    radial-gradient(1.6px 1.6px at 74% 38%, var(--star-color), transparent 60%),
+    radial-gradient(1px 1px at 86% 10%, var(--star-color), transparent 60%),
+    radial-gradient(1.2px 1.2px at 14% 64%, var(--star-color), transparent 60%),
+    radial-gradient(1px 1px at 41% 76%, var(--star-color), transparent 60%),
+    radial-gradient(1.6px 1.6px at 67% 70%, var(--star-color), transparent 60%),
+    radial-gradient(1px 1px at 92% 56%, var(--star-color), transparent 60%),
+    radial-gradient(1.2px 1.2px at 4% 90%, var(--star-color), transparent 60%),
+    radial-gradient(1px 1px at 29% 94%, var(--star-color), transparent 60%),
+    radial-gradient(1.4px 1.4px at 55% 88%, var(--star-color), transparent 60%),
+    radial-gradient(1px 1px at 80% 92%, var(--star-color), transparent 60%),
+    radial-gradient(1.2px 1.2px at 95% 80%, var(--star-color), transparent 60%);
+  background-repeat: repeat;
+  background-size: 260px 340px;
+  animation: starsTwinkle 6s ease-in-out infinite alternate;
 }
 
 .game-screen__mist {
@@ -97,6 +127,57 @@
     url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"),
     radial-gradient(ellipse at 30% 20%, rgba(240, 228, 204, 0.04) 0%, transparent 50%),
     radial-gradient(ellipse at 70% 80%, rgba(61, 107, 90, 0.05) 0%, transparent 45%);
+  background-repeat: repeat, no-repeat, no-repeat;
+  animation: mistDrift 70s linear infinite alternate;
+}
+
+.game-screen__motes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.qi-mote {
+  position: absolute;
+  bottom: -10px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--qi-mote);
+  box-shadow: 0 0 6px 1px var(--qi-mote);
+  opacity: 0;
+  animation: moteRise 11s ease-in infinite;
+}
+
+.qi-mote:nth-child(1) { left: 8%; animation-delay: 0s; animation-duration: 11s; }
+.qi-mote:nth-child(2) { left: 20%; animation-delay: 1.4s; animation-duration: 9s; background: var(--qi-mote-gold); box-shadow: 0 0 6px 1px var(--qi-mote-gold); }
+.qi-mote:nth-child(3) { left: 34%; animation-delay: 2.8s; animation-duration: 13s; }
+.qi-mote:nth-child(4) { left: 48%; animation-delay: 0.6s; animation-duration: 10s; background: var(--qi-mote-gold); box-shadow: 0 0 6px 1px var(--qi-mote-gold); }
+.qi-mote:nth-child(5) { left: 62%; animation-delay: 3.6s; animation-duration: 12s; }
+.qi-mote:nth-child(6) { left: 74%; animation-delay: 1.9s; animation-duration: 9.5s; }
+.qi-mote:nth-child(7) { left: 86%; animation-delay: 4.4s; animation-duration: 14s; background: var(--qi-mote-gold); box-shadow: 0 0 6px 1px var(--qi-mote-gold); }
+.qi-mote:nth-child(8) { left: 94%; animation-delay: 2.2s; animation-duration: 10.5s; }
+
+@keyframes starsTwinkle {
+  0% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.48; }
+}
+
+@keyframes mistDrift {
+  0% { background-position: 0% 0%, 20% 10%, 80% 90%; }
+  50% { background-position: 60px 30px, 35% 25%, 65% 75%; }
+  100% { background-position: 0% 0%, 20% 10%, 80% 90%; }
+}
+
+@keyframes moteRise {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  8% { opacity: 0.85; }
+  50% { transform: translateY(-160px) translateX(8px); opacity: 0.6; }
+  92% { opacity: 0; }
+  100% { transform: translateY(-320px) translateX(-6px); opacity: 0; }
 }
 
 .game-screen__content {
