@@ -304,9 +304,18 @@ img.equip-board__empty-icon {
 
 .char-stats-panel__links {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   margin-top: 12px;
+}
+
+.char-stats-panel__links .game-btn {
+  min-width: 0;
+  width: 100%;
+  padding: 9px 6px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  gap: 4px;
 }
 
 .char-stats-panel .game-panel__body {

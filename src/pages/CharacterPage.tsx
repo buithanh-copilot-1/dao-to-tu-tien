@@ -115,6 +115,15 @@ export function CharacterPage() {
                 <GameButton variant="secondary" onClick={() => goWithFrom('/spirit-root')}>
                   <AncientIcon name="sparkle" size={14} className="anc-icon--jade" /> Linh căn
                 </GameButton>
+                <GameButton variant="secondary" onClick={() => goWithFrom('/mount')}>
+                  <AncientIcon name="mountain" size={14} className="anc-icon--gold" /> Tọa kỵ
+                </GameButton>
+                <GameButton variant="secondary" disabled title="Sắp ra mắt">
+                  <AncientIcon name="heart" size={14} /> Tiên duyên
+                </GameButton>
+                <GameButton variant="secondary" disabled title="Sắp ra mắt">
+                  <AncientIcon name="gem" size={14} /> Pháp bảo
+                </GameButton>
               </div>
             </GamePanel>
           )}
