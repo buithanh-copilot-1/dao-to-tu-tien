@@ -35,7 +35,12 @@ if (new URLSearchParams(window.location.search).get('clear-save') === '1') {
   window.history.replaceState({}, '', window.location.pathname);
 }
 
-createRoot(document.getElementById('root')!).render(
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error('Không tìm thấy phần tử #root');
+}
+
+createRoot(rootElement).render(
   <StrictMode>
     <BrowserRouter>
       <App />
