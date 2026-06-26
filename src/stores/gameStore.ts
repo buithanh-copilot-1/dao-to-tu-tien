@@ -22,6 +22,7 @@ import {
   toggleLockItem,
   usePill,
   addItemByTemplate,
+  countByTemplate,
 } from '@/systems/inventory';
 import { equipItem as equipItemSystem, unequipItem as unequipItemSystem } from '@/systems/equipment';
 import { enhanceItem as enhanceItemSystem } from '@/systems/enhancement';
@@ -913,17 +914,10 @@ export const useGameStore = create<GameStore>()(
         }),
 
       consumeItemByTemplate: (templateId: string, count: number) => {
-        const store = get();
-        const { player } = store;
+        const { player } = get();
         if (!player) return false;
-        
-        const hasEnough = (player.inventory.find(i => i.templateId === templateId)?.quantity || 0) >= count;
-        // Wait, countByTemplate is better. I'll import it or just manually count.
-        // I will use removeByTemplate but first check if they have enough.
-        
-        // Actually, just loop and count:
-        const total = player.inventory.filter(i => i.templateId === templateId).reduce((s, i) => s + i.quantity, 0);
-        if (total < count) return false;
+
+        if (countByTemplate(player, templateId) < count) return false;
 
         const updated = removeByTemplate(player, templateId, count);
         set({ player: updated });
